@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30320.27
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Green_Pantry_Backend", ".", "{85DEDD32-D30C-4987-B5AD-80F627A3E56C}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.7.2"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_53900"
+		Debug.AspNetCompiler.PhysicalPath = "..\Green_Pantry_Backend\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_53900\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_53900"
+		Release.AspNetCompiler.PhysicalPath = "..\Green_Pantry_Backend\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_53900\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "53900"
+		SlnRelativePath = "..\Green_Pantry_Backend\"
+		DefaultWebSiteLanguage = "Visual C#"
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{85DEDD32-D30C-4987-B5AD-80F627A3E56C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85DEDD32-D30C-4987-B5AD-80F627A3E56C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FF19C881-2631-4346-91C5-8FCDF6D55203}
+	EndGlobalSection
+EndGlobal

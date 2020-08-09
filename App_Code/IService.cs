@@ -30,6 +30,7 @@ public class CompositeType
 	[DataMember]
 	public bool BoolValue
 	{
+		//Hi there
 		get { return boolValue; }
 		set { boolValue = value; }
 	}

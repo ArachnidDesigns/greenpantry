@@ -27,3 +27,5 @@ public class Service : IService
 		return composite;
 	}
 }
+
+//would be pretty cool if this worked weewoo

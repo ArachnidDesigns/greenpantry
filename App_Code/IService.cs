@@ -10,7 +10,7 @@ using System.Text;
 [ServiceContract]
 public interface IService
 {
-
+	//pls work
 	[OperationContract]
 	string GetData(int value);
 

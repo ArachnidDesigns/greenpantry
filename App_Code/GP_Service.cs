@@ -30,7 +30,7 @@ public class GP_Service : IGP_Service
         }
     }
 
-    int Register(string name, string surname, string email, string password, string number)
+    public int Register(string name, string surname, string email, string password, string number)
     {
         //check if a user with the given email exists
         var user = (from u in db.Users

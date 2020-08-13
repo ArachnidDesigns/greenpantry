@@ -69,4 +69,76 @@ public class GP_Service : IGP_Service
             return 0;
         }
     }
+
+    //Function used to return a product record
+    public Product getProduct(int Product_ID)
+    {
+        var product = (from p in db.Products
+                       where p.ID.Equals(Product_ID)
+                       select p).FirstOrDefault();
+
+        if(product == null)
+        {
+            return null;
+        }else
+        {
+            return product;
+        }
+    }
+
+    //Function that allows to subtract the items purchased from the stock
+    public int UpdateStock(int P_ID, int ItemsPurchased)
+    {
+        var product = getProduct(P_ID);
+        if(product == null)
+        {
+            return 0;   
+        }else
+        {
+            //Subtract the items purchased from the stock of the particular product
+            product.StockOnHand -= ItemsPurchased;
+            try
+            {
+                db.SubmitChanges();
+                return 1;
+            }catch(Exception e)
+            {
+                e.GetBaseException();
+                return -1;
+            }
+        }
+        
+    }
+
+    //Functions used for adding items to a shopping list
+    public int AddItemsToShoppingList(int ListID , int ShoppingList_ID, int Product_ID, int quantity)
+    {
+        var item = (from i in db.ListItems
+                    where i.ID.Equals(ListID)
+                    select i).FirstOrDefault();
+        //if the item does not exist on the shopping list
+        if(item == null)
+        {
+            var newItem = new ListItem
+            {
+                ListID = ShoppingList_ID,
+                ProductID = Product_ID,
+                Quantity_ = quantity
+
+            };
+            db.ListItems.InsertOnSubmit(newItem);
+            try
+            {
+                db.SubmitChanges();
+                return 1;
+            }catch(Exception e)
+            {
+                e.GetBaseException();
+                return -1;
+            }
+        }else
+        {
+            return 0;
+        }
+    }
 }

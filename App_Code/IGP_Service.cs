@@ -14,4 +14,13 @@ public interface IGP_Service
 
     [OperationContract]
     int Register(string name, string surname, string email, string password, string number);
+
+    [OperationContract]
+    Product getProduct(int Product_ID);
+    [OperationContract]
+    int UpdateStock(int P_ID, int ItemsPurchased);
+    [OperationContract]
+    int AddItemsToShoppingList(int ListID ,int ShoppingList_ID, int Product_ID, int Quantity);
+
+
 }

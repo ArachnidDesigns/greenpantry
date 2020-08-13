@@ -12,4 +12,6 @@ public interface IGP_Service
     [OperationContract]
     int login(string email, string password);
 
+    [OperationContract]
+    int Register(string name, string surname, string email, string password, string number);
 }

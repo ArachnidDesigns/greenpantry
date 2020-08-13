@@ -30,5 +30,43 @@ public class GP_Service : IGP_Service
         }
     }
 
+    int Register(string name, string surname, string email, string password, string number)
+    {
+        //check if a user with the given email exists
+        var user = (from u in db.Users
+                    where u.Email.Equals(email)
+                    select u).FirstOrDefault();
 
+        //if the given email is unique
+        if(user == null)
+        {
+            var newUser = new User
+            {
+                Name = name,
+                Surname = surname,
+                Email = email,
+                Password = password,
+                PhoneNumber = number
+            };
+            db.Users.InsertOnSubmit(newUser);
+
+            try
+            {
+                //all is well
+                db.SubmitChanges();
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                ex.GetBaseException();
+                return -1;
+            }
+
+        }
+        else
+        {
+            //a user with the given email already exists
+            return 0;
+        }
+    }
 }

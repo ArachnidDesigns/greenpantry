@@ -174,7 +174,7 @@ public class GP_Service : IGP_Service
     }
 
     //Function used to calculate the total profit generated 
-    public double getProfit()
+    public double CalculateProfit()
     {
         var totalprofit = 0.0;
         var Difference = 0.0;
@@ -186,6 +186,7 @@ public class GP_Service : IGP_Service
 
         foreach(OrderItem o in OrdItems)
         {
+             CurrentProfit = 0.0;
             //getting the current product
             var CurrentProduct = getProduct(o.ProductID);
 

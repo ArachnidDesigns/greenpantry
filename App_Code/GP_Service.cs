@@ -50,6 +50,13 @@ public class GP_Service : IGP_Service
             };
             db.Users.InsertOnSubmit(newUser);
 
+            var c = new Customer
+            {
+                CustomerID = newUser.ID,
+                Points = 0
+            };
+            db.Customers.InsertOnSubmit(c);
+
             try
             {
                 //all is well

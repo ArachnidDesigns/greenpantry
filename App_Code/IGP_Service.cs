@@ -16,6 +16,12 @@ public interface IGP_Service
     int Register(string name, string surname, string email, string password, string number);
 
     [OperationContract]
+    int UpdateUserDetails(int id, string name, string surname, string email, string number);
+
+    [OperationContract]
+    int UpdatePassword(int id, string oldPassword, string newPassword);
+
+    [OperationContract]
     Product getProduct(int Product_ID);
     [OperationContract]
     int UpdateStock(int P_ID, int ItemsPurchased);

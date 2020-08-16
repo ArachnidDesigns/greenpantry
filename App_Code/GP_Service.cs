@@ -77,6 +77,88 @@ public class GP_Service : IGP_Service
         }
     }
 
+    int UpdatePassword(int id, string oldPassword, string newPassword)
+    {
+        var user = getUser(id);
+
+        if(user == null)
+        {
+            //user does not exist
+            return 0;
+        }
+        else
+        {
+            if(user.Password != oldPassword)
+            {
+                //given password doesn't match existing password
+                return -2;
+            }
+            else
+            {
+                user.Password = newPassword;
+
+                try
+                {
+                    //all is well
+                    db.SubmitChanges();
+                    return 1;
+                }
+                catch(Exception ex)
+                {
+                    //something else went wrong
+                    ex.GetBaseException();
+                    return -1;
+                }
+            }
+        }
+
+    }
+
+    int UpdateUserDetails(int id, string name, string surname, string email, string number)
+    {
+        //check if the given email is already in use
+        var tempUser = (from u in db.Users
+                        where u.Email.Equals(email) && u.ID != id
+                        select u).FirstOrDefault();
+
+        if(tempUser != null)
+        {
+            //the email they're trying to change to is already in use
+            return -2;
+        }
+        else
+        {
+            var user = getUser(id);
+
+           if(user != null)
+            {
+                user.Name = name;
+                user.Surname = surname;
+                user.Email = email;
+                user.PhoneNumber = number;
+
+                try
+                {
+                    db.SubmitChanges();
+                    return 1;
+                }
+                catch(Exception ex)
+                {
+                    ex.GetBaseException();
+                    return 1;
+                }
+            }
+            else
+            {
+                //user doesn't exist
+                return 0;
+            }
+           
+        }
+
+    }
+
+
     //Function used to return a product record
     public Product getProduct(int Product_ID)
     {

@@ -22,6 +22,9 @@ public interface IGP_Service
     int UpdatePassword(int id, string oldPassword, string newPassword);
 
     [OperationContract]
+    int addNewProduct(string name, int SubID, double price, double cost, int stockQty, string description);
+
+    [OperationContract]
     Product getProduct(int Product_ID);
     [OperationContract]
     int UpdateStock(int P_ID, int ItemsPurchased);

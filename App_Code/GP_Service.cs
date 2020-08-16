@@ -158,6 +158,33 @@ public class GP_Service : IGP_Service
 
     }
 
+    public int addNewProduct(string name, int SubID, double price, double cost, int stockQty, string description)
+    {
+        var newProduct = new Product
+        {
+            Name = name,
+            SubCategoryID = SubID,
+            Price = (decimal)price,
+            Cost = (decimal) cost,
+            StockOnHand = stockQty,
+            Description = description
+        };
+
+        db.Products.InsertOnSubmit(newProduct);
+
+        try
+        {
+            //product successfully added
+            db.SubmitChanges();
+            return 1;
+        }
+        catch (Exception ex)
+        {
+            //error occurred when attempting to add product
+            ex.GetBaseException();
+            return -1;
+        }
+    }
 
     //Function used to return a product record
     public Product getProduct(int Product_ID)

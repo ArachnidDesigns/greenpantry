@@ -159,7 +159,7 @@ public class GP_Service : IGP_Service
     }
 
     //Function used to find the total number of users for the website
-    public int getAllUsers()
+    public int getNumUsers()
     {
         var TotalUsers = 0;
         var user = (from u in db.Users

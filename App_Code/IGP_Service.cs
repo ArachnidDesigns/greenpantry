@@ -25,6 +25,9 @@ public interface IGP_Service
     int addNewProduct(string name, int SubID, double price, double cost, int stockQty, string description);
 
     [OperationContract]
+    int removeProduct(int productId);
+
+    [OperationContract]
     Product getProduct(int Product_ID);
     [OperationContract]
     int UpdateStock(int P_ID, int ItemsPurchased);

@@ -186,6 +186,38 @@ public class GP_Service : IGP_Service
         }
     }
 
+    //Function to delete a product from the product table
+    public int removeProduct(int productId)
+    {
+        var product = (from p in db.Products
+                       where p.ID.Equals(productId)
+                       select p).FirstOrDefault();
+
+        if(product == null)
+        {
+            //product does not exist
+            return 0;
+        }
+        else
+        {
+            db.Products.DeleteOnSubmit(product);
+
+            try
+            {
+                //successfully deleted
+                db.SubmitChanges();
+                return 1;
+            }
+            catch(Exception ex)
+            {
+                //something went wrong when trying to delete product
+                ex.GetBaseException();
+                return -1;
+            }
+        }
+                       
+    }
+
     //Function used to return a product record
     public Product getProduct(int Product_ID)
     {

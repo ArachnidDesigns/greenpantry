@@ -21,6 +21,11 @@ public interface IGP_Service
     int UpdateStock(int P_ID, int ItemsPurchased);
     [OperationContract]
     int AddItemsToShoppingList(int ListID ,int ShoppingList_ID, int Product_ID, int Quantity);
+    [OperationContract]
+    User getUser(int User_ID);
+    [OperationContract]
+    int getAllUsers();
+
 
 
 }

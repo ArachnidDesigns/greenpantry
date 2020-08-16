@@ -141,4 +141,35 @@ public class GP_Service : IGP_Service
             return 0;
         }
     }
+
+    //Function used to get a particular user based on its ID
+    public User getUser(int User_ID)
+    {
+        var UserInfo = (from u in db.Users
+                        where u.ID.Equals(User_ID)
+                        select u).FirstOrDefault();
+
+        if(UserInfo == null)
+        {
+            return null;
+        }else
+        {
+            return UserInfo;
+        }
+    }
+
+    //Function used to find the total number of users for the website
+    public int getAllUsers()
+    {
+        var TotalUsers = 0;
+        var user = (from u in db.Users
+                    select u);
+
+        foreach(User usr in user)
+        {
+            TotalUsers += 1;
+        }
+
+        return TotalUsers;
+    }
 }

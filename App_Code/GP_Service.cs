@@ -77,7 +77,7 @@ public class GP_Service : IGP_Service
         }
     }
 
-    int UpdatePassword(int id, string oldPassword, string newPassword)
+    public int UpdatePassword(int id, string oldPassword, string newPassword)
     {
         var user = getUser(id);
 
@@ -114,7 +114,7 @@ public class GP_Service : IGP_Service
 
     }
 
-    int UpdateUserDetails(int id, string name, string surname, string email, string number)
+    public int UpdateUserDetails(int id, string name, string surname, string email, string number)
     {
         //check if the given email is already in use
         var tempUser = (from u in db.Users

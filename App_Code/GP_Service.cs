@@ -172,4 +172,35 @@ public class GP_Service : IGP_Service
 
         return TotalUsers;
     }
+
+    //Function used to calculate the total profit generated 
+    public double getProfit()
+    {
+        var totalprofit = 0.0;
+        var Difference = 0.0;
+        var CurrentProfit = 0.0;
+
+        //Storing all the ordered items in a variable
+        var OrdItems = (from i in db.OrderItems
+                        select i);
+
+        foreach(OrderItem o in OrdItems)
+        {
+            //getting the current product
+            var CurrentProduct = getProduct(o.ProductID);
+
+            //calculating the difference (Selling price - Cost price)
+            Difference = (double)(CurrentProduct.Price - CurrentProduct.Cost);
+
+            //multiplying the difference with the number of products of a particular type sold
+            CurrentProfit = Difference * o.Qty;
+
+            //Adding the current profit to the total profit
+            totalprofit += CurrentProfit;
+
+        }
+        return totalprofit;
+
+
+    }
 }

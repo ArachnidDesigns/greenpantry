@@ -25,6 +25,9 @@ public interface IGP_Service
     User getUser(int User_ID);
     [OperationContract]
     int getAllUsers();
+    [OperationContract]
+    double getProfit();
+
 
 
 

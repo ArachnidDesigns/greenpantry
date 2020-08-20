@@ -39,6 +39,35 @@ public interface IGP_Service
     int getNumUsers();
     [OperationContract]
     double CalculateProfit();
+    [OperationContract]
+    Address getAddress(int Address_ID);
+    [OperationContract]
+    int AddAdress(string line1, string line2, string suburb, string city, char billing, string type);
+    [OperationContract]
+    int UpdateAddress(int A_ID, string line1, string line2, string suburb, string city, char billing, string type, int Cus_ID);
+    [OperationContract]
+    Card getCard(int id);
+    [OperationContract]
+    int AddCard(int Cus_ID,string description, string name, string number, DateTime expiry);
+    [OperationContract]
+    int UpdateCards(int c_ID, int Cust_ID, string description, string name, string number, DateTime expiry);
+    [OperationContract]
+    Device getDevice(int D_ID);
+    [OperationContract]
+    int AddDevices(string os);
+    [OperationContract]
+    ListItem getListItem(int id);
+    [OperationContract]
+    int AddListItems(int P_ID, int quantity);
+    [OperationContract]
+    int UpdateListItem(int id, int list_ID, int P_ID, int quantity);
+    [OperationContract]
+    OrderItem getOrderedItems(int id);
+
+
+
+
+
 
 
 

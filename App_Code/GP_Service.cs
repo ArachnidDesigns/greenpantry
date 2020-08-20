@@ -145,7 +145,7 @@ public class GP_Service : IGP_Service
                 catch(Exception ex)
                 {
                     ex.GetBaseException();
-                    return 1;
+                    return -1;
                 }
             }
             else
@@ -351,5 +351,323 @@ public class GP_Service : IGP_Service
         return totalprofit;
 
 
+    }
+    //Function used to return the Address
+    public Address getAddress(int Address_ID)
+    {
+        var Addressinfo = (from a in db.Addresses
+                           where a.ID.Equals(Address_ID)
+                           select a).FirstOrDefault();
+
+        if(Addressinfo == null)
+        {
+            return null;
+        }else
+        {
+            return Addressinfo;
+        }
+    }
+    //method used to add a new address into the database
+    public int AddAdress(string line1, string line2, string suburb, string city, char billing, string type)
+    {
+        var address = (from ad in db.Addresses
+                          where ad.Line1.Equals(line1) && ad.Line2.Equals(line2) && ad.Suburb.Equals(suburb)&&ad.City.Equals(city)
+                          select ad).FirstOrDefault();
+
+        if(address != null)
+        {
+            //means that the address already exists
+            return 0;
+        }else
+        {
+            var newAddress = new Address
+            {
+                Line1 = line1,
+                Line2 = line2,
+                Suburb = suburb,
+                City = city,
+                Billing = billing,
+                Type = type
+            };
+
+            db.Addresses.InsertOnSubmit(newAddress);
+            try
+            {
+                db.SubmitChanges();
+                return 1;
+            }catch(Exception e)
+            {
+                e.GetBaseException();
+                return -1;
+            }
+
+        }
+
+    }
+    //method used to update the address
+    public int UpdateAddress(int A_ID, string line1, string line2, string suburb, string city, char billing, string type, int Cus_ID)
+    {
+        var tempAddress = (from ad in db.Addresses
+                           where ad.Line1.Equals(line1) && ad.Line2.Equals(line2) && 
+                           ad.Suburb.Equals(suburb) && ad.City.Equals(city)
+                           && ad.Billing.Equals(billing) && ad.CustomerID.Equals(Cus_ID)
+                           select ad).FirstOrDefault();
+        if(tempAddress != null)
+        {
+            return -1;
+        }
+        else
+        {
+            var address = getAddress(A_ID);
+            if(address != null)
+            {
+                address.Line1 = line1;
+                address.Line2 = line2;
+                address.Suburb = suburb;
+                address.City = city;
+                address.Billing = billing;
+                address.Type = type;
+
+                try
+                {
+                    db.SubmitChanges();
+                    return 1;
+                }
+                catch (Exception ex)
+                {
+                    ex.GetBaseException();
+                    return -2;
+                }
+
+            }else
+            {
+                return 0;
+            }
+        }
+    }
+
+    //Getter method for Cards
+    public Card getCard(int id)
+    {
+        var Cardinfo = (from c in db.Cards
+                        where c.ID.Equals(id)
+                        select c).FirstOrDefault();
+
+        if(Cardinfo == null)
+        {
+            return null;
+        }else
+        {
+            return Cardinfo;
+        }
+    }
+    //Method that allows the customer to add new card
+    public int AddCard(int Cust_ID,string description, string name, string number, DateTime expiry)
+    {
+        var tempCard = (from c in db.Cards
+                        where c.Number.Equals(number)
+                        select c).FirstOrDefault();
+        if(tempCard != null)
+        {
+            //Card already exists
+            return 0;
+        }else
+        {
+            var newCard = new Card
+            {
+                CustomerID = Cust_ID,
+                Description = description,
+                Name = name,
+                Number = number,
+                Expiry = expiry
+
+            };
+            db.Cards.InsertOnSubmit(newCard);
+            try
+            {
+                db.SubmitChanges();
+                return 1;
+            }catch(Exception e)
+            {
+                e.GetBaseException();
+                return -1;
+            }
+        }
+    }
+    //Function used to update card details
+    public int UpdateCards(int c_ID, int Cust_ID, string description, string name, string number, DateTime expiry)
+    {
+        var tempcard = (from c in db.Cards
+                        where c.Number.Equals(number) && c.Description.Equals(description) && c.Name.Equals(name)&&
+                        c.Expiry.Equals(expiry)
+                        select c).FirstOrDefault();
+
+        if(tempcard != null)
+        {
+            //card number is the same
+            return -1;
+        }else
+        {
+            var card = getCard(c_ID);
+            if(card != null)
+            {
+                card.Description = description;
+                card.Name = name;
+                card.Number = number;
+                card.Expiry = expiry;
+
+                try
+                {
+                    db.SubmitChanges();
+                    return 1;
+                }
+                catch (Exception ex)
+                {
+                    ex.GetBaseException();
+                    return -2;
+                }
+
+            }else
+            {
+                return 0;
+            }
+
+
+        }
+    }
+    //Get method for devices
+    public Device getDevice(int D_ID)
+    {
+        var DeviceInfo = (from d in db.Devices
+                          where d.DeviceID.Equals(D_ID)
+                          select d).FirstOrDefault();
+        if(DeviceInfo == null)
+        {
+            return null;
+        }
+        else
+        {
+            return DeviceInfo;
+        }
+    }
+    //Function to add the device to the database
+    public int AddDevices(string os)
+    {
+        var newDevice = new Device
+        {
+            OS = os
+        };
+        db.Devices.InsertOnSubmit(newDevice);
+        try
+        {
+            db.SubmitChanges();
+            return 1;
+        }
+        catch (Exception e)
+        {
+            e.GetBaseException();
+            return -1;
+        }
+
+    }
+
+    //getter for list items
+    public ListItem getListItem(int id)
+    {
+        var listitemInfo = (from l in db.ListItems
+                            where l.ID.Equals(id)
+                            select l).FirstOrDefault();
+
+        if(listitemInfo == null)
+        {
+            return null;
+        }else
+        {
+            return listitemInfo;
+        }
+    }
+
+    //method that allows to add new product to the listitems
+    public int AddListItems(int P_ID, int quantity)
+    {
+        var listinfo = (from l in db.ListItems
+                        where l.ProductID.Equals(P_ID)
+                        select l).FirstOrDefault();
+        //if the product id is the same then increase the quantity only
+        if (listinfo != null)
+        {
+            listinfo.Quantity_ += quantity;
+            return 0;
+        }
+        else
+        {
+            var newItem = new ListItem
+            {
+                ProductID = P_ID
+            };
+            db.ListItems.InsertOnSubmit(newItem);
+            try
+            {
+                db.SubmitChanges();
+                return 1;
+            }
+            catch (Exception e)
+            {
+                e.GetBaseException();
+                return -1;
+            }
+
+
+        }
+
+    }
+    //method that allows you to update list items
+    public int UpdateListItem(int id, int list_ID, int P_ID, int quantity)
+    {
+        var tempitem = (from l in db.ListItems
+                        where l.ProductID.Equals(P_ID) && l.Quantity_.Equals(quantity)
+                        select l).FirstOrDefault();
+        if(tempitem != null)
+        {
+            //meaning that the product is already on the list
+            return 0;
+        }else
+        {
+            var listitem = getListItem(id);
+            if(listitem != null)
+            {
+                listitem.ProductID = P_ID;
+                listitem.Quantity_ = quantity;
+                try
+                {
+                    db.SubmitChanges();
+                    return 1;
+                }
+                catch (Exception ex)
+                {
+                    ex.GetBaseException();
+                    return -2;
+                }
+
+            }
+            else
+            {
+                return -1;
+            }
+        }
+    }
+    //Get method for orderedItems
+    public OrderItem getOrderedItems(int id)
+    {
+        var ordereditems = (from o in db.OrderItems
+                            where o.ID.Equals(id)
+                            select o).FirstOrDefault();
+        if(ordereditems == null)
+        {
+            return null;
+        }else
+        {
+            return ordereditems;
+        }
     }
 }

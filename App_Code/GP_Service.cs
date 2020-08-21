@@ -596,7 +596,7 @@ public class GP_Service : IGP_Service
         //if the product id is the same then increase the quantity only
         if (listinfo != null)
         {
-            listinfo.Quantity_ += quantity;
+           // listinfo.Quantity_ += quantity;
             return 0;
         }
         else
@@ -669,5 +669,35 @@ public class GP_Service : IGP_Service
         {
             return ordereditems;
         }
+    }
+    //Method used to get all the products present within a Category
+    public List<Product> getProductByCat(int Cat_ID)
+    {
+        dynamic subcategories = (from s in db.SubCategories
+                                 where s.CategoryID.Equals(Cat_ID)
+                                 select s);
+        var ProductList = new List<Product>();
+
+        foreach (SubCategory sb in subcategories)
+        {
+            dynamic products = (from p in db.Products
+                                where p.SubCategoryID.Equals(sb.SubID)
+                                select p);
+           
+
+            ProductList.Add(products);
+        }
+        return ProductList;
+    }
+    //Method used to return all the products present in a sub category
+    public List<Product> getProductBySubCat(int Sub_ID)
+    {
+        dynamic product = (from p in db.Products
+                           where p.SubCategoryID.Equals(Sub_ID)
+                           select p);
+        var ProductList = new List<Product>();
+        ProductList.Add(product);
+
+        return ProductList;
     }
 }

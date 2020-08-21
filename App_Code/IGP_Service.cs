@@ -63,6 +63,10 @@ public interface IGP_Service
     int UpdateListItem(int id, int list_ID, int P_ID, int quantity);
     [OperationContract]
     OrderItem getOrderedItems(int id);
+    [OperationContract]
+    List<Product> getProductByCat(int Cat_ID);
+    [OperationContract]
+    List<Product> getProductBySubCat(int Sub_ID);
 
 
 

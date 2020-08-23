@@ -25,6 +25,12 @@ public interface IGP_Service
     int addNewProduct(string name, int SubID, double price, double cost, int stockQty, string description);
 
     [OperationContract]
+    int updateProduct(int id, string name, int SubId, double price, double cost, string description);
+
+    [OperationContract]
+    List<Product> getAllProducts();
+
+    [OperationContract]
     int removeProduct(int productId);
 
     [OperationContract]
@@ -44,6 +50,9 @@ public interface IGP_Service
 
     [OperationContract]
     List<Order> getAllOrders();
+
+    [OperationContract]
+    List<Order> getAllCustomerOrders(int customerId);
 
     [OperationContract]
     Product getProduct(int Product_ID);

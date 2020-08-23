@@ -186,6 +186,61 @@ public class GP_Service : IGP_Service
         }
     }
 
+    //Function to update product specifics
+    public int updateProduct(int id, string name, int SubId, double price, double cost, string description)
+    {
+        var product = getProduct(id);
+
+        if(product == null)
+        {
+            //invalid product id
+            return 0;
+        }
+        else
+        {
+            product.Name = name;
+            product.SubCategoryID = SubId;
+            product.Price = (decimal)price;
+            product.Cost = (decimal)cost;
+            product.Description = description;
+
+            try
+            {
+                //changes successfully submitted
+                db.SubmitChanges();
+                return 1;
+            }
+            catch(Exception ex)
+            {
+                //Somethinf went wrong
+                ex.GetBaseException();
+                return -1;
+            }
+        }
+    }
+
+    public List<Product> getAllProducts()
+    {
+        dynamic productsList = new List<Product>();
+
+        dynamic products = (from p in db.Products
+                            select p);
+
+        if(products == null)
+        {
+            return null;
+        }
+        else
+        {
+            foreach(Product pr in products)
+            {
+                productsList.add(pr);
+            }
+        }
+
+        return productsList;
+    }
+
     //Function to delete a product from the product table
     public int removeProduct(int productId)
     {
@@ -362,6 +417,40 @@ public class GP_Service : IGP_Service
 
         return ordersList;
     }
+
+    //Function that returns a list of orders linked to a specific customer
+    public List<Order> getAllCustomerOrders(int customerId)
+    {
+        //check that the provided customer id is valid
+        var checkCus = (from c in db.Customers
+                        where c.CustomerID.Equals(customerId)
+                        select c).FirstOrDefault();
+       
+        if(checkCus == null)
+        {
+            return null;
+        }
+        else
+        {
+            dynamic customersOrders = new List<Order>();
+
+            //get all the orders linked to the customer
+            dynamic ordersList = (from o in db.Orders
+                                  where o.CustomerID.Equals(customerId)
+                                  select o);
+
+            if(ordersList != null)
+            {
+                foreach(Order o in ordersList)
+                {
+                    customersOrders.add(o);
+                }
+            }
+            return customersOrders;
+        }
+    }
+
+
 
     //Function used to return a product record
     public Product getProduct(int Product_ID)

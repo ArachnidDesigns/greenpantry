@@ -218,6 +218,151 @@ public class GP_Service : IGP_Service
                        
     }
 
+    //Function that returns all the Product Categories
+    public List<ProductCategory> getAllCategories()
+    {
+        dynamic categories = new List<ProductCategory>();
+
+        dynamic cats = (from c in db.ProductCategories
+                        select c);
+
+        foreach(ProductCategory pc in cats)
+        {
+            categories.add(pc);
+        }
+
+        return categories;
+    }
+
+    //Function that returns all the Product SubCategories
+    public List<ProductCategory> getAllSubCategories()
+    {
+        dynamic subcategories = new List<SubCategory>();
+
+        dynamic subs = (from s in db.SubCategories
+                        select s);
+
+        foreach (SubCategory sc in subs)
+        {
+            subcategories.add(sc);
+        }
+
+        return subcategories;
+    }
+
+    public Order getOrder(int customerId, DateTime datePlaced)
+    {
+        var order = (from o in db.Orders
+                     where o.CustomerID.Equals(customerId) && o.Date.Equals(datePlaced)
+                     select o).FirstOrDefault();
+
+        if(order == null)
+        {
+            return null;
+        }
+        else
+        {
+            return order;
+        }
+
+    }
+
+    public int addOrder(int customerId, string status, DateTime datePlaced, DateTime deliverDate, string message)
+    {
+        //check that a valid customer id is given
+        var checkCustomerId = (from c in db.Customers
+                               where c.CustomerID.Equals(customerId)
+                               select c).FirstOrDefault();
+
+        if (checkCustomerId != null)
+        {
+            var newOrder = new Order
+            {
+                CustomerID = customerId,
+                Status = status,
+                Date = datePlaced,
+                DeliveryDatetime = deliverDate,
+                GiftMessage = message
+            };
+            db.Orders.InsertOnSubmit(newOrder);
+
+            try
+            {
+                //successfully submitted
+                db.SubmitChanges();
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                //something went wrong
+                ex.GetBaseException();
+                return -1;
+            }
+        }
+        else
+        {
+            //customer id provided is not valid
+            return 0;
+        }
+           
+    }
+
+    //Function that can update order status, delivery date and gift message
+   public int UpdateOrder(int customerId, string status, DateTime datePlaced, DateTime deliverDate, string message)
+    {
+        var order = (from o in db.Orders
+                     where o.CustomerID.Equals(customerId) && o.Date.Equals(datePlaced)
+                     select o).FirstOrDefault();
+
+        if(order == null)
+        {
+            //this order doesn't exist
+            return 0;
+        }
+        else
+        {
+            order.Status = status;
+            order.DeliveryDatetime = deliverDate;
+            order.GiftMessage = message;
+
+            try
+            {
+                //changes successfully submitted
+                db.SubmitChanges();
+                return 1;
+            }
+            catch(Exception ex)
+            {
+                ex.GetBaseException();
+                return -1;
+            }
+        }
+    }
+
+
+    //Function that returns all orders in db
+    public List<Order> getAllOrders()
+    {
+        dynamic ordersList = new List<Order>();
+
+        dynamic allOrders = (from o in db.Orders
+                             select o);
+
+        if(allOrders == null)
+        {
+            return null;
+        }
+        else
+        {
+            foreach(Order ord in allOrders)
+            {
+                ordersList.add(ord);
+            }
+        }
+
+        return ordersList;
+    }
+
     //Function used to return a product record
     public Product getProduct(int Product_ID)
     {

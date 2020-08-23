@@ -28,6 +28,24 @@ public interface IGP_Service
     int removeProduct(int productId);
 
     [OperationContract]
+    List<ProductCategory> getAllCategories();
+
+    [OperationContract]
+    List<ProductCategory> getAllSubCategories();
+
+    [OperationContract]
+    Order getOrder(int customerId, DateTime datePlaced);
+
+    [OperationContract]
+    int addOrder(int customerId, string status, DateTime datePlaced, DateTime deliverDate, string message);
+
+    [OperationContract]
+    int UpdateOrder(int customerId, string status, DateTime datePlaced, DateTime deliverDate, string message);
+
+    [OperationContract]
+    List<Order> getAllOrders();
+
+    [OperationContract]
     Product getProduct(int Product_ID);
     [OperationContract]
     int UpdateStock(int P_ID, int ItemsPurchased);

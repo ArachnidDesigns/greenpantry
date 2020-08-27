@@ -230,7 +230,7 @@ public class GP_Service : IGP_Service
         {
             foreach(Product pr in products)
             {
-                productsList.add(pr);
+                productsList.Add(pr);
             }
         }
 
@@ -279,7 +279,7 @@ public class GP_Service : IGP_Service
 
         foreach(ProductCategory pc in cats)
         {
-            categories.add(pc);
+            categories.Add(pc);
         }
 
         return categories;
@@ -295,7 +295,7 @@ public class GP_Service : IGP_Service
 
         foreach (SubCategory sc in subs)
         {
-            subcategories.add(sc);
+            subcategories.Add(sc);
         }
 
         return subcategories;
@@ -407,7 +407,7 @@ public class GP_Service : IGP_Service
         {
             foreach(Invoice ord in allOrders)
             {
-                ordersList.add(ord);
+                ordersList.Add(ord);
             }
         }
 
@@ -439,7 +439,7 @@ public class GP_Service : IGP_Service
             {
                 foreach(Invoice o in ordersList)
                 {
-                    customersOrders.add(o);
+                    customersOrders.Add(o);
                 }
             }
             return customersOrders;

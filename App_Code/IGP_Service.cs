@@ -97,6 +97,18 @@ public interface IGP_Service
     List<Product> getProductByCat(int Cat_ID);
     [OperationContract]
     List<Product> getProductBySubCat(int Sub_ID);
+    [OperationContract]
+    double profitPerProduct(int P_ID);
+
+    [OperationContract]
+    double profitPerSubCat(int S_ID);
+
+    [OperationContract]
+    double profitPerCat(int C_ID);
+
+    [OperationContract]
+    SubCategory getSubCat(int S_ID);
+
 
 
 

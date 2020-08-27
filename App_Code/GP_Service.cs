@@ -945,4 +945,75 @@ public class GP_Service : IGP_Service
 
         return ProductList;
     }
+
+    public double profitPerProduct(int P_ID)
+    {
+        double profit = 0.0;
+        double totalPrice = 0.0;
+        double totalCost = 0.0;
+        dynamic product = (from p in db.InvoiceLines
+                           where p.ID.Equals(P_ID)
+                           select p);
+        dynamic Quantity = (from q in db.InvoiceLines
+                            where q.ID.Equals(P_ID)
+                            select q.Qty);
+
+        foreach(Product p in product)
+        {
+            totalCost = (double)(p.Cost * Quantity);
+            totalPrice = (double)(p.Price * Quantity);
+            profit += totalPrice - totalCost;
+
+        }
+        return profit;
+    }
+
+    double profitPerSubCat(int S_ID)
+    {
+        double profit = 0.0;
+        dynamic product = (from p in db.InvoiceLines
+                           select p);
+        foreach(Product p in product)
+        {
+            if(p.SubCategoryID.Equals(S_ID))
+            {
+                profit += profitPerProduct(p.ID);
+            }
+        }
+        return profit;
+    }
+
+    double profitPerCat(int C_ID)
+    {
+        double profit = 0.0;
+        dynamic product = (from p in db.InvoiceLines
+                           select p);
+        foreach(Product p in product)
+        {
+            dynamic subcat = getSubCat(p.SubCategoryID);
+            foreach(SubCategory s in subcat)
+            {
+                profit += profitPerSubCat(s.SubID);
+            }
+        }
+        return profit;
+    }
+
+    SubCategory getSubCat(int S_ID)
+    {
+        dynamic subcat = (from s in db.SubCategories
+                          where s.SubID.Equals(S_ID)
+                          select s).FirstOrDefault();
+
+        if(subcat == null)
+        {
+            return null;
+        }else
+        {
+            return subcat;
+        }
+
+    }
+
+
 }

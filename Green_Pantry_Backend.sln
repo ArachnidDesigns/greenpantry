@@ -7,31 +7,42 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Green_Pantry_Backend", ".",
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.7.2"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_53900"
-		Debug.AspNetCompiler.PhysicalPath = "..\Green_Pantry_Backend\"
+		Debug.AspNetCompiler.PhysicalPath = "..\greenpantry\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_53900\"
 		Debug.AspNetCompiler.Updateable = "true"
 		Debug.AspNetCompiler.ForceOverwrite = "true"
 		Debug.AspNetCompiler.FixedNames = "false"
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.VirtualPath = "/localhost_53900"
-		Release.AspNetCompiler.PhysicalPath = "..\Green_Pantry_Backend\"
+		Release.AspNetCompiler.PhysicalPath = "..\greenpantry\"
 		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_53900\"
 		Release.AspNetCompiler.Updateable = "true"
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
 		VWDPort = "53900"
-		SlnRelativePath = "..\Green_Pantry_Backend\"
+		SlnRelativePath = "..\greenpantry\"
 		DefaultWebSiteLanguage = "Visual C#"
 	EndProjectSection
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "GP_Database_Project", "GP_Database_Project\GP_Database_Project.sqlproj", "{82660800-F72A-45FA-9BE7-9EF149FBE079}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{85DEDD32-D30C-4987-B5AD-80F627A3E56C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{85DEDD32-D30C-4987-B5AD-80F627A3E56C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85DEDD32-D30C-4987-B5AD-80F627A3E56C}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{85DEDD32-D30C-4987-B5AD-80F627A3E56C}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{82660800-F72A-45FA-9BE7-9EF149FBE079}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82660800-F72A-45FA-9BE7-9EF149FBE079}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82660800-F72A-45FA-9BE7-9EF149FBE079}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{82660800-F72A-45FA-9BE7-9EF149FBE079}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82660800-F72A-45FA-9BE7-9EF149FBE079}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82660800-F72A-45FA-9BE7-9EF149FBE079}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

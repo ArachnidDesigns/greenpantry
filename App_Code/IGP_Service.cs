@@ -13,7 +13,7 @@ public interface IGP_Service
     int login(string email, string password);
 
     [OperationContract]
-    int Register(string name, string surname, string email, string password, string number);
+    int Register(string name, string surname, string email, string password, string number, string status, DateTime date, string userType);
 
     [OperationContract]
     int UpdateUserDetails(int id, string name, string surname, string email, string number);
@@ -22,10 +22,10 @@ public interface IGP_Service
     int UpdatePassword(int id, string oldPassword, string newPassword);
 
     [OperationContract]
-    int addNewProduct(string name, int SubID, double price, double cost, int stockQty, string description);
+    int addNewProduct(string name, int SubID, double price, double cost, int stockQty, string imgLocation);
 
     [OperationContract]
-    int updateProduct(int id, string name, int SubId, double price, double cost, string description);
+    int updateProduct(int id, string name, int SubId, double price, double cost, string imgLocation);
 
     [OperationContract]
     List<Product> getAllProducts();
@@ -40,7 +40,7 @@ public interface IGP_Service
     List<ProductCategory> getAllSubCategories();
 
     [OperationContract]
-    Order getOrder(int customerId, DateTime datePlaced);
+    Invoice getOrder(int customerId, DateTime datePlaced);
 
     [OperationContract]
     int addOrder(int customerId, string status, DateTime datePlaced, DateTime deliverDate, string message);
@@ -49,10 +49,13 @@ public interface IGP_Service
     int UpdateOrder(int customerId, string status, DateTime datePlaced, DateTime deliverDate, string message);
 
     [OperationContract]
-    List<Order> getAllOrders();
+    List<Invoice> getAllOrders();
 
     [OperationContract]
-    List<Order> getAllCustomerOrders(int customerId);
+    List<Invoice> getAllCustomerOrders(int customerId);
+
+    [OperationContract]
+    int getUsersPerDay(DateTime day);
 
     [OperationContract]
     Product getProduct(int Product_ID);
@@ -89,7 +92,7 @@ public interface IGP_Service
     [OperationContract]
     int UpdateListItem(int id, int list_ID, int P_ID, int quantity);
     [OperationContract]
-    OrderItem getOrderedItems(int id);
+    InvoiceLine getOrderedItems(int id);
     [OperationContract]
     List<Product> getProductByCat(int Cat_ID);
     [OperationContract]

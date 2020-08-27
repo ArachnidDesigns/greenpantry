@@ -30,7 +30,7 @@ public class GP_Service : IGP_Service
         }
     }
 
-    public int Register(string name, string surname, string email, string password, string number)
+    public int Register(string name, string surname, string email, string password, string number, string status, DateTime date, string userType)
     {
         //check if a user with the given email exists
         var user = (from u in db.Users
@@ -46,16 +46,12 @@ public class GP_Service : IGP_Service
                 Surname = surname,
                 Email = email,
                 Password = password,
-                PhoneNumber = number
+                PhoneNumber = number,
+                Status = status,
+                DateRegistered = date,
+                UserType = userType
             };
             db.Users.InsertOnSubmit(newUser);
-
-            var c = new Customer
-            {
-                CustomerID = newUser.ID,
-                Points = 0
-            };
-            db.Customers.InsertOnSubmit(c);
 
             try
             {
@@ -158,7 +154,7 @@ public class GP_Service : IGP_Service
 
     }
 
-    public int addNewProduct(string name, int SubID, double price, double cost, int stockQty, string description)
+    public int addNewProduct(string name, int SubID, double price, double cost, int stockQty, string imgLocation)
     {
         var newProduct = new Product
         {
@@ -167,7 +163,7 @@ public class GP_Service : IGP_Service
             Price = (decimal)price,
             Cost = (decimal) cost,
             StockOnHand = stockQty,
-            Description = description
+            Image_Location = imgLocation
         };
 
         db.Products.InsertOnSubmit(newProduct);
@@ -187,7 +183,7 @@ public class GP_Service : IGP_Service
     }
 
     //Function to update product specifics
-    public int updateProduct(int id, string name, int SubId, double price, double cost, string description)
+    public int updateProduct(int id, string name, int SubId, double price, double cost, string imgLocation)
     {
         var product = getProduct(id);
 
@@ -202,7 +198,7 @@ public class GP_Service : IGP_Service
             product.SubCategoryID = SubId;
             product.Price = (decimal)price;
             product.Cost = (decimal)cost;
-            product.Description = description;
+            product.Image_Location = imgLocation;
 
             try
             {
@@ -305,9 +301,9 @@ public class GP_Service : IGP_Service
         return subcategories;
     }
 
-    public Order getOrder(int customerId, DateTime datePlaced)
+    public Invoice getOrder(int customerId, DateTime datePlaced)
     {
-        var order = (from o in db.Orders
+        var order = (from o in db.Invoices
                      where o.CustomerID.Equals(customerId) && o.Date.Equals(datePlaced)
                      select o).FirstOrDefault();
 
@@ -325,21 +321,21 @@ public class GP_Service : IGP_Service
     public int addOrder(int customerId, string status, DateTime datePlaced, DateTime deliverDate, string message)
     {
         //check that a valid customer id is given
-        var checkCustomerId = (from c in db.Customers
-                               where c.CustomerID.Equals(customerId)
+        var checkCustomerId = (from c in db.Users
+                               where c.ID.Equals(customerId)
                                select c).FirstOrDefault();
 
         if (checkCustomerId != null)
         {
-            var newOrder = new Order
+            var newOrder = new Invoice
             {
                 CustomerID = customerId,
                 Status = status,
                 Date = datePlaced,
                 DeliveryDatetime = deliverDate,
-                GiftMessage = message
+                Notes = message
             };
-            db.Orders.InsertOnSubmit(newOrder);
+            db.Invoices.InsertOnSubmit(newOrder);
 
             try
             {
@@ -365,7 +361,7 @@ public class GP_Service : IGP_Service
     //Function that can update order status, delivery date and gift message
    public int UpdateOrder(int customerId, string status, DateTime datePlaced, DateTime deliverDate, string message)
     {
-        var order = (from o in db.Orders
+        var order = (from o in db.Invoices
                      where o.CustomerID.Equals(customerId) && o.Date.Equals(datePlaced)
                      select o).FirstOrDefault();
 
@@ -378,7 +374,7 @@ public class GP_Service : IGP_Service
         {
             order.Status = status;
             order.DeliveryDatetime = deliverDate;
-            order.GiftMessage = message;
+            order.Notes = message;
 
             try
             {
@@ -396,11 +392,11 @@ public class GP_Service : IGP_Service
 
 
     //Function that returns all orders in db
-    public List<Order> getAllOrders()
+    public List<Invoice> getAllOrders()
     {
-        dynamic ordersList = new List<Order>();
+        dynamic ordersList = new List<Invoice>();
 
-        dynamic allOrders = (from o in db.Orders
+        dynamic allOrders = (from o in db.Invoices
                              select o);
 
         if(allOrders == null)
@@ -409,7 +405,7 @@ public class GP_Service : IGP_Service
         }
         else
         {
-            foreach(Order ord in allOrders)
+            foreach(Invoice ord in allOrders)
             {
                 ordersList.add(ord);
             }
@@ -419,11 +415,11 @@ public class GP_Service : IGP_Service
     }
 
     //Function that returns a list of orders linked to a specific customer
-    public List<Order> getAllCustomerOrders(int customerId)
+    public List<Invoice> getAllCustomerOrders(int customerId)
     {
         //check that the provided customer id is valid
-        var checkCus = (from c in db.Customers
-                        where c.CustomerID.Equals(customerId)
+        var checkCus = (from c in db.Users
+                        where c.ID.Equals(customerId)
                         select c).FirstOrDefault();
        
         if(checkCus == null)
@@ -432,16 +428,16 @@ public class GP_Service : IGP_Service
         }
         else
         {
-            dynamic customersOrders = new List<Order>();
+            dynamic customersOrders = new List<Invoice>();
 
             //get all the orders linked to the customer
-            dynamic ordersList = (from o in db.Orders
+            dynamic ordersList = (from o in db.Invoices
                                   where o.CustomerID.Equals(customerId)
                                   select o);
 
             if(ordersList != null)
             {
-                foreach(Order o in ordersList)
+                foreach(Invoice o in ordersList)
                 {
                     customersOrders.add(o);
                 }
@@ -450,6 +446,21 @@ public class GP_Service : IGP_Service
         }
     }
 
+    public int getUsersPerDay(DateTime day)
+    {
+        int totalRegistered = 0;
+
+        dynamic users = (from u in db.Users
+                     where u.DateRegistered.Equals(day) && u.UserType.Equals("customer")
+                     select u);
+        
+        foreach(User u in users)
+        {
+            totalRegistered++;
+        }
+
+        return totalRegistered;
+    }
 
 
     //Function used to return a product record
@@ -563,10 +574,10 @@ public class GP_Service : IGP_Service
         var CurrentProfit = 0.0;
 
         //Storing all the ordered items in a variable
-        var OrdItems = (from i in db.OrderItems
+        var OrdItems = (from i in db.InvoiceLines
                         select i);
 
-        foreach(OrderItem o in OrdItems)
+        foreach(InvoiceLine o in OrdItems)
         {
              CurrentProfit = 0.0;
             //getting the current product
@@ -891,9 +902,9 @@ public class GP_Service : IGP_Service
         }
     }
     //Get method for orderedItems
-    public OrderItem getOrderedItems(int id)
+    public InvoiceLine getOrderedItems(int id)
     {
-        var ordereditems = (from o in db.OrderItems
+        var ordereditems = (from o in db.InvoiceLines
                             where o.ID.Equals(id)
                             select o).FirstOrDefault();
         if(ordereditems == null)

@@ -279,7 +279,14 @@ public class GP_Service : IGP_Service
 
         foreach(ProductCategory pc in cats)
         {
-            categories.Add(pc);
+
+            var tempCat = new ProductCategory
+            {
+                ID = pc.ID,
+                Name = pc.Name
+            };
+
+            categories.Add(tempCat);
         }
 
         return categories;

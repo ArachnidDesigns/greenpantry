@@ -302,7 +302,14 @@ public class GP_Service : IGP_Service
 
         foreach (SubCategory sc in subs)
         {
-            subcategories.Add(sc);
+            var tempSubCat = new SubCategory
+            {
+                SubID = sc.SubID,
+                Name = sc.Name,
+                CategoryID = sc.CategoryID
+            };
+
+            subcategories.Add(tempSubCat);
         }
 
         return subcategories;

@@ -942,12 +942,26 @@ public class GP_Service : IGP_Service
             dynamic products = (from p in db.Products
                                 where p.SubCategoryID.Equals(sb.SubID)
                                 select p);
-           
 
-            ProductList.Add(products);
+            foreach(Product pr in products)
+            {
+                var tempProduct = new Product
+                {
+                    ID = pr.ID,
+                    Name = pr.Name,
+                    SubCategoryID = pr.SubCategoryID,
+                    Price = pr.Price,
+                    Cost = pr.Cost,
+                    StockOnHand = pr.StockOnHand,
+                    Image_Location = pr.Image_Location
+                };
+
+                ProductList.Add(products);
+            }  
         }
         return ProductList;
     }
+
     //Method used to return all the products present in a sub category
     public List<Product> getProductBySubCat(int Sub_ID)
     {

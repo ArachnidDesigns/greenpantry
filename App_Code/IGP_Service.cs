@@ -37,7 +37,7 @@ public interface IGP_Service
     List<ProductCategory> getAllCategories();
 
     [OperationContract]
-    List<ProductCategory> getAllSubCategories();
+    List<SubCategory> getAllSubCategories();
 
     [OperationContract]
     Invoice getOrder(int customerId, DateTime datePlaced);

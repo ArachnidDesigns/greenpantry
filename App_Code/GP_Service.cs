@@ -286,7 +286,7 @@ public class GP_Service : IGP_Service
     }
 
     //Function that returns all the Product SubCategories
-    public List<ProductCategory> getAllSubCategories()
+    public List<SubCategory> getAllSubCategories()
     {
         dynamic subcategories = new List<SubCategory>();
 
@@ -968,7 +968,7 @@ public class GP_Service : IGP_Service
         return profit;
     }
 
-    double profitPerSubCat(int S_ID)
+    public double profitPerSubCat(int S_ID)
     {
         double profit = 0.0;
         dynamic product = (from p in db.InvoiceLines
@@ -983,7 +983,7 @@ public class GP_Service : IGP_Service
         return profit;
     }
 
-    double profitPerCat(int C_ID)
+    public double profitPerCat(int C_ID)
     {
         double profit = 0.0;
         dynamic product = (from p in db.InvoiceLines
@@ -999,7 +999,7 @@ public class GP_Service : IGP_Service
         return profit;
     }
 
-    SubCategory getSubCat(int S_ID)
+    public SubCategory getSubCat(int S_ID)
     {
         dynamic subcat = (from s in db.SubCategories
                           where s.SubID.Equals(S_ID)

@@ -956,7 +956,7 @@ public class GP_Service : IGP_Service
                     Image_Location = pr.Image_Location
                 };
 
-                ProductList.Add(products);
+                ProductList.Add(tempProduct);
             }  
         }
         return ProductList;
@@ -969,7 +969,22 @@ public class GP_Service : IGP_Service
                            where p.SubCategoryID.Equals(Sub_ID)
                            select p);
         var ProductList = new List<Product>();
-        ProductList.Add(product);
+
+        foreach(Product pr in product)
+        {
+            var tempPro = new Product
+            {
+                ID = pr.ID,
+                Name = pr.Name,
+                SubCategoryID = pr.SubCategoryID,
+                Price = pr.Price,
+                Cost = pr.Cost,
+                StockOnHand = pr.StockOnHand,
+                Image_Location = pr.Image_Location
+            };
+
+            ProductList.Add(tempPro);
+        }
 
         return ProductList;
     }

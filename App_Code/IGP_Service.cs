@@ -115,4 +115,7 @@ public interface IGP_Service
     [OperationContract]
     List<SubCategory> getSubCatPerCat(int c_ID);
 
+    [OperationContract]
+    decimal calcProductVAT(int P_ID);
+
 }

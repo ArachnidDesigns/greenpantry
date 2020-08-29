@@ -1105,4 +1105,17 @@ public class GP_Service : IGP_Service
         }
         return SubList;
     }
+
+    public decimal calcProductVAT(int P_ID)
+    {
+        decimal VAT = 0;
+
+        var product = (from p in db.Products
+                       where p.ID.Equals(P_ID)
+                       select p).FirstOrDefault();
+
+        VAT = product.Price * (decimal)0.15;
+
+        return VAT;
+    }
 }

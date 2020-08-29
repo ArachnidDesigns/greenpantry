@@ -1048,15 +1048,61 @@ public class GP_Service : IGP_Service
                           where s.SubID.Equals(S_ID)
                           select s).FirstOrDefault();
 
-        if(subcat == null)
+        if (subcat == null)
         {
             return null;
-        }else
-        {
-            return subcat;
         }
-
+        else
+        {
+            var tempsub = new SubCategory
+            {
+                SubID = subcat.SubID,
+                Name = subcat.Name,
+                CategoryID = subcat.CategoryID
+            };
+            return tempsub;
+        }
     }
 
+    public ProductCategory getCat(int C_ID)
+    {
+        dynamic cat = (from c in db.ProductCategories
+                          where c.ID.Equals(C_ID)
+                          select c).FirstOrDefault();
 
+        if (cat == null)
+        {
+            return null;
+        }
+        else
+        {
+            var tempcat = new ProductCategory
+            {
+                Name = cat.Name,
+                ID = cat.ID
+            };
+            return tempcat;
+        }
+    }
+
+    public List<SubCategory> getSubCatPerCat(int c_ID)
+    {
+        dynamic subcat = (from s in db.SubCategories
+                          where s.CategoryID.Equals(c_ID)
+                          select s);
+
+        var SubList = new List<SubCategory>();
+
+        foreach (SubCategory sc in subcat)
+        {
+            var tempsub = new SubCategory
+            {
+                SubID = sc.SubID,
+                Name = sc.Name,
+                CategoryID = sc.CategoryID
+            };
+            SubList.Add(tempsub);
+        }
+        return SubList;
+    }
 }

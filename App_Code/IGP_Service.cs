@@ -108,14 +108,11 @@ public interface IGP_Service
 
     [OperationContract]
     SubCategory getSubCat(int S_ID);
+    
+    [OperationContract]
+    ProductCategory getCat(int C_ID);
 
-
-
-
-
-
-
-
-
+    [OperationContract]
+    List<SubCategory> getSubCatPerCat(int c_ID);
 
 }

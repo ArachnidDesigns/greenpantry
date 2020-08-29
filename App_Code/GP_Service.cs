@@ -627,7 +627,7 @@ public class GP_Service : IGP_Service
         }
     }
     //method used to add a new address into the database
-    public int AddAdress(string line1, string line2, string suburb, string city, char billing, string type)
+    public int AddAdress(string line1, string line2, string suburb, string city, char billing, string type , int C_ID)
     {
         var address = (from ad in db.Addresses
                           where ad.Line1.Equals(line1) && ad.Line2.Equals(line2) && ad.Suburb.Equals(suburb)&&ad.City.Equals(city)
@@ -646,7 +646,8 @@ public class GP_Service : IGP_Service
                 Suburb = suburb,
                 City = city,
                 Billing = billing,
-                Type = type
+                Type = type,
+                CustomerID = C_ID
             };
 
             db.Addresses.InsertOnSubmit(newAddress);

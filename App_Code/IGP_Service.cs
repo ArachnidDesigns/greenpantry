@@ -13,7 +13,7 @@ public interface IGP_Service
     int login(string email, string password);
 
     [OperationContract]
-    int Register(string name, string surname, string email, string password, string number, string status, DateTime date, string userType);
+    int Register(string name, string surname, string email, string password, string status, DateTime date, string userType);
 
     [OperationContract]
     int UpdateUserDetails(int id, string name, string surname, string email, string number);

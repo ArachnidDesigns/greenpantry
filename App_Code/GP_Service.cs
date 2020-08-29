@@ -30,7 +30,7 @@ public class GP_Service : IGP_Service
         }
     }
 
-    public int Register(string name, string surname, string email, string password, string number, string status, DateTime date, string userType)
+    public int Register(string name, string surname, string email, string password, string status, DateTime date, string userType)
     {
         //check if a user with the given email exists
         var user = (from u in db.Users
@@ -46,7 +46,6 @@ public class GP_Service : IGP_Service
                 Surname = surname,
                 Email = email,
                 Password = password,
-                PhoneNumber = number,
                 Status = status,
                 DateRegistered = date,
                 UserType = userType

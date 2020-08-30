@@ -30,7 +30,7 @@ public class GP_Service : IGP_Service
         }
     }
 
-    public int Register(string name, string surname, string email, string password, string number, string status, DateTime date, string userType)
+    public int Register(string name, string surname, string email, string password, string status, DateTime date, string userType)
     {
         //check if a user with the given email exists
         var user = (from u in db.Users
@@ -46,7 +46,6 @@ public class GP_Service : IGP_Service
                 Surname = surname,
                 Email = email,
                 Password = password,
-                PhoneNumber = number,
                 Status = status,
                 DateRegistered = date,
                 UserType = userType
@@ -561,19 +560,7 @@ public class GP_Service : IGP_Service
             return null;
         }else
         {
-            var tempuser = new User
-            {
-                ID = UserInfo.ID,
-                Name = UserInfo.Name,
-                Email = UserInfo.Email,
-                Password = UserInfo.Password,
-                PhoneNumber = UserInfo.PhoneNumber,
-                Status = UserInfo.Status,
-                DateRegistered = UserInfo.DateRegistered,
-                UserType = UserInfo.UserType
-
-            };
-            return tempuser;
+            return UserInfo;
         }
     }
 
@@ -639,17 +626,17 @@ public class GP_Service : IGP_Service
         }
     }
     //method used to add a new address into the database
-    public int AddAdress(string line1, string line2, string suburb, string city, char billing, string type , int C_ID , string Province)
+    public int AddAdress(string line1, string line2, string suburb, string city, char billing, string type , int C_ID)
     {
-        /*var address = (from ad in db.Addresses
+        var address = (from ad in db.Addresses
                           where ad.Line1.Equals(line1) && ad.Line2.Equals(line2) && ad.Suburb.Equals(suburb)&&ad.City.Equals(city)
-                          select ad).FirstOrDefault();*/
+                          select ad).FirstOrDefault();
 
-        /*if(address != null)
+        if(address != null)
         {
             //means that the address already exists
             return 0;
-        }else */
+        }else
         {
             var newAddress = new Address
             {
@@ -659,8 +646,7 @@ public class GP_Service : IGP_Service
                 City = city,
                 Billing = billing,
                 Type = type,
-                CustomerID = C_ID,
-                Province = Province
+                CustomerID = C_ID
             };
 
             db.Addresses.InsertOnSubmit(newAddress);
@@ -1062,64 +1048,74 @@ public class GP_Service : IGP_Service
                           where s.SubID.Equals(S_ID)
                           select s).FirstOrDefault();
 
-        if(subcat == null)
+        if (subcat == null)
         {
             return null;
-        }else
-        {
-            return subcat;
         }
-
-    }
-
-    public int addInvoice(string status, DateTime date, DateTime deliveryDate, string notes , int Cus_ID)
-    {
-
-        var newInvoice = new Invoice
+        else
         {
-            Status = status,
-            Date = date,
-            DeliveryDatetime = deliveryDate,
-            Notes = notes,
-            CustomerID = Cus_ID
-        };
-
-        db.Invoices.InsertOnSubmit(newInvoice);
-        try
-        {
-            db.SubmitChanges();
-            return 1;
-        }
-        catch (Exception e)
-        {
-            e.GetBaseException();
-            return -1;
-        }
-    }
-
-    public Invoice getInvoicebyUser(int C_ID)
-    {
-        dynamic invoice = (from i in db.Invoices
-                           where i.CustomerID.Equals(C_ID)
-                           select i).FirstOrDefault();
-        if(invoice !=null)
-        {
-           /* var newInvoice = new Invoice
+            var tempsub = new SubCategory
             {
-                ID = invoice.ID,
-                CustomerID = invoice.CustomerID,
-                Status = invoice.Status,
-                Date = invoice.Date,
-                DeliveryDatetime = invoice.DeliveryDateTime,
-                Notes = invoice.Notes
+                SubID = subcat.SubID,
+                Name = subcat.Name,
+                CategoryID = subcat.CategoryID
+            };
+            return tempsub;
+        }
+    }
 
+    public ProductCategory getCat(int C_ID)
+    {
+        dynamic cat = (from c in db.ProductCategories
+                          where c.ID.Equals(C_ID)
+                          select c).FirstOrDefault();
 
-
-            };*/
-            return invoice;
-        }else
+        if (cat == null)
         {
             return null;
         }
+        else
+        {
+            var tempcat = new ProductCategory
+            {
+                Name = cat.Name,
+                ID = cat.ID
+            };
+            return tempcat;
+        }
+    }
+
+    public List<SubCategory> getSubCatPerCat(int c_ID)
+    {
+        dynamic subcat = (from s in db.SubCategories
+                          where s.CategoryID.Equals(c_ID)
+                          select s);
+
+        var SubList = new List<SubCategory>();
+
+        foreach (SubCategory sc in subcat)
+        {
+            var tempsub = new SubCategory
+            {
+                SubID = sc.SubID,
+                Name = sc.Name,
+                CategoryID = sc.CategoryID
+            };
+            SubList.Add(tempsub);
+        }
+        return SubList;
+    }
+
+    public decimal calcProductVAT(int P_ID)
+    {
+        decimal VAT = 0;
+
+        var product = (from p in db.Products
+                       where p.ID.Equals(P_ID)
+                       select p).FirstOrDefault();
+
+        VAT = product.Price * (decimal)0.15;
+
+        return VAT;
     }
 }

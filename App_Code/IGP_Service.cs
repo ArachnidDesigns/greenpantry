@@ -13,7 +13,7 @@ public interface IGP_Service
     int login(string email, string password);
 
     [OperationContract]
-    int Register(string name, string surname, string email, string password, string number, string status, DateTime date, string userType);
+    int Register(string name, string surname, string email, string password, string status, DateTime date, string userType);
 
     [OperationContract]
     int UpdateUserDetails(int id, string name, string surname, string email, string number);
@@ -72,7 +72,7 @@ public interface IGP_Service
     [OperationContract]
     Address getAddress(int Address_ID);
     [OperationContract]
-    int AddAdress(string line1, string line2, string suburb, string city, char billing, string type, int C_ID, string Province);
+    int AddAdress(string line1, string line2, string suburb, string city, char billing, string type, int C_ID);
     [OperationContract]
     int UpdateAddress(int A_ID, string line1, string line2, string suburb, string city, char billing, string type, int Cus_ID);
     [OperationContract]
@@ -108,18 +108,14 @@ public interface IGP_Service
 
     [OperationContract]
     SubCategory getSubCat(int S_ID);
+    
     [OperationContract]
-    int addInvoice(string status, DateTime date, DateTime deliveryDate, string notes , int Cus_ID);
+    ProductCategory getCat(int C_ID);
+
     [OperationContract]
-    Invoice getInvoicebyUser(int C_ID);
+    List<SubCategory> getSubCatPerCat(int c_ID);
 
-
-
-
-
-
-
-
-
+    [OperationContract]
+    decimal calcProductVAT(int P_ID);
 
 }

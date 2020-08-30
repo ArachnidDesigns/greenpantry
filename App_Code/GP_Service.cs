@@ -560,7 +560,19 @@ public class GP_Service : IGP_Service
             return null;
         }else
         {
-            return UserInfo;
+            var newuser = new User
+            {
+                ID = UserInfo.ID,
+                Name = UserInfo.Name,
+                Surname = UserInfo.Surname,
+                Email = UserInfo.Email,
+                Password = UserInfo.Password,
+                PhoneNumber = UserInfo.PhoneNumber,
+                Status = UserInfo.Status,
+                DateRegistered = UserInfo.DateRegistered,
+                UserType = UserInfo.UserType
+            };
+            return newuser;
         }
     }
 
@@ -626,7 +638,7 @@ public class GP_Service : IGP_Service
         }
     }
     //method used to add a new address into the database
-    public int AddAdress(string line1, string line2, string suburb, string city, char billing, string type , int C_ID)
+    public int AddAdress(string line1, string line2, string suburb, string city, char billing, string type , int C_ID, string Province)
     {
         var address = (from ad in db.Addresses
                           where ad.Line1.Equals(line1) && ad.Line2.Equals(line2) && ad.Suburb.Equals(suburb)&&ad.City.Equals(city)
@@ -646,7 +658,8 @@ public class GP_Service : IGP_Service
                 City = city,
                 Billing = billing,
                 Type = type,
-                CustomerID = C_ID
+                CustomerID = C_ID,
+                Province = Province
             };
 
             db.Addresses.InsertOnSubmit(newAddress);

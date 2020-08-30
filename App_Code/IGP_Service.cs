@@ -72,7 +72,7 @@ public interface IGP_Service
     [OperationContract]
     Address getAddress(int Address_ID);
     [OperationContract]
-    int AddAdress(string line1, string line2, string suburb, string city, char billing, string type, int C_ID);
+    int AddAdress(string line1, string line2, string suburb, string city, char billing, string type, int C_ID , string Province);
     [OperationContract]
     int UpdateAddress(int A_ID, string line1, string line2, string suburb, string city, char billing, string type, int Cus_ID);
     [OperationContract]

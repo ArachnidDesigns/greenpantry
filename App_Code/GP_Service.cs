@@ -561,7 +561,19 @@ public class GP_Service : IGP_Service
             return null;
         }else
         {
-            return UserInfo;
+            var tempuser = new User
+            {
+                ID = UserInfo.ID,
+                Name = UserInfo.Name,
+                Email = UserInfo.Email,
+                Password = UserInfo.Password,
+                PhoneNumber = UserInfo.PhoneNumber,
+                Status = UserInfo.Status,
+                DateRegistered = UserInfo.DateRegistered,
+                UserType = UserInfo.UserType
+
+            };
+            return tempuser;
         }
     }
 
@@ -627,17 +639,17 @@ public class GP_Service : IGP_Service
         }
     }
     //method used to add a new address into the database
-    public int AddAdress(string line1, string line2, string suburb, string city, char billing, string type , int C_ID)
+    public int AddAdress(string line1, string line2, string suburb, string city, char billing, string type , int C_ID , string Province)
     {
-        var address = (from ad in db.Addresses
+        /*var address = (from ad in db.Addresses
                           where ad.Line1.Equals(line1) && ad.Line2.Equals(line2) && ad.Suburb.Equals(suburb)&&ad.City.Equals(city)
-                          select ad).FirstOrDefault();
+                          select ad).FirstOrDefault();*/
 
-        if(address != null)
+        /*if(address != null)
         {
             //means that the address already exists
             return 0;
-        }else
+        }else */
         {
             var newAddress = new Address
             {
@@ -647,7 +659,8 @@ public class GP_Service : IGP_Service
                 City = city,
                 Billing = billing,
                 Type = type,
-                CustomerID = C_ID
+                CustomerID = C_ID,
+                Province = Province
             };
 
             db.Addresses.InsertOnSubmit(newAddress);
@@ -1059,5 +1072,54 @@ public class GP_Service : IGP_Service
 
     }
 
+    public int addInvoice(string status, DateTime date, DateTime deliveryDate, string notes , int Cus_ID)
+    {
 
+        var newInvoice = new Invoice
+        {
+            Status = status,
+            Date = date,
+            DeliveryDatetime = deliveryDate,
+            Notes = notes,
+            CustomerID = Cus_ID
+        };
+
+        db.Invoices.InsertOnSubmit(newInvoice);
+        try
+        {
+            db.SubmitChanges();
+            return 1;
+        }
+        catch (Exception e)
+        {
+            e.GetBaseException();
+            return -1;
+        }
+    }
+
+    public Invoice getInvoicebyUser(int C_ID)
+    {
+        dynamic invoice = (from i in db.Invoices
+                           where i.CustomerID.Equals(C_ID)
+                           select i).FirstOrDefault();
+        if(invoice !=null)
+        {
+           /* var newInvoice = new Invoice
+            {
+                ID = invoice.ID,
+                CustomerID = invoice.CustomerID,
+                Status = invoice.Status,
+                Date = invoice.Date,
+                DeliveryDatetime = invoice.DeliveryDateTime,
+                Notes = invoice.Notes
+
+
+
+            };*/
+            return invoice;
+        }else
+        {
+            return null;
+        }
+    }
 }

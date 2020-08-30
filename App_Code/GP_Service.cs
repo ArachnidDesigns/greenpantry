@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Security.Cryptography;
 using System.ServiceModel;
 using System.Text;
+using System.Web.UI;
 
 // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "GP_Service" in code, svc and config file together.
 public class GP_Service : IGP_Service
@@ -1130,5 +1132,25 @@ public class GP_Service : IGP_Service
         VAT = product.Price * (decimal)0.15;
 
         return VAT;
+    }
+
+    public Product getProductByID(int P_ID)
+    {
+        dynamic product = (from p in db.Products
+                           where p.ID.Equals(P_ID)
+                           select p).FirstOrDefault();
+
+        var temppro = new Product
+        {
+            ID = product.ID,
+            Name = product.Name, 
+            SubCategoryID = product.SubCategoryID,
+            Price = product.Price, 
+            Cost = product.Cost, 
+            StockOnHand = product.StockOnHand, 
+            Image_Location = product.Image_Location
+        };
+        return temppro;
+        
     }
 }

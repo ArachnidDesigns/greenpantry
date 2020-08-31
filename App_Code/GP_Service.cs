@@ -1153,4 +1153,19 @@ public class GP_Service : IGP_Service
         return temppro;
         
     }
+
+    public int getNumProductsInSub(int subID)
+    {
+        dynamic product = (from p in db.Products
+                            where p.SubCategoryID.Equals(subID)
+                            select p);
+        var ProductList = new List<Product>();
+        int count = 0;
+
+        foreach (Product pr in product)
+        {
+            count++;    
+        }
+        return count;
+    }
 }

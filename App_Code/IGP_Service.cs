@@ -117,7 +117,10 @@ public interface IGP_Service
 
     [OperationContract]
     decimal calcProductVAT(int P_ID);
-    [OperationContract]
-    Product getProductByID(int P_ID); 
 
+    [OperationContract]
+    Product getProductByID(int P_ID);
+
+    [OperationContract]
+    int getNumProductsInSub(int subID);
 }

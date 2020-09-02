@@ -316,10 +316,10 @@ public class GP_Service : IGP_Service
         return subcategories;
     }
 
-    public Invoice getOrder(int customerId, DateTime datePlaced)
+    public Invoice getOrder(int orderId)
     {
         var order = (from o in db.Invoices
-                     where o.CustomerID.Equals(customerId) && o.Date.Equals(datePlaced)
+                     where o.ID.Equals(orderId)
                      select o).FirstOrDefault();
 
         if(order == null)
@@ -328,7 +328,18 @@ public class GP_Service : IGP_Service
         }
         else
         {
-            return order;
+            var temp = new Invoice
+            {
+                ID = order.ID,
+                CustomerID = order.CustomerID,
+                Status = order.Status,
+                Date = order.Date,
+                DeliveryDatetime = order.DeliveryDatetime,
+                Notes = order.Notes
+
+            };
+
+            return temp;
         }
 
     }
@@ -490,7 +501,17 @@ public class GP_Service : IGP_Service
             return null;
         }else
         {
-            return product;
+            var rProduct = new Product
+            {
+                ID = product.ID,
+                Name = product.Name,
+                SubCategoryID = product.SubCategoryID,
+                Price = product.Price,
+                Cost = product.Cost,
+                StockOnHand = product.StockOnHand,
+                Image_Location = product.Image_Location
+            };
+            return rProduct;
         }
     }
 
@@ -931,17 +952,32 @@ public class GP_Service : IGP_Service
         }
     }
     //Get method for orderedItems
-    public InvoiceLine getOrderedItems(int id)
+    public List<InvoiceLine> getOrderedItems(int id)
     {
-        var ordereditems = (from o in db.InvoiceLines
-                            where o.ID.Equals(id)
-                            select o).FirstOrDefault();
+        dynamic ordereditems = (from o in db.InvoiceLines
+                            where o.InvoiceID.Equals(id)
+                            select o);
+
+        List<InvoiceLine> rList = new List<InvoiceLine>();
+
         if(ordereditems == null)
         {
             return null;
         }else
         {
-            return ordereditems;
+            foreach(InvoiceLine line in ordereditems)
+            {
+                var temp = new InvoiceLine
+                {
+                    ID = line.ID,
+                    InvoiceID = line.InvoiceID,
+                    ProductID = line.ProductID, 
+                    Qty = line.Qty
+                };
+
+                rList.Add(temp);
+            }
+            return rList;
         }
     }
     //Method used to get all the products present within a Category

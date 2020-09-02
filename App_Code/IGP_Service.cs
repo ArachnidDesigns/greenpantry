@@ -40,7 +40,7 @@ public interface IGP_Service
     List<SubCategory> getAllSubCategories();
 
     [OperationContract]
-    Invoice getOrder(int customerId, DateTime datePlaced);
+    Invoice getOrder(int orderId);
 
     [OperationContract]
     int addOrder(int customerId, string status, DateTime datePlaced, DateTime deliverDate, string message);
@@ -92,7 +92,7 @@ public interface IGP_Service
     [OperationContract]
     int UpdateListItem(int id, int list_ID, int P_ID, int quantity);
     [OperationContract]
-    InvoiceLine getOrderedItems(int id);
+    List<InvoiceLine> getOrderedItems(int id);
     [OperationContract]
     List<Product> getProductByCat(int Cat_ID);
     [OperationContract]

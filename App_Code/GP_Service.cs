@@ -465,10 +465,25 @@ public class GP_Service : IGP_Service
             {
                 foreach(Invoice o in ordersList)
                 {
-                    customersOrders.Add(o);
+                    var order = new Invoice
+                    {
+                        ID = o.ID,
+                        CustomerID = o.CustomerID,
+                        Status = o.Status,
+                        Date = o.Date,
+                        DeliveryDatetime = o.DeliveryDatetime,
+                        Notes = o.Notes
+                    };
+                    customersOrders.Add(order);
                 }
+
+                return customersOrders;
             }
-            return customersOrders;
+            else
+            {
+                return null;
+            }
+            
         }
     }
 

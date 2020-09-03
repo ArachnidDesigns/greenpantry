@@ -118,14 +118,16 @@ public class GP_Service : IGP_Service
                         where u.Email.Equals(email) && u.ID != id
                         select u).FirstOrDefault();
 
-        if(tempUser != null)
+        if (tempUser != null)
         {
             //the email they're trying to change to is already in use
             return -2;
         }
         else
         {
-            var user = getUser(id);
+            var user = (from u in db.Users
+                    where u.ID.Equals(id)
+                    select u).FirstOrDefault();
 
            if(user != null)
             {

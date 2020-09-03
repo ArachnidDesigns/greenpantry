@@ -58,7 +58,7 @@ public class GP_Service : IGP_Service
             {
                 //all is well
                 db.SubmitChanges();
-                return 1;
+                return newUser.ID;
             }
             catch (Exception ex)
             {

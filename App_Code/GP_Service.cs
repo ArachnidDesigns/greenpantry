@@ -58,7 +58,7 @@ public class GP_Service : IGP_Service
             {
                 //all is well
                 db.SubmitChanges();
-                return 1;
+                return newUser.ID;
             }
             catch (Exception ex)
             {
@@ -118,14 +118,16 @@ public class GP_Service : IGP_Service
                         where u.Email.Equals(email) && u.ID != id
                         select u).FirstOrDefault();
 
-        if(tempUser != null)
+        if (tempUser != null)
         {
             //the email they're trying to change to is already in use
             return -2;
         }
         else
         {
-            var user = getUser(id);
+            var user = (from u in db.Users
+                    where u.ID.Equals(id)
+                    select u).FirstOrDefault();
 
            if(user != null)
             {
@@ -465,10 +467,25 @@ public class GP_Service : IGP_Service
             {
                 foreach(Invoice o in ordersList)
                 {
-                    customersOrders.Add(o);
+                    var order = new Invoice
+                    {
+                        ID = o.ID,
+                        CustomerID = o.CustomerID,
+                        Status = o.Status,
+                        Date = o.Date,
+                        DeliveryDatetime = o.DeliveryDatetime,
+                        Notes = o.Notes
+                    };
+                    customersOrders.Add(order);
                 }
+
+                return customersOrders;
             }
-            return customersOrders;
+            else
+            {
+                return null;
+            }
+            
         }
     }
 

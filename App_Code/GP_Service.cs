@@ -1204,4 +1204,50 @@ public class GP_Service : IGP_Service
         }
         return count;
     }
+
+    public int addInvoices(int customer_ID, string status, DateTime date, DateTime deliverDate, string notes)
+    {
+        var invoice = new Invoice
+        {
+            CustomerID = customer_ID,
+            Status = status,
+            Date = date,
+            DeliveryDatetime = deliverDate,
+            Notes = notes
+        };
+        db.Invoices.InsertOnSubmit(invoice);
+        try
+        {
+            db.SubmitChanges();
+            return invoice.ID;
+        }
+        catch (Exception ex)
+        {
+            ex.GetBaseException();
+            return -2;
+        }
+
+    }
+
+    public int addInvoiceLine(int product_ID, int invoice_ID, int quantity)
+    {
+        var invLine = new InvoiceLine
+        {
+            ProductID = product_ID,
+            InvoiceID = invoice_ID,
+            Qty = quantity
+        };
+        db.InvoiceLines.InsertOnSubmit(invLine);
+        try
+        {
+            db.SubmitChanges();
+            return 1;
+        }
+        catch (Exception ex)
+        {
+            ex.GetBaseException();
+            return -2;
+        }
+
+    }
 }

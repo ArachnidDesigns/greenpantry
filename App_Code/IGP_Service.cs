@@ -123,4 +123,8 @@ public interface IGP_Service
 
     [OperationContract]
     int getNumProductsInSub(int subID);
+    [OperationContract]
+    int addInvoices(int customer_ID, string status, DateTime date, DateTime deliverDate, string notes);
+    [OperationContract]
+    int addInvoiceLine(int product_ID, int invoice_ID, int quantity);
 }

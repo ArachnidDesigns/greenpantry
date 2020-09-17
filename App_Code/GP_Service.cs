@@ -1182,7 +1182,7 @@ public class GP_Service : IGP_Service
                        where p.ID.Equals(P_ID)
                        select p).FirstOrDefault();
 
-        VAT = product.Price * (decimal)0.15;
+        VAT = product.Price * (decimal)(0.15/1.15);
 
         return VAT;
     }

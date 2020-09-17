@@ -1222,7 +1222,7 @@ public class GP_Service : IGP_Service
         return count;
     }
 
-    public int addInvoices(int customer_ID, string status, DateTime date, DateTime deliverDate, string notes)
+    public int addInvoices(int customer_ID, string status, DateTime date, DateTime deliverDate, string notes, decimal total, int points)
     {
         var invoice = new Invoice
         {
@@ -1230,7 +1230,9 @@ public class GP_Service : IGP_Service
             Status = status,
             Date = date,
             DeliveryDatetime = deliverDate,
-            Notes = notes
+            Notes = notes,
+            Total = total,
+            Points = points
         };
         db.Invoices.InsertOnSubmit(invoice);
         try
@@ -1246,13 +1248,14 @@ public class GP_Service : IGP_Service
 
     }
 
-    public int addInvoiceLine(int product_ID, int invoice_ID, int quantity)
+    public int addInvoiceLine(int product_ID, int invoice_ID, int quantity, decimal price)
     {
         var invLine = new InvoiceLine
         {
             ProductID = product_ID,
             InvoiceID = invoice_ID,
-            Qty = quantity
+            Qty = quantity,
+            Price = price
         };
         db.InvoiceLines.InsertOnSubmit(invLine);
         try

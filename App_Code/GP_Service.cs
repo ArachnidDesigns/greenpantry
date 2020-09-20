@@ -1270,4 +1270,47 @@ public class GP_Service : IGP_Service
         }
 
     }
+
+    public List<Product> searchProducts(string input)
+    {
+
+        List<Product> productList = new List<Product>();
+
+        dynamic product = (from p in db.Products
+                           select p);
+
+        dynamic category = (from c in db.ProductCategories
+                            select c);
+        dynamic subcategories = (from s in db.SubCategories
+                                 select s);
+
+        foreach(ProductCategory c in category)
+        {
+            if(input.ToUpper().Contains( c.Name.ToUpper()))
+            {
+                dynamic productbycat = getProductByCat(c.ID);
+                productList.AddRange(productbycat);
+            }
+        }
+        foreach(SubCategory s in subcategories)
+        {
+            if(input.ToUpper().Contains( s.Name.ToUpper()))
+            {
+                dynamic productbysubCat = getProductBySubCat(s.SubID);
+                productList.AddRange(productbysubCat);
+            }
+        }
+        foreach(Product p in product)
+        {
+            if(input.ToUpper().Contains(p.Name.ToUpper()))
+            {
+                dynamic pr = getProductByID(p.ID);
+                productList.AddRange(pr); 
+            }
+        }
+
+        return productList;
+
+
+    }
 }

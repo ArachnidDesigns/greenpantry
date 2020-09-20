@@ -127,4 +127,7 @@ public interface IGP_Service
     int addInvoices(int customer_ID, string status, DateTime date, DateTime deliverDate, string notes, decimal total, int points);
     [OperationContract]
     int addInvoiceLine(int product_ID, int invoice_ID, int quantity, decimal price);
+    [OperationContract]
+    List<Product> searchProducts(string input);
+
 }

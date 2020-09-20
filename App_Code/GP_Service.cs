@@ -438,7 +438,6 @@ public class GP_Service : IGP_Service
                 ordersList.Add(ord);
             }
         }
-
         return ordersList;
     }
 
@@ -474,7 +473,9 @@ public class GP_Service : IGP_Service
                         Status = o.Status,
                         Date = o.Date,
                         DeliveryDatetime = o.DeliveryDatetime,
-                        Notes = o.Notes
+                        Notes = o.Notes,
+                        Total = o.Total,
+                        Points = o.Points
                     };
                     customersOrders.Add(order);
                 }
@@ -485,7 +486,6 @@ public class GP_Service : IGP_Service
             {
                 return null;
             }
-            
         }
     }
 

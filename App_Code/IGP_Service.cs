@@ -59,44 +59,64 @@ public interface IGP_Service
 
     [OperationContract]
     Product getProduct(int Product_ID);
+
     [OperationContract]
     int UpdateStock(int P_ID, int ItemsPurchased);
+
     [OperationContract]
     int AddItemsToShoppingList(int ListID ,int ShoppingList_ID, int Product_ID, int Quantity);
+
     [OperationContract]
     User getUser(int User_ID);
+
     [OperationContract]
     int getNumUsers();
+
     [OperationContract]
     double CalculateProfit();
+
     [OperationContract]
     Address getAddress(int Address_ID);
+
     [OperationContract]
     int AddAdress(string line1, string line2, string suburb, string city, char billing, string type, int C_ID , string Province);
+
     [OperationContract]
     int UpdateAddress(int A_ID, string line1, string line2, string suburb, string city, char billing, string type, int Cus_ID);
+
     [OperationContract]
     Card getCard(int id);
+
     [OperationContract]
     int AddCard(int Cus_ID,string description, string name, string number, DateTime expiry);
+
     [OperationContract]
     int UpdateCards(int c_ID, int Cust_ID, string description, string name, string number, DateTime expiry);
+
     [OperationContract]
     Device getDevice(int D_ID);
+
     [OperationContract]
     int AddDevices(string os);
+
     [OperationContract]
     ListItem getListItem(int id);
+
     [OperationContract]
     int AddListItems(int P_ID, int quantity);
+
     [OperationContract]
     int UpdateListItem(int id, int list_ID, int P_ID, int quantity);
+
     [OperationContract]
     List<InvoiceLine> getOrderedItems(int id);
+
     [OperationContract]
     List<Product> getProductByCat(int Cat_ID);
+
     [OperationContract]
     List<Product> getProductBySubCat(int Sub_ID);
+
     [OperationContract]
     double profitPerProduct(int P_ID);
 

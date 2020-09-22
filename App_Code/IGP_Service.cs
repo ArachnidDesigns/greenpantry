@@ -62,7 +62,7 @@ public interface IGP_Service
     [OperationContract]
     int UpdateStock(int P_ID, int ItemsPurchased);
     [OperationContract]
-    int AddItemsToShoppingList(int ListID ,int ShoppingList_ID, int Product_ID, int Quantity);
+    int AddItemsToShoppingList(int ListID, int ShoppingList_ID, int Product_ID, int Quantity);
     [OperationContract]
     User getUser(int User_ID);
     [OperationContract]
@@ -72,13 +72,13 @@ public interface IGP_Service
     [OperationContract]
     Address getAddress(int Address_ID);
     [OperationContract]
-    int AddAdress(string line1, string line2, string suburb, string city, char billing, string type, int C_ID , string Province);
+    int AddAdress(string line1, string line2, string suburb, string city, char billing, string type, int C_ID, string Province);
     [OperationContract]
     int UpdateAddress(int A_ID, string line1, string line2, string suburb, string city, char billing, string type, int Cus_ID);
     [OperationContract]
     Card getCard(int id);
     [OperationContract]
-    int AddCard(int Cus_ID,string description, string name, string number, DateTime expiry);
+    int AddCard(int Cus_ID, string description, string name, string number, DateTime expiry);
     [OperationContract]
     int UpdateCards(int c_ID, int Cust_ID, string description, string name, string number, DateTime expiry);
     [OperationContract]
@@ -108,7 +108,7 @@ public interface IGP_Service
 
     [OperationContract]
     SubCategory getSubCat(int S_ID);
-    
+
     [OperationContract]
     ProductCategory getCat(int C_ID);
 
@@ -151,7 +151,13 @@ public interface IGP_Service
     [OperationContract]
     ProductCategory getCategorybyProductID(int p_ID);
 
+    [OperationContract]
+    int usersperWeek(DateTime currentDate);
 
+    [OperationContract]
+    double percentageUserChange(DateTime currentDate);
 
+    [OperationContract]
+    decimal salesPerWeek(DateTime date);
 
 }

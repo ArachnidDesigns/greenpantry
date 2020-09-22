@@ -1427,4 +1427,70 @@ public class GP_Service : IGP_Service
 
         return category;
     }
+
+    public int usersperWeek(DateTime currentDate)
+    {
+        dynamic DayList = getWeekDates(currentDate);
+        int totalUsers = 0;
+        foreach(DateTime d in DayList)
+        {
+            totalUsers += getUsersPerDay(d);
+        }
+        return totalUsers;
+    }
+    private int getAllUsers()
+    {
+        dynamic user = (from u in db.Users
+                        select u);
+        int count = 0;
+        foreach(User usr in user)
+        {
+            count += 1;
+        }
+        return count;
+ 
+
+    }
+
+    public double percentageUserChange(DateTime currentDate)
+    {
+        //getting the total number of users perweek
+        int totalBefore = getAllUsers();
+        int totalUsers = usersperWeek(currentDate);
+
+        int Change = totalBefore + totalUsers;
+
+        double percentageChange = (Change / totalBefore) * 100;
+
+        return percentageChange;
+    }
+
+    private List<DateTime> getWeekDates(DateTime date)
+    {
+        List<DateTime> weekDates = new List<DateTime>();
+
+        var todayDate = date.Date;
+
+        var day = (int)todayDate.DayOfWeek;
+        const int totalNumDays = 7;
+
+        for(int i = -day; i < (-day + totalNumDays); i++)
+        {
+            weekDates.Add(todayDate.AddDays(i).Date);
+        }
+        return weekDates;
+    }
+
+    public decimal salesPerWeek(DateTime date)
+    {
+        dynamic weekDates = getWeekDates(date.Date);
+        dynamic invoices = (from p in db.Invoices
+                            select p);
+
+        foreach(Invoice i in invoices)
+        {
+
+        }
+        
+    }
 }

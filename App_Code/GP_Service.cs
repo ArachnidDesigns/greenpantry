@@ -1537,10 +1537,16 @@ public class GP_Service : IGP_Service
         dynamic invoices = (from p in db.Invoices
                             select p);
 
+        decimal totalSales = 0;
+
         foreach(Invoice i in invoices)
         {
-
+            if (weekDates.Contains(i.Date))
+            {
+                totalSales += (decimal)i.Total;
+            }
         }
-        
+
+        return totalSales;
     }
 }

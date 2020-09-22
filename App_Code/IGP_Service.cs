@@ -16,6 +16,12 @@ public interface IGP_Service
     int Register(string name, string surname, string email, string password, string status, DateTime date, string userType);
 
     [OperationContract]
+    int addUserNumber(int id, string number);
+
+    [OperationContract]
+    int removeUser(int id);
+
+    [OperationContract]
     int UpdateUserDetails(int id, string name, string surname, string email, string number);
 
     [OperationContract]
@@ -153,19 +159,10 @@ public interface IGP_Service
     List<Product> searchProducts(string input);
 
     [OperationContract]
-    int addPoints(int Cust_ID, int points);
+    int updatePoints(int Cust_ID, int points);
 
     [OperationContract]
-    int updatePoints(int point_id, int Cust_ID, int points);
-
-    [OperationContract]
-    Point getpointbyID(int point_ID);
-
-    [OperationContract]
-    int getpointbyUserID(int Cus_ID);
-
-    [OperationContract]
-    Point getpointIDbyUserID(int Cus_ID);
+    int getUserPoints(int Cus_ID);
 
     [OperationContract]
     ProductCategory getCategorybyProductID(int p_ID);

@@ -77,6 +77,60 @@ public class GP_Service : IGP_Service
         }
     }
 
+    public int addUserNumber(int id, string number)
+    {
+        var user = (from u in db.Users
+                    where u.ID.Equals(id)
+                    select u).FirstOrDefault();
+       
+        if(user != null)
+        {
+            user.PhoneNumber = number;
+
+            try
+            {
+                db.SubmitChanges();
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                ex.GetBaseException();
+                return -1;
+            }
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    public int removeUser(int id)
+    {
+        var user = (from u in db.Users
+                    where u.ID.Equals(id)
+                    select u).FirstOrDefault();
+
+        if(user != null)
+        {
+            user.Status = "Inactive";
+
+            try
+            {
+                db.SubmitChanges();
+                return 1;
+            }
+            catch(Exception ex)
+            {
+                ex.GetBaseException();
+                return -1;
+            }
+        }
+        else
+        {
+            //can't find users
+            return 0;
+        }
+    }
+
     public int UpdatePassword(int id, string oldPassword, string newPassword)
     {
         var user = getUser(id);
@@ -1364,107 +1418,48 @@ public class GP_Service : IGP_Service
         return tempProduct;
     }
 
-    public int addPoints(int Cust_ID, int points)
+    public int updatePoints(int Cust_ID, int points)
     {
-        var point = new Point
-        {
-            Customer_ID = Cust_ID,
-            Points = points
-        };
-        db.Points.InsertOnSubmit(point);
-        try
-        {
-            db.SubmitChanges();
-            return 1;
-        }
-        catch(Exception e)
-        {
-            e.GetBaseException();
-            return -1;
-        }
-    }
+        var user = (from u in db.Users
+                    where u.ID.Equals(Cust_ID)
+                    select u).FirstOrDefault();
 
-    public int updatePoints(int point_id, int Cust_ID, int points)
-    {
-        dynamic point = getpointbyID(point_id);
-        if (point != null)
+        if(user != null)
         {
-            point.Point_ID = point_id;
-            point.Customer_ID = Cust_ID;
-            point.Points = points;
+            user.Points = points;
 
             try
             {
                 db.SubmitChanges();
                 return 1;
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 ex.GetBaseException();
-                return -2;
+                return -1;
             }
-
         }
         else
         {
+            //can''t find user
             return 0;
         }
-
     }
 
-    public Point getpointbyID(int point_ID)
+    public int getUserPoints(int Cus_ID)
     {
-        dynamic point = (from p in db.Points
-                     where p.Point_ID.Equals(point_ID)
-                     select p).FirstOrDefault();
-        if(point == null)
+        User user = (from p in db.Users
+                    where p.ID.Equals(Cus_ID)
+                    select p).FirstOrDefault();
+        if (user == null)
         {
-            return null;
-        }else
-        {
-            return point;
-        }
-    }
-
-    public int getpointbyUserID(int Cus_ID)
-    {
-        dynamic point = (from p in db.Points
-                         where p.Customer_ID.Equals(Cus_ID)
-                         select p).FirstOrDefault();
-        if (point == null)
-        {
+            //can't find user
             return 0;
         }
         else
         {
-            var pnt = new Point
-            {
-                Point_ID = point.Point_ID,
-                Customer_ID = point.Customer_ID,
-                Points = point.Points
-            };
-            return pnt.Points;
-        }
-    }
+            return (int)user.Points;
 
-    public Point getpointIDbyUserID(int Cus_ID)
-    {
-        dynamic point = (from p in db.Points
-                         where p.Point_ID.Equals(Cus_ID)
-                         select p).FirstOrDefault();
-        if(point == null)
-        {
-            return null;
-        }
-        else
-        {
-            var pnt = new Point
-            {
-                Point_ID = point.Point_ID,
-                Customer_ID = point.Customer_ID,
-                Points = point.Points
-            };
-            return pnt;
         }
     }
 

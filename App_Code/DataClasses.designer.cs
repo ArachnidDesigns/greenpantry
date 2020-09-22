@@ -29,9 +29,6 @@ public partial class DataClassesDataContext : System.Data.Linq.DataContext
 	
   #region Extensibility Method Definitions
   partial void OnCreated();
-  partial void InsertUser(User instance);
-  partial void UpdateUser(User instance);
-  partial void DeleteUser(User instance);
   partial void InsertShoppingList(ShoppingList instance);
   partial void UpdateShoppingList(ShoppingList instance);
   partial void DeleteShoppingList(ShoppingList instance);
@@ -62,9 +59,9 @@ public partial class DataClassesDataContext : System.Data.Linq.DataContext
   partial void InsertInvoice(Invoice instance);
   partial void UpdateInvoice(Invoice instance);
   partial void DeleteInvoice(Invoice instance);
-  partial void InsertPoint(Point instance);
-  partial void UpdatePoint(Point instance);
-  partial void DeletePoint(Point instance);
+  partial void InsertUser(User instance);
+  partial void UpdateUser(User instance);
+  partial void DeleteUser(User instance);
   #endregion
 	
 	public DataClassesDataContext() : 
@@ -95,14 +92,6 @@ public partial class DataClassesDataContext : System.Data.Linq.DataContext
 			base(connection, mappingSource)
 	{
 		OnCreated();
-	}
-	
-	public System.Data.Linq.Table<User> Users
-	{
-		get
-		{
-			return this.GetTable<User>();
-		}
 	}
 	
 	public System.Data.Linq.Table<ShoppingList> ShoppingLists
@@ -185,434 +174,12 @@ public partial class DataClassesDataContext : System.Data.Linq.DataContext
 		}
 	}
 	
-	public System.Data.Linq.Table<Point> Points
+	public System.Data.Linq.Table<User> Users
 	{
 		get
 		{
-			return this.GetTable<Point>();
+			return this.GetTable<User>();
 		}
-	}
-}
-
-[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.[User]")]
-public partial class User : INotifyPropertyChanging, INotifyPropertyChanged
-{
-	
-	private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-	
-	private int _ID;
-	
-	private string _Name;
-	
-	private string _Surname;
-	
-	private string _Email;
-	
-	private string _Password;
-	
-	private string _PhoneNumber;
-	
-	private string _Status;
-	
-	private System.Nullable<System.DateTime> _DateRegistered;
-	
-	private string _UserType;
-	
-	private EntitySet<ShoppingList> _ShoppingLists;
-	
-	private EntitySet<Card> _Cards;
-	
-	private EntitySet<Device> _Devices;
-	
-	private EntitySet<Address> _Addresses;
-	
-	private EntitySet<Invoice> _Invoices;
-	
-	private EntitySet<Point> _Points;
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnIDChanging(int value);
-    partial void OnIDChanged();
-    partial void OnNameChanging(string value);
-    partial void OnNameChanged();
-    partial void OnSurnameChanging(string value);
-    partial void OnSurnameChanged();
-    partial void OnEmailChanging(string value);
-    partial void OnEmailChanged();
-    partial void OnPasswordChanging(string value);
-    partial void OnPasswordChanged();
-    partial void OnPhoneNumberChanging(string value);
-    partial void OnPhoneNumberChanged();
-    partial void OnStatusChanging(string value);
-    partial void OnStatusChanged();
-    partial void OnDateRegisteredChanging(System.Nullable<System.DateTime> value);
-    partial void OnDateRegisteredChanged();
-    partial void OnUserTypeChanging(string value);
-    partial void OnUserTypeChanged();
-    #endregion
-	
-	public User()
-	{
-		this._ShoppingLists = new EntitySet<ShoppingList>(new Action<ShoppingList>(this.attach_ShoppingLists), new Action<ShoppingList>(this.detach_ShoppingLists));
-		this._Cards = new EntitySet<Card>(new Action<Card>(this.attach_Cards), new Action<Card>(this.detach_Cards));
-		this._Devices = new EntitySet<Device>(new Action<Device>(this.attach_Devices), new Action<Device>(this.detach_Devices));
-		this._Addresses = new EntitySet<Address>(new Action<Address>(this.attach_Addresses), new Action<Address>(this.detach_Addresses));
-		this._Invoices = new EntitySet<Invoice>(new Action<Invoice>(this.attach_Invoices), new Action<Invoice>(this.detach_Invoices));
-		this._Points = new EntitySet<Point>(new Action<Point>(this.attach_Points), new Action<Point>(this.detach_Points));
-		OnCreated();
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-	public int ID
-	{
-		get
-		{
-			return this._ID;
-		}
-		set
-		{
-			if ((this._ID != value))
-			{
-				this.OnIDChanging(value);
-				this.SendPropertyChanging();
-				this._ID = value;
-				this.SendPropertyChanged("ID");
-				this.OnIDChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="VarChar(100) NOT NULL", CanBeNull=false)]
-	public string Name
-	{
-		get
-		{
-			return this._Name;
-		}
-		set
-		{
-			if ((this._Name != value))
-			{
-				this.OnNameChanging(value);
-				this.SendPropertyChanging();
-				this._Name = value;
-				this.SendPropertyChanged("Name");
-				this.OnNameChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Surname", DbType="VarChar(100) NOT NULL", CanBeNull=false)]
-	public string Surname
-	{
-		get
-		{
-			return this._Surname;
-		}
-		set
-		{
-			if ((this._Surname != value))
-			{
-				this.OnSurnameChanging(value);
-				this.SendPropertyChanging();
-				this._Surname = value;
-				this.SendPropertyChanged("Surname");
-				this.OnSurnameChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Email", DbType="VarChar(100) NOT NULL", CanBeNull=false)]
-	public string Email
-	{
-		get
-		{
-			return this._Email;
-		}
-		set
-		{
-			if ((this._Email != value))
-			{
-				this.OnEmailChanging(value);
-				this.SendPropertyChanging();
-				this._Email = value;
-				this.SendPropertyChanged("Email");
-				this.OnEmailChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Password", DbType="VarChar(MAX) NOT NULL", CanBeNull=false)]
-	public string Password
-	{
-		get
-		{
-			return this._Password;
-		}
-		set
-		{
-			if ((this._Password != value))
-			{
-				this.OnPasswordChanging(value);
-				this.SendPropertyChanging();
-				this._Password = value;
-				this.SendPropertyChanged("Password");
-				this.OnPasswordChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PhoneNumber", DbType="Char(10) NOT NULL", CanBeNull=false)]
-	public string PhoneNumber
-	{
-		get
-		{
-			return this._PhoneNumber;
-		}
-		set
-		{
-			if ((this._PhoneNumber != value))
-			{
-				this.OnPhoneNumberChanging(value);
-				this.SendPropertyChanging();
-				this._PhoneNumber = value;
-				this.SendPropertyChanged("PhoneNumber");
-				this.OnPhoneNumberChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Status", DbType="VarChar(MAX)")]
-	public string Status
-	{
-		get
-		{
-			return this._Status;
-		}
-		set
-		{
-			if ((this._Status != value))
-			{
-				this.OnStatusChanging(value);
-				this.SendPropertyChanging();
-				this._Status = value;
-				this.SendPropertyChanged("Status");
-				this.OnStatusChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DateRegistered", DbType="Date")]
-	public System.Nullable<System.DateTime> DateRegistered
-	{
-		get
-		{
-			return this._DateRegistered;
-		}
-		set
-		{
-			if ((this._DateRegistered != value))
-			{
-				this.OnDateRegisteredChanging(value);
-				this.SendPropertyChanging();
-				this._DateRegistered = value;
-				this.SendPropertyChanged("DateRegistered");
-				this.OnDateRegisteredChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UserType", DbType="VarChar(50)")]
-	public string UserType
-	{
-		get
-		{
-			return this._UserType;
-		}
-		set
-		{
-			if ((this._UserType != value))
-			{
-				this.OnUserTypeChanging(value);
-				this.SendPropertyChanging();
-				this._UserType = value;
-				this.SendPropertyChanged("UserType");
-				this.OnUserTypeChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_ShoppingList", Storage="_ShoppingLists", ThisKey="ID", OtherKey="CustomerID")]
-	public EntitySet<ShoppingList> ShoppingLists
-	{
-		get
-		{
-			return this._ShoppingLists;
-		}
-		set
-		{
-			this._ShoppingLists.Assign(value);
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_Card", Storage="_Cards", ThisKey="ID", OtherKey="CustomerID")]
-	public EntitySet<Card> Cards
-	{
-		get
-		{
-			return this._Cards;
-		}
-		set
-		{
-			this._Cards.Assign(value);
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_Device", Storage="_Devices", ThisKey="ID", OtherKey="CustomerID")]
-	public EntitySet<Device> Devices
-	{
-		get
-		{
-			return this._Devices;
-		}
-		set
-		{
-			this._Devices.Assign(value);
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_Address", Storage="_Addresses", ThisKey="ID", OtherKey="CustomerID")]
-	public EntitySet<Address> Addresses
-	{
-		get
-		{
-			return this._Addresses;
-		}
-		set
-		{
-			this._Addresses.Assign(value);
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_Invoice", Storage="_Invoices", ThisKey="ID", OtherKey="CustomerID")]
-	public EntitySet<Invoice> Invoices
-	{
-		get
-		{
-			return this._Invoices;
-		}
-		set
-		{
-			this._Invoices.Assign(value);
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_Point", Storage="_Points", ThisKey="ID", OtherKey="Customer_ID")]
-	public EntitySet<Point> Points
-	{
-		get
-		{
-			return this._Points;
-		}
-		set
-		{
-			this._Points.Assign(value);
-		}
-	}
-	
-	public event PropertyChangingEventHandler PropertyChanging;
-	
-	public event PropertyChangedEventHandler PropertyChanged;
-	
-	protected virtual void SendPropertyChanging()
-	{
-		if ((this.PropertyChanging != null))
-		{
-			this.PropertyChanging(this, emptyChangingEventArgs);
-		}
-	}
-	
-	protected virtual void SendPropertyChanged(String propertyName)
-	{
-		if ((this.PropertyChanged != null))
-		{
-			this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
-	}
-	
-	private void attach_ShoppingLists(ShoppingList entity)
-	{
-		this.SendPropertyChanging();
-		entity.User = this;
-	}
-	
-	private void detach_ShoppingLists(ShoppingList entity)
-	{
-		this.SendPropertyChanging();
-		entity.User = null;
-	}
-	
-	private void attach_Cards(Card entity)
-	{
-		this.SendPropertyChanging();
-		entity.User = this;
-	}
-	
-	private void detach_Cards(Card entity)
-	{
-		this.SendPropertyChanging();
-		entity.User = null;
-	}
-	
-	private void attach_Devices(Device entity)
-	{
-		this.SendPropertyChanging();
-		entity.User = this;
-	}
-	
-	private void detach_Devices(Device entity)
-	{
-		this.SendPropertyChanging();
-		entity.User = null;
-	}
-	
-	private void attach_Addresses(Address entity)
-	{
-		this.SendPropertyChanging();
-		entity.User = this;
-	}
-	
-	private void detach_Addresses(Address entity)
-	{
-		this.SendPropertyChanging();
-		entity.User = null;
-	}
-	
-	private void attach_Invoices(Invoice entity)
-	{
-		this.SendPropertyChanging();
-		entity.User = this;
-	}
-	
-	private void detach_Invoices(Invoice entity)
-	{
-		this.SendPropertyChanging();
-		entity.User = null;
-	}
-	
-	private void attach_Points(Point entity)
-	{
-		this.SendPropertyChanging();
-		entity.User = this;
-	}
-	
-	private void detach_Points(Point entity)
-	{
-		this.SendPropertyChanging();
-		entity.User = null;
 	}
 }
 
@@ -2791,84 +2358,260 @@ public partial class Invoice : INotifyPropertyChanging, INotifyPropertyChanged
 	}
 }
 
-[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Point")]
-public partial class Point : INotifyPropertyChanging, INotifyPropertyChanged
+[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.[User]")]
+public partial class User : INotifyPropertyChanging, INotifyPropertyChanged
 {
 	
 	private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 	
-	private int _Point_ID;
+	private int _ID;
 	
-	private int _Customer_ID;
+	private string _Name;
 	
-	private int _Points;
+	private string _Surname;
 	
-	private EntityRef<User> _User;
+	private string _Email;
+	
+	private string _Password;
+	
+	private string _PhoneNumber;
+	
+	private string _Status;
+	
+	private System.Nullable<System.DateTime> _DateRegistered;
+	
+	private string _UserType;
+	
+	private System.Nullable<int> _Points;
+	
+	private EntitySet<ShoppingList> _ShoppingLists;
+	
+	private EntitySet<Card> _Cards;
+	
+	private EntitySet<Device> _Devices;
+	
+	private EntitySet<Address> _Addresses;
+	
+	private EntitySet<Invoice> _Invoices;
 	
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
     partial void OnCreated();
-    partial void OnPoint_IDChanging(int value);
-    partial void OnPoint_IDChanged();
-    partial void OnCustomer_IDChanging(int value);
-    partial void OnCustomer_IDChanged();
-    partial void OnPointsChanging(int value);
+    partial void OnIDChanging(int value);
+    partial void OnIDChanged();
+    partial void OnNameChanging(string value);
+    partial void OnNameChanged();
+    partial void OnSurnameChanging(string value);
+    partial void OnSurnameChanged();
+    partial void OnEmailChanging(string value);
+    partial void OnEmailChanged();
+    partial void OnPasswordChanging(string value);
+    partial void OnPasswordChanged();
+    partial void OnPhoneNumberChanging(string value);
+    partial void OnPhoneNumberChanged();
+    partial void OnStatusChanging(string value);
+    partial void OnStatusChanged();
+    partial void OnDateRegisteredChanging(System.Nullable<System.DateTime> value);
+    partial void OnDateRegisteredChanged();
+    partial void OnUserTypeChanging(string value);
+    partial void OnUserTypeChanged();
+    partial void OnPointsChanging(System.Nullable<int> value);
     partial void OnPointsChanged();
     #endregion
 	
-	public Point()
+	public User()
 	{
-		this._User = default(EntityRef<User>);
+		this._ShoppingLists = new EntitySet<ShoppingList>(new Action<ShoppingList>(this.attach_ShoppingLists), new Action<ShoppingList>(this.detach_ShoppingLists));
+		this._Cards = new EntitySet<Card>(new Action<Card>(this.attach_Cards), new Action<Card>(this.detach_Cards));
+		this._Devices = new EntitySet<Device>(new Action<Device>(this.attach_Devices), new Action<Device>(this.detach_Devices));
+		this._Addresses = new EntitySet<Address>(new Action<Address>(this.attach_Addresses), new Action<Address>(this.detach_Addresses));
+		this._Invoices = new EntitySet<Invoice>(new Action<Invoice>(this.attach_Invoices), new Action<Invoice>(this.detach_Invoices));
 		OnCreated();
 	}
 	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Point_ID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-	public int Point_ID
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+	public int ID
 	{
 		get
 		{
-			return this._Point_ID;
+			return this._ID;
 		}
 		set
 		{
-			if ((this._Point_ID != value))
+			if ((this._ID != value))
 			{
-				this.OnPoint_IDChanging(value);
+				this.OnIDChanging(value);
 				this.SendPropertyChanging();
-				this._Point_ID = value;
-				this.SendPropertyChanged("Point_ID");
-				this.OnPoint_IDChanged();
+				this._ID = value;
+				this.SendPropertyChanged("ID");
+				this.OnIDChanged();
 			}
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Customer_ID", DbType="Int NOT NULL")]
-	public int Customer_ID
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="VarChar(100) NOT NULL", CanBeNull=false)]
+	public string Name
 	{
 		get
 		{
-			return this._Customer_ID;
+			return this._Name;
 		}
 		set
 		{
-			if ((this._Customer_ID != value))
+			if ((this._Name != value))
 			{
-				if (this._User.HasLoadedOrAssignedValue)
-				{
-					throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				}
-				this.OnCustomer_IDChanging(value);
+				this.OnNameChanging(value);
 				this.SendPropertyChanging();
-				this._Customer_ID = value;
-				this.SendPropertyChanged("Customer_ID");
-				this.OnCustomer_IDChanged();
+				this._Name = value;
+				this.SendPropertyChanged("Name");
+				this.OnNameChanged();
 			}
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Points", DbType="Int NOT NULL")]
-	public int Points
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Surname", DbType="VarChar(100) NOT NULL", CanBeNull=false)]
+	public string Surname
+	{
+		get
+		{
+			return this._Surname;
+		}
+		set
+		{
+			if ((this._Surname != value))
+			{
+				this.OnSurnameChanging(value);
+				this.SendPropertyChanging();
+				this._Surname = value;
+				this.SendPropertyChanged("Surname");
+				this.OnSurnameChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Email", DbType="VarChar(100) NOT NULL", CanBeNull=false)]
+	public string Email
+	{
+		get
+		{
+			return this._Email;
+		}
+		set
+		{
+			if ((this._Email != value))
+			{
+				this.OnEmailChanging(value);
+				this.SendPropertyChanging();
+				this._Email = value;
+				this.SendPropertyChanged("Email");
+				this.OnEmailChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Password", DbType="VarChar(MAX) NOT NULL", CanBeNull=false)]
+	public string Password
+	{
+		get
+		{
+			return this._Password;
+		}
+		set
+		{
+			if ((this._Password != value))
+			{
+				this.OnPasswordChanging(value);
+				this.SendPropertyChanging();
+				this._Password = value;
+				this.SendPropertyChanged("Password");
+				this.OnPasswordChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PhoneNumber", DbType="Char(10)")]
+	public string PhoneNumber
+	{
+		get
+		{
+			return this._PhoneNumber;
+		}
+		set
+		{
+			if ((this._PhoneNumber != value))
+			{
+				this.OnPhoneNumberChanging(value);
+				this.SendPropertyChanging();
+				this._PhoneNumber = value;
+				this.SendPropertyChanged("PhoneNumber");
+				this.OnPhoneNumberChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Status", DbType="VarChar(MAX)")]
+	public string Status
+	{
+		get
+		{
+			return this._Status;
+		}
+		set
+		{
+			if ((this._Status != value))
+			{
+				this.OnStatusChanging(value);
+				this.SendPropertyChanging();
+				this._Status = value;
+				this.SendPropertyChanged("Status");
+				this.OnStatusChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DateRegistered", DbType="Date")]
+	public System.Nullable<System.DateTime> DateRegistered
+	{
+		get
+		{
+			return this._DateRegistered;
+		}
+		set
+		{
+			if ((this._DateRegistered != value))
+			{
+				this.OnDateRegisteredChanging(value);
+				this.SendPropertyChanging();
+				this._DateRegistered = value;
+				this.SendPropertyChanged("DateRegistered");
+				this.OnDateRegisteredChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UserType", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+	public string UserType
+	{
+		get
+		{
+			return this._UserType;
+		}
+		set
+		{
+			if ((this._UserType != value))
+			{
+				this.OnUserTypeChanging(value);
+				this.SendPropertyChanging();
+				this._UserType = value;
+				this.SendPropertyChanged("UserType");
+				this.OnUserTypeChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Points", DbType="Int")]
+	public System.Nullable<int> Points
 	{
 		get
 		{
@@ -2887,37 +2630,68 @@ public partial class Point : INotifyPropertyChanging, INotifyPropertyChanged
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_Point", Storage="_User", ThisKey="Customer_ID", OtherKey="ID", IsForeignKey=true)]
-	public User User
+	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_ShoppingList", Storage="_ShoppingLists", ThisKey="ID", OtherKey="CustomerID")]
+	public EntitySet<ShoppingList> ShoppingLists
 	{
 		get
 		{
-			return this._User.Entity;
+			return this._ShoppingLists;
 		}
 		set
 		{
-			User previousValue = this._User.Entity;
-			if (((previousValue != value) 
-						|| (this._User.HasLoadedOrAssignedValue == false)))
-			{
-				this.SendPropertyChanging();
-				if ((previousValue != null))
-				{
-					this._User.Entity = null;
-					previousValue.Points.Remove(this);
-				}
-				this._User.Entity = value;
-				if ((value != null))
-				{
-					value.Points.Add(this);
-					this._Customer_ID = value.ID;
-				}
-				else
-				{
-					this._Customer_ID = default(int);
-				}
-				this.SendPropertyChanged("User");
-			}
+			this._ShoppingLists.Assign(value);
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_Card", Storage="_Cards", ThisKey="ID", OtherKey="CustomerID")]
+	public EntitySet<Card> Cards
+	{
+		get
+		{
+			return this._Cards;
+		}
+		set
+		{
+			this._Cards.Assign(value);
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_Device", Storage="_Devices", ThisKey="ID", OtherKey="CustomerID")]
+	public EntitySet<Device> Devices
+	{
+		get
+		{
+			return this._Devices;
+		}
+		set
+		{
+			this._Devices.Assign(value);
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_Address", Storage="_Addresses", ThisKey="ID", OtherKey="CustomerID")]
+	public EntitySet<Address> Addresses
+	{
+		get
+		{
+			return this._Addresses;
+		}
+		set
+		{
+			this._Addresses.Assign(value);
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_Invoice", Storage="_Invoices", ThisKey="ID", OtherKey="CustomerID")]
+	public EntitySet<Invoice> Invoices
+	{
+		get
+		{
+			return this._Invoices;
+		}
+		set
+		{
+			this._Invoices.Assign(value);
 		}
 	}
 	
@@ -2939,6 +2713,66 @@ public partial class Point : INotifyPropertyChanging, INotifyPropertyChanged
 		{
 			this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 		}
+	}
+	
+	private void attach_ShoppingLists(ShoppingList entity)
+	{
+		this.SendPropertyChanging();
+		entity.User = this;
+	}
+	
+	private void detach_ShoppingLists(ShoppingList entity)
+	{
+		this.SendPropertyChanging();
+		entity.User = null;
+	}
+	
+	private void attach_Cards(Card entity)
+	{
+		this.SendPropertyChanging();
+		entity.User = this;
+	}
+	
+	private void detach_Cards(Card entity)
+	{
+		this.SendPropertyChanging();
+		entity.User = null;
+	}
+	
+	private void attach_Devices(Device entity)
+	{
+		this.SendPropertyChanging();
+		entity.User = this;
+	}
+	
+	private void detach_Devices(Device entity)
+	{
+		this.SendPropertyChanging();
+		entity.User = null;
+	}
+	
+	private void attach_Addresses(Address entity)
+	{
+		this.SendPropertyChanging();
+		entity.User = this;
+	}
+	
+	private void detach_Addresses(Address entity)
+	{
+		this.SendPropertyChanging();
+		entity.User = null;
+	}
+	
+	private void attach_Invoices(Invoice entity)
+	{
+		this.SendPropertyChanging();
+		entity.User = this;
+	}
+	
+	private void detach_Invoices(Invoice entity)
+	{
+		this.SendPropertyChanging();
+		entity.User = null;
 	}
 }
 #pragma warning restore 1591

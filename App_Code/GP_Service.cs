@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data.Linq.SqlClient;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Security.Cryptography;
 using System.ServiceModel;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web.UI;
 
 // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "GP_Service" in code, svc and config file together.
@@ -1053,7 +1056,6 @@ public class GP_Service : IGP_Service
 
             ProductList.Add(tempPro);
         }
-
         return ProductList;
     }
 
@@ -1074,7 +1076,6 @@ public class GP_Service : IGP_Service
             totalCost = (double)(p.Cost * Quantity);
             totalPrice = (double)(p.Price * Quantity);
             profit += totalPrice - totalCost;
-
         }
         return profit;
     }
@@ -1204,7 +1205,6 @@ public class GP_Service : IGP_Service
             Image_Location = product.Image_Location
         };
         return temppro;
-        
     }
 
     public int getNumProductsInSub(int subID)
@@ -1245,7 +1245,6 @@ public class GP_Service : IGP_Service
             ex.GetBaseException();
             return -2;
         }
-
     }
 
     public int addInvoiceLine(int product_ID, int invoice_ID, int quantity, decimal price)
@@ -1268,50 +1267,101 @@ public class GP_Service : IGP_Service
             ex.GetBaseException();
             return -2;
         }
-
     }
 
     public List<Product> searchProducts(string input)
     {
-
         List<Product> productList = new List<Product>();
-
         dynamic product = (from p in db.Products
                            select p);
-
         dynamic category = (from c in db.ProductCategories
                             select c);
         dynamic subcategories = (from s in db.SubCategories
                                  select s);
 
-        foreach(ProductCategory c in category)
+        Regex r = new Regex(@"" + input.ToUpper() + "?");
+
+        foreach (Product p in product)
         {
-            if(input.ToUpper().Contains( c.Name.ToUpper()))
+            //MatchCollection matchedNames = r.Matches(p.Name.ToUpper());
+            if(r.IsMatch(p.Name.ToUpper()))
+            //if (p.Name.ToUpper().Contains(input.ToUpper()))
             {
-                dynamic productbycat = getProductByCat(c.ID);
-                productList.AddRange(productbycat);
+                dynamic pro = helpAllocate(p);
+                productList.Add(pro);
             }
         }
-        foreach(SubCategory s in subcategories)
+        foreach (SubCategory s in subcategories)
         {
-            if(input.ToUpper().Contains( s.Name.ToUpper()))
+            if (r.IsMatch(s.Name.ToUpper()))
+            //if (s.Name.ToUpper().Contains(input.ToUpper()))
             {
                 dynamic productbysubCat = getProductBySubCat(s.SubID);
-                productList.AddRange(productbysubCat);
+
+                foreach (Product p in productbysubCat)
+                {
+                    dynamic pro = helpAllocate(p);
+                    
+                    Boolean contains = false;
+                    foreach (Product pr in productList)
+                    {
+                        if (pr.ID.Equals(pro.ID))
+                        {
+                            contains = true;
+                        }
+                    }
+                    if (contains.Equals(false))
+                    {
+                        productList.Add(pro);
+                    }
+                }
             }
         }
-        foreach(Product p in product)
+        foreach (ProductCategory c in category)
         {
-            if(input.ToUpper().Contains(p.Name.ToUpper()))
+            if (r.IsMatch(c.Name.ToUpper()))
+            //if(c.Name.ToUpper().Contains(input.ToUpper()))
             {
-                dynamic pr = getProductByID(p.ID);
-                productList.AddRange(pr); 
+                dynamic productbycat = getProductByCat(c.ID);
+
+                foreach(Product pr in productbycat)
+                {
+                    dynamic pro = helpAllocate(pr);
+                    
+                    Boolean contains = false;
+                    foreach (Product p in productList)
+                    {
+                        if(p.ID.Equals(pro.ID))
+                        {
+                            contains = true;
+                        }
+                    }
+                    if(contains.Equals(false))
+                    {
+                        productList.Add(pro);
+                    }
+                    
+                    //if (productList.Contains(pr) == false)
+                      //  productList.Add(pro);
+                }
             }
         }
-
         return productList;
+    }
 
-
+    Product helpAllocate(Product p)
+    {
+        var tempProduct = new Product
+        {
+            ID = p.ID,
+            Name = p.Name,
+            Cost = p.Cost,
+            Price = p.Price,
+            Image_Location = p.Image_Location,
+            SubCategoryID = p.SubCategoryID,
+            StockOnHand = p.StockOnHand
+        };
+        return tempProduct;
     }
 
     public int addPoints(int Cust_ID, int points)

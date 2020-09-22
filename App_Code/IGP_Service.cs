@@ -152,4 +152,26 @@ public interface IGP_Service
 
     [OperationContract]
     List<Product> searchProducts(string input);
+
+    [OperationContract]
+    int addPoints(int Cust_ID, int points);
+
+    [OperationContract]
+    int updatePoints(int point_id, int Cust_ID, int points);
+
+    [OperationContract]
+    Point getpointbyID(int point_ID);
+
+    [OperationContract]
+    int getpointbyUserID(int Cus_ID);
+
+    [OperationContract]
+    Point getpointIDbyUserID(int Cus_ID);
+
+    [OperationContract]
+    ProductCategory getCategorybyProductID(int p_ID);
+
+
+
+
 }

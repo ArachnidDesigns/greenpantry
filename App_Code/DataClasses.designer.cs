@@ -35,9 +35,6 @@ public partial class DataClassesDataContext : System.Data.Linq.DataContext
   partial void InsertShoppingList(ShoppingList instance);
   partial void UpdateShoppingList(ShoppingList instance);
   partial void DeleteShoppingList(ShoppingList instance);
-  partial void InsertPoint(Point instance);
-  partial void UpdatePoint(Point instance);
-  partial void DeletePoint(Point instance);
   partial void InsertSubCategory(SubCategory instance);
   partial void UpdateSubCategory(SubCategory instance);
   partial void DeleteSubCategory(SubCategory instance);
@@ -65,6 +62,9 @@ public partial class DataClassesDataContext : System.Data.Linq.DataContext
   partial void InsertInvoice(Invoice instance);
   partial void UpdateInvoice(Invoice instance);
   partial void DeleteInvoice(Invoice instance);
+  partial void InsertPoint(Point instance);
+  partial void UpdatePoint(Point instance);
+  partial void DeletePoint(Point instance);
   #endregion
 	
 	public DataClassesDataContext() : 
@@ -110,14 +110,6 @@ public partial class DataClassesDataContext : System.Data.Linq.DataContext
 		get
 		{
 			return this.GetTable<ShoppingList>();
-		}
-	}
-	
-	public System.Data.Linq.Table<Point> Points
-	{
-		get
-		{
-			return this.GetTable<Point>();
 		}
 	}
 	
@@ -192,6 +184,14 @@ public partial class DataClassesDataContext : System.Data.Linq.DataContext
 			return this.GetTable<Invoice>();
 		}
 	}
+	
+	public System.Data.Linq.Table<Point> Points
+	{
+		get
+		{
+			return this.GetTable<Point>();
+		}
+	}
 }
 
 [global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.[User]")]
@@ -220,8 +220,6 @@ public partial class User : INotifyPropertyChanging, INotifyPropertyChanged
 	
 	private EntitySet<ShoppingList> _ShoppingLists;
 	
-	private EntitySet<Point> _Points;
-	
 	private EntitySet<Card> _Cards;
 	
 	private EntitySet<Device> _Devices;
@@ -229,6 +227,8 @@ public partial class User : INotifyPropertyChanging, INotifyPropertyChanged
 	private EntitySet<Address> _Addresses;
 	
 	private EntitySet<Invoice> _Invoices;
+	
+	private EntitySet<Point> _Points;
 	
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -257,11 +257,11 @@ public partial class User : INotifyPropertyChanging, INotifyPropertyChanged
 	public User()
 	{
 		this._ShoppingLists = new EntitySet<ShoppingList>(new Action<ShoppingList>(this.attach_ShoppingLists), new Action<ShoppingList>(this.detach_ShoppingLists));
-		this._Points = new EntitySet<Point>(new Action<Point>(this.attach_Points), new Action<Point>(this.detach_Points));
 		this._Cards = new EntitySet<Card>(new Action<Card>(this.attach_Cards), new Action<Card>(this.detach_Cards));
 		this._Devices = new EntitySet<Device>(new Action<Device>(this.attach_Devices), new Action<Device>(this.detach_Devices));
 		this._Addresses = new EntitySet<Address>(new Action<Address>(this.attach_Addresses), new Action<Address>(this.detach_Addresses));
 		this._Invoices = new EntitySet<Invoice>(new Action<Invoice>(this.attach_Invoices), new Action<Invoice>(this.detach_Invoices));
+		this._Points = new EntitySet<Point>(new Action<Point>(this.attach_Points), new Action<Point>(this.detach_Points));
 		OnCreated();
 	}
 	
@@ -458,19 +458,6 @@ public partial class User : INotifyPropertyChanging, INotifyPropertyChanged
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_Point", Storage="_Points", ThisKey="ID", OtherKey="Customer_ID")]
-	public EntitySet<Point> Points
-	{
-		get
-		{
-			return this._Points;
-		}
-		set
-		{
-			this._Points.Assign(value);
-		}
-	}
-	
 	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_Card", Storage="_Cards", ThisKey="ID", OtherKey="CustomerID")]
 	public EntitySet<Card> Cards
 	{
@@ -523,6 +510,19 @@ public partial class User : INotifyPropertyChanging, INotifyPropertyChanged
 		}
 	}
 	
+	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_Point", Storage="_Points", ThisKey="ID", OtherKey="Customer_ID")]
+	public EntitySet<Point> Points
+	{
+		get
+		{
+			return this._Points;
+		}
+		set
+		{
+			this._Points.Assign(value);
+		}
+	}
+	
 	public event PropertyChangingEventHandler PropertyChanging;
 	
 	public event PropertyChangedEventHandler PropertyChanged;
@@ -550,18 +550,6 @@ public partial class User : INotifyPropertyChanging, INotifyPropertyChanged
 	}
 	
 	private void detach_ShoppingLists(ShoppingList entity)
-	{
-		this.SendPropertyChanging();
-		entity.User = null;
-	}
-	
-	private void attach_Points(Point entity)
-	{
-		this.SendPropertyChanging();
-		entity.User = this;
-	}
-	
-	private void detach_Points(Point entity)
 	{
 		this.SendPropertyChanging();
 		entity.User = null;
@@ -610,6 +598,18 @@ public partial class User : INotifyPropertyChanging, INotifyPropertyChanged
 	}
 	
 	private void detach_Invoices(Invoice entity)
+	{
+		this.SendPropertyChanging();
+		entity.User = null;
+	}
+	
+	private void attach_Points(Point entity)
+	{
+		this.SendPropertyChanging();
+		entity.User = this;
+	}
+	
+	private void detach_Points(Point entity)
 	{
 		this.SendPropertyChanging();
 		entity.User = null;
@@ -768,157 +768,6 @@ public partial class ShoppingList : INotifyPropertyChanging, INotifyPropertyChan
 	{
 		this.SendPropertyChanging();
 		entity.ShoppingList = null;
-	}
-}
-
-[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Point")]
-public partial class Point : INotifyPropertyChanging, INotifyPropertyChanged
-{
-	
-	private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-	
-	private int _Point_ID;
-	
-	private int _Customer_ID;
-	
-	private int _Points;
-	
-	private EntityRef<User> _User;
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnPoint_IDChanging(int value);
-    partial void OnPoint_IDChanged();
-    partial void OnCustomer_IDChanging(int value);
-    partial void OnCustomer_IDChanged();
-    partial void OnPointsChanging(int value);
-    partial void OnPointsChanged();
-    #endregion
-	
-	public Point()
-	{
-		this._User = default(EntityRef<User>);
-		OnCreated();
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Point_ID", DbType="Int NOT NULL", IsPrimaryKey=true)]
-	public int Point_ID
-	{
-		get
-		{
-			return this._Point_ID;
-		}
-		set
-		{
-			if ((this._Point_ID != value))
-			{
-				this.OnPoint_IDChanging(value);
-				this.SendPropertyChanging();
-				this._Point_ID = value;
-				this.SendPropertyChanged("Point_ID");
-				this.OnPoint_IDChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Customer_ID", DbType="Int NOT NULL")]
-	public int Customer_ID
-	{
-		get
-		{
-			return this._Customer_ID;
-		}
-		set
-		{
-			if ((this._Customer_ID != value))
-			{
-				if (this._User.HasLoadedOrAssignedValue)
-				{
-					throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				}
-				this.OnCustomer_IDChanging(value);
-				this.SendPropertyChanging();
-				this._Customer_ID = value;
-				this.SendPropertyChanged("Customer_ID");
-				this.OnCustomer_IDChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Points", DbType="Int NOT NULL")]
-	public int Points
-	{
-		get
-		{
-			return this._Points;
-		}
-		set
-		{
-			if ((this._Points != value))
-			{
-				this.OnPointsChanging(value);
-				this.SendPropertyChanging();
-				this._Points = value;
-				this.SendPropertyChanged("Points");
-				this.OnPointsChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_Point", Storage="_User", ThisKey="Customer_ID", OtherKey="ID", IsForeignKey=true)]
-	public User User
-	{
-		get
-		{
-			return this._User.Entity;
-		}
-		set
-		{
-			User previousValue = this._User.Entity;
-			if (((previousValue != value) 
-						|| (this._User.HasLoadedOrAssignedValue == false)))
-			{
-				this.SendPropertyChanging();
-				if ((previousValue != null))
-				{
-					this._User.Entity = null;
-					previousValue.Points.Remove(this);
-				}
-				this._User.Entity = value;
-				if ((value != null))
-				{
-					value.Points.Add(this);
-					this._Customer_ID = value.ID;
-				}
-				else
-				{
-					this._Customer_ID = default(int);
-				}
-				this.SendPropertyChanged("User");
-			}
-		}
-	}
-	
-	public event PropertyChangingEventHandler PropertyChanging;
-	
-	public event PropertyChangedEventHandler PropertyChanged;
-	
-	protected virtual void SendPropertyChanging()
-	{
-		if ((this.PropertyChanging != null))
-		{
-			this.PropertyChanging(this, emptyChangingEventArgs);
-		}
-	}
-	
-	protected virtual void SendPropertyChanged(String propertyName)
-	{
-		if ((this.PropertyChanged != null))
-		{
-			this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
 	}
 }
 
@@ -2939,6 +2788,157 @@ public partial class Invoice : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		this.SendPropertyChanging();
 		entity.Invoice = null;
+	}
+}
+
+[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Point")]
+public partial class Point : INotifyPropertyChanging, INotifyPropertyChanged
+{
+	
+	private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+	
+	private int _Point_ID;
+	
+	private int _Customer_ID;
+	
+	private int _Points;
+	
+	private EntityRef<User> _User;
+	
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnPoint_IDChanging(int value);
+    partial void OnPoint_IDChanged();
+    partial void OnCustomer_IDChanging(int value);
+    partial void OnCustomer_IDChanged();
+    partial void OnPointsChanging(int value);
+    partial void OnPointsChanged();
+    #endregion
+	
+	public Point()
+	{
+		this._User = default(EntityRef<User>);
+		OnCreated();
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Point_ID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+	public int Point_ID
+	{
+		get
+		{
+			return this._Point_ID;
+		}
+		set
+		{
+			if ((this._Point_ID != value))
+			{
+				this.OnPoint_IDChanging(value);
+				this.SendPropertyChanging();
+				this._Point_ID = value;
+				this.SendPropertyChanged("Point_ID");
+				this.OnPoint_IDChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Customer_ID", DbType="Int NOT NULL")]
+	public int Customer_ID
+	{
+		get
+		{
+			return this._Customer_ID;
+		}
+		set
+		{
+			if ((this._Customer_ID != value))
+			{
+				if (this._User.HasLoadedOrAssignedValue)
+				{
+					throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+				}
+				this.OnCustomer_IDChanging(value);
+				this.SendPropertyChanging();
+				this._Customer_ID = value;
+				this.SendPropertyChanged("Customer_ID");
+				this.OnCustomer_IDChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Points", DbType="Int NOT NULL")]
+	public int Points
+	{
+		get
+		{
+			return this._Points;
+		}
+		set
+		{
+			if ((this._Points != value))
+			{
+				this.OnPointsChanging(value);
+				this.SendPropertyChanging();
+				this._Points = value;
+				this.SendPropertyChanged("Points");
+				this.OnPointsChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_Point", Storage="_User", ThisKey="Customer_ID", OtherKey="ID", IsForeignKey=true)]
+	public User User
+	{
+		get
+		{
+			return this._User.Entity;
+		}
+		set
+		{
+			User previousValue = this._User.Entity;
+			if (((previousValue != value) 
+						|| (this._User.HasLoadedOrAssignedValue == false)))
+			{
+				this.SendPropertyChanging();
+				if ((previousValue != null))
+				{
+					this._User.Entity = null;
+					previousValue.Points.Remove(this);
+				}
+				this._User.Entity = value;
+				if ((value != null))
+				{
+					value.Points.Add(this);
+					this._Customer_ID = value.ID;
+				}
+				else
+				{
+					this._Customer_ID = default(int);
+				}
+				this.SendPropertyChanged("User");
+			}
+		}
+	}
+	
+	public event PropertyChangingEventHandler PropertyChanging;
+	
+	public event PropertyChangedEventHandler PropertyChanged;
+	
+	protected virtual void SendPropertyChanging()
+	{
+		if ((this.PropertyChanging != null))
+		{
+			this.PropertyChanging(this, emptyChangingEventArgs);
+		}
+	}
+	
+	protected virtual void SendPropertyChanged(String propertyName)
+	{
+		if ((this.PropertyChanged != null))
+		{
+			this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+		}
 	}
 }
 #pragma warning restore 1591

@@ -12,11 +12,11 @@
       <Column Name="DateRegistered" Type="System.DateTime" DbType="Date" CanBeNull="true" />
       <Column Name="UserType" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
       <Association Name="User_ShoppingList" Member="ShoppingLists" ThisKey="ID" OtherKey="CustomerID" Type="ShoppingList" />
-      <Association Name="User_Point" Member="Points" ThisKey="ID" OtherKey="Customer_ID" Type="Point" />
       <Association Name="User_Card" Member="Cards" ThisKey="ID" OtherKey="CustomerID" Type="Card" />
       <Association Name="User_Device" Member="Devices" ThisKey="ID" OtherKey="CustomerID" Type="Device" />
       <Association Name="User_Address" Member="Addresses" ThisKey="ID" OtherKey="CustomerID" Type="Address" />
       <Association Name="User_Invoice" Member="Invoices" ThisKey="ID" OtherKey="CustomerID" Type="Invoice" />
+      <Association Name="User_Point" Member="Points" ThisKey="ID" OtherKey="Customer_ID" Type="Point" />
     </Type>
   </Table>
   <Table Name="dbo.ShoppingList" Member="ShoppingLists">
@@ -25,14 +25,6 @@
       <Column Name="CustomerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Association Name="ShoppingList_ListItem" Member="ListItems" ThisKey="ID" OtherKey="ListID" Type="ListItem" />
       <Association Name="User_ShoppingList" Member="User" ThisKey="CustomerID" OtherKey="ID" Type="User" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.Point" Member="Points">
-    <Type Name="Point">
-      <Column Name="Point_ID" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="Customer_ID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Points" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="User_Point" Member="User" ThisKey="Customer_ID" OtherKey="ID" Type="User" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.SubCategory" Member="SubCategories">
@@ -131,6 +123,14 @@
       <Column Name="Points" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Association Name="Invoice_InvoiceLine" Member="InvoiceLines" ThisKey="ID" OtherKey="InvoiceID" Type="InvoiceLine" />
       <Association Name="User_Invoice" Member="User" ThisKey="CustomerID" OtherKey="ID" Type="User" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Point" Member="Points">
+    <Type Name="Point">
+      <Column Name="Point_ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Customer_ID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Points" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="User_Point" Member="User" ThisKey="Customer_ID" OtherKey="ID" Type="User" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

@@ -123,11 +123,35 @@ public interface IGP_Service
 
     [OperationContract]
     int getNumProductsInSub(int subID);
+
     [OperationContract]
     int addInvoices(int customer_ID, string status, DateTime date, DateTime deliverDate, string notes, decimal total, int points);
+
     [OperationContract]
     int addInvoiceLine(int product_ID, int invoice_ID, int quantity, decimal price);
+
     [OperationContract]
     List<Product> searchProducts(string input);
+
+    [OperationContract]
+    int addPoints(int Cust_ID, int points);
+
+    [OperationContract]
+    int updatePoints(int point_id, int Cust_ID, int points);
+
+    [OperationContract]
+    Point getpointbyID(int point_ID);
+
+    [OperationContract]
+    int getpointbyUserID(int Cus_ID);
+
+    [OperationContract]
+    Point getpointIDbyUserID(int Cus_ID);
+
+    [OperationContract]
+    ProductCategory getCategorybyProductID(int p_ID);
+
+
+
 
 }

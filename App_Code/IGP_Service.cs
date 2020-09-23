@@ -197,6 +197,9 @@ public interface IGP_Service
 
     [OperationContract]
     double NumSaleChange(DateTime currentDate);
+    
+
+
 
 
 }

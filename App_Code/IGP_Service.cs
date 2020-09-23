@@ -177,6 +177,19 @@ public interface IGP_Service
     decimal salesPerWeek(DateTime date);
 
     [OperationContract]
+    int addCategory(int id, string name);
+    [OperationContract]
+    int addSubCategory(int id, string name);
+    [OperationContract]
+    int updateSubCategories(int id, string name);
+    [OperationContract]
+    int updateCategories(int id, string name);
+    [OperationContract]
+    int removeSubCategory(int id);
+    [OperationContract]
+    int removeCategory(int id);
+
+    [OperationContract]
     double percentageSaleChanger(DateTime currentDate);
 
     [OperationContract]

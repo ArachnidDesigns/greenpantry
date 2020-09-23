@@ -1458,8 +1458,8 @@ public class GP_Service : IGP_Service
         }
         else
         {
-            return (int)user.Points;
-
+            int points = Convert.ToInt32(Math.Round(user.Points * 0.1));
+            return points;
         }
     }
 

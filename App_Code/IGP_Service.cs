@@ -176,4 +176,14 @@ public interface IGP_Service
     [OperationContract]
     decimal salesPerWeek(DateTime date);
 
+    [OperationContract]
+    double percentageSaleChanger(DateTime currentDate);
+
+    [OperationContract]
+    int NumsalesPerWeek(DateTime date);
+
+    [OperationContract]
+    double NumSaleChange(DateTime currentDate);
+
+
 }

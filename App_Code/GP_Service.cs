@@ -1500,12 +1500,13 @@ public class GP_Service : IGP_Service
     public double percentageUserChange(DateTime currentDate)
     {
         //getting the total number of users perweek
-        int totalBefore = getAllUsers();
-        int totalUsers = usersperWeek(currentDate);
+        int totalBefore = getAllUsers();//20
+        int totalUsers = usersperWeek(currentDate);//1
 
-        int Change = totalBefore + totalUsers;
-
-        double percentageChange = (Change / totalBefore) * 100;
+        int Change = totalBefore + totalUsers; //21 
+        int Newuser = Change - totalBefore;
+        //new value - old value/oldvalue *100
+        double percentageChange = ((Newuser*100)/ totalBefore);//19/20*100
 
         return percentageChange;
     }
@@ -1543,5 +1544,69 @@ public class GP_Service : IGP_Service
         }
 
         return totalSales;
+    }
+
+    private double getAllSales()
+    {
+        dynamic sale = (from s in db.Invoices
+                        select s);
+        double totalSales = 0;
+        foreach(Invoice i in sale)
+        {
+            totalSales += Convert.ToDouble(i.Total);
+        }
+        return totalSales;
+    }
+
+    public double percentageSaleChanger(DateTime currentDate)
+    {
+        double Salesbefore = getAllSales();
+        double SalesinWeek = Convert.ToDouble(salesPerWeek(currentDate));
+
+        double Change = SalesinWeek + Salesbefore;
+        double difference = Change - Salesbefore;
+
+        double percentage = ((difference * 100) / Salesbefore);
+        return percentage;
+    }
+    public int NumsalesPerWeek(DateTime date)
+    {
+        dynamic weekDates = getWeekDates(date.Date);
+        dynamic sale = (from s in db.Invoices
+                        select s);
+        int Counter = 0;
+        foreach(Invoice i in sale)
+        {
+            if (weekDates.Contains(i.Date))
+            {
+                Counter += 1; 
+            }
+         
+        }
+        return Counter;
+    }
+    private int getAllInvoices()
+    {
+        dynamic sale = (from s in db.Invoices
+                        select s);
+        int Counter = 0;
+        foreach(Invoice i in sale)
+        {
+            Counter += 1;
+        }
+        return Counter;
+    }
+    
+    public double NumSaleChange(DateTime currentDate)
+    {
+        int AllInvoices = getAllInvoices();//7
+        int  numbNewSales = NumsalesPerWeek(currentDate);//4
+       //new value - old value/oldvalue *100
+        int OldInvoices = AllInvoices - numbNewSales; //7-4 = 3
+        double Difference = (AllInvoices - OldInvoices)*100;
+        double percentage = (Difference / OldInvoices);
+       
+        return percentage;
+
     }
 }

@@ -1544,4 +1544,168 @@ public class GP_Service : IGP_Service
 
         return totalSales;
     }
+
+    public int addCategory(int id, string name)
+    {
+        var category = (from c in db.ProductCategories
+                    where c.ID.Equals(id)
+                    select c).FirstOrDefault();
+
+        if (category != null)
+        {
+            category.Name = name;
+
+            try
+            {
+                db.SubmitChanges();
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                ex.GetBaseException();
+                return -1;
+            }
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+    public int addSubCategory(int id, string name)
+    {
+        var subcategory = (from sc in db.SubCategories
+                           where sc.SubID.Equals(id)
+                           select sc).FirstOrDefault(); 
+
+        if(subcategory != null)
+        {
+            subcategory.Name = name;
+
+            try
+            {
+                db.SubmitChanges();
+                return 1; 
+            }
+            catch(Exception ex)
+            {
+                ex.GetBaseException();
+                return -1; 
+            }
+        }
+        else
+        {
+            return 0; 
+        }
+    }
+
+    public int updateCategories(int id,string name)
+    {
+        var category = (from c in db.ProductCategories
+                    where c.ID.Equals(id)
+                    select c).FirstOrDefault();
+
+        if (category != null)
+        {
+            category.Name = name;
+
+            try
+            {
+                db.SubmitChanges();
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                ex.GetBaseException();
+                return -1;
+            }
+        }
+        else
+        {
+            
+            return 0;
+        }
+    }
+
+    public int updateSubCategories(int id, string name)
+    {
+        var subcategory = (from sc in db.SubCategories
+                        where sc.ID.Equals(id)
+                        select sc).FirstOrDefault();
+
+        if (subcategory != null)
+        {
+            subcategory.Name = name;
+
+            try
+            {
+                db.SubmitChanges();
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                ex.GetBaseException();
+                return -1;
+            }
+        }
+        else
+        {
+
+            return 0;
+        }
+    }
+
+    public int removeCategory(int id)
+    {
+        var category = (from c in db.ProductCategories
+                       where c.ID.Equals(id)
+                       select c).FirstOrDefault();
+
+        if (category == null)
+        {
+            
+            return 0;
+        }
+        else
+        {
+            db.ProductCategories.DeleteOnSubmit(category);
+            try
+            {
+                db.SubmitChanges();
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                ex.GetBaseException();
+                return -1;
+            }
+        }
+    }
+
+    public int removeSubCategory(int id)
+    {
+        var subcategory = (from sc in db.SubCategories
+                       where sc.ID.Equals(id)
+                       select sc).FirstOrDefault();
+
+        if (subcategory == null)
+        {
+            //product does not exist
+            return 0;
+        }
+        else
+        {
+            db.SubCategories.DeleteOnSubmit(subcategory);
+            try
+            {
+                db.SubmitChanges();
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                ex.GetBaseException();
+                return -1;
+            }
+        }
+    }
 }

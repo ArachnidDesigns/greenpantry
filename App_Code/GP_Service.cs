@@ -77,6 +77,60 @@ public class GP_Service : IGP_Service
         }
     }
 
+    public int addUserNumber(int id, string number)
+    {
+        var user = (from u in db.Users
+                    where u.ID.Equals(id)
+                    select u).FirstOrDefault();
+       
+        if(user != null)
+        {
+            user.PhoneNumber = number;
+
+            try
+            {
+                db.SubmitChanges();
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                ex.GetBaseException();
+                return -1;
+            }
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    public int removeUser(int id)
+    {
+        var user = (from u in db.Users
+                    where u.ID.Equals(id)
+                    select u).FirstOrDefault();
+
+        if(user != null)
+        {
+            user.Status = "Inactive";
+
+            try
+            {
+                db.SubmitChanges();
+                return 1;
+            }
+            catch(Exception ex)
+            {
+                ex.GetBaseException();
+                return -1;
+            }
+        }
+        else
+        {
+            //can't find users
+            return 0;
+        }
+    }
+
     public int UpdatePassword(int id, string oldPassword, string newPassword)
     {
         var user = getUser(id);
@@ -1364,107 +1418,48 @@ public class GP_Service : IGP_Service
         return tempProduct;
     }
 
-    public int addPoints(int Cust_ID, int points)
+    public int updatePoints(int Cust_ID, int points)
     {
-        var point = new Point
-        {
-            Customer_ID = Cust_ID,
-            Points = points
-        };
-        db.Points.InsertOnSubmit(point);
-        try
-        {
-            db.SubmitChanges();
-            return 1;
-        }
-        catch(Exception e)
-        {
-            e.GetBaseException();
-            return -1;
-        }
-    }
+        var user = (from u in db.Users
+                    where u.ID.Equals(Cust_ID)
+                    select u).FirstOrDefault();
 
-    public int updatePoints(int point_id, int Cust_ID, int points)
-    {
-        dynamic point = getpointbyID(point_id);
-        if (point != null)
+        if(user != null)
         {
-            point.Point_ID = point_id;
-            point.Customer_ID = Cust_ID;
-            point.Points = points;
+            user.Points = points;
 
             try
             {
                 db.SubmitChanges();
                 return 1;
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 ex.GetBaseException();
-                return -2;
+                return -1;
             }
-
         }
         else
         {
+            //can''t find user
             return 0;
         }
-
     }
 
-    public Point getpointbyID(int point_ID)
+    public int getUserPoints(int Cus_ID)
     {
-        dynamic point = (from p in db.Points
-                     where p.Point_ID.Equals(point_ID)
-                     select p).FirstOrDefault();
-        if(point == null)
+        User user = (from p in db.Users
+                    where p.ID.Equals(Cus_ID)
+                    select p).FirstOrDefault();
+        if (user == null)
         {
-            return null;
-        }else
-        {
-            return point;
-        }
-    }
-
-    public int getpointbyUserID(int Cus_ID)
-    {
-        dynamic point = (from p in db.Points
-                         where p.Customer_ID.Equals(Cus_ID)
-                         select p).FirstOrDefault();
-        if (point == null)
-        {
+            //can't find user
             return 0;
         }
         else
         {
-            var pnt = new Point
-            {
-                Point_ID = point.Point_ID,
-                Customer_ID = point.Customer_ID,
-                Points = point.Points
-            };
-            return pnt.Points;
-        }
-    }
-
-    public Point getpointIDbyUserID(int Cus_ID)
-    {
-        dynamic point = (from p in db.Points
-                         where p.Point_ID.Equals(Cus_ID)
-                         select p).FirstOrDefault();
-        if(point == null)
-        {
-            return null;
-        }
-        else
-        {
-            var pnt = new Point
-            {
-                Point_ID = point.Point_ID,
-                Customer_ID = point.Customer_ID,
-                Points = point.Points
-            };
-            return pnt;
+            int points = Convert.ToInt32(Math.Round(user.Points * 0.1));
+            return points;
         }
     }
 
@@ -1476,5 +1471,77 @@ public class GP_Service : IGP_Service
         dynamic category = getCat(subcategory.CategoryID);
 
         return category;
+    }
+
+    public int usersperWeek(DateTime currentDate)
+    {
+        dynamic DayList = getWeekDates(currentDate);
+        int totalUsers = 0;
+        foreach(DateTime d in DayList)
+        {
+            totalUsers += getUsersPerDay(d);
+        }
+        return totalUsers;
+    }
+    private int getAllUsers()
+    {
+        dynamic user = (from u in db.Users
+                        select u);
+        int count = 0;
+        foreach(User usr in user)
+        {
+            count += 1;
+        }
+        return count;
+ 
+
+    }
+
+    public double percentageUserChange(DateTime currentDate)
+    {
+        //getting the total number of users perweek
+        int totalBefore = getAllUsers();
+        int totalUsers = usersperWeek(currentDate);
+
+        int Change = totalBefore + totalUsers;
+
+        double percentageChange = (Change / totalBefore) * 100;
+
+        return percentageChange;
+    }
+
+    private List<DateTime> getWeekDates(DateTime date)
+    {
+        List<DateTime> weekDates = new List<DateTime>();
+
+        var todayDate = date.Date;
+
+        var day = (int)todayDate.DayOfWeek;
+        const int totalNumDays = 7;
+
+        for(int i = -day; i < (-day + totalNumDays); i++)
+        {
+            weekDates.Add(todayDate.AddDays(i).Date);
+        }
+        return weekDates;
+    }
+
+    public decimal salesPerWeek(DateTime date)
+    {
+        dynamic weekDates = getWeekDates(date.Date);
+        dynamic invoices = (from p in db.Invoices
+                            select p);
+
+        decimal totalSales = 0;
+
+        foreach(Invoice i in invoices)
+        {
+            if (weekDates.Contains(i.Date))
+            {
+                totalSales += (decimal)i.Total;
+            }
+        }
+
+        return totalSales;
     }
 }

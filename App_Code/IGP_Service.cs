@@ -16,6 +16,12 @@ public interface IGP_Service
     int Register(string name, string surname, string email, string password, string status, DateTime date, string userType);
 
     [OperationContract]
+    int addUserNumber(int id, string number);
+
+    [OperationContract]
+    int removeUser(int id);
+
+    [OperationContract]
     int UpdateUserDetails(int id, string name, string surname, string email, string number);
 
     [OperationContract]
@@ -65,7 +71,6 @@ public interface IGP_Service
 
     [OperationContract]
     int AddItemsToShoppingList(int ListID ,int ShoppingList_ID, int Product_ID, int Quantity);
-
     [OperationContract]
     User getUser(int User_ID);
 
@@ -128,7 +133,7 @@ public interface IGP_Service
 
     [OperationContract]
     SubCategory getSubCat(int S_ID);
-    
+
     [OperationContract]
     ProductCategory getCat(int C_ID);
 
@@ -154,24 +159,21 @@ public interface IGP_Service
     List<Product> searchProducts(string input);
 
     [OperationContract]
-    int addPoints(int Cust_ID, int points);
+    int updatePoints(int Cust_ID, int points);
 
     [OperationContract]
-    int updatePoints(int point_id, int Cust_ID, int points);
-
-    [OperationContract]
-    Point getpointbyID(int point_ID);
-
-    [OperationContract]
-    int getpointbyUserID(int Cus_ID);
-
-    [OperationContract]
-    Point getpointIDbyUserID(int Cus_ID);
+    int getUserPoints(int Cus_ID);
 
     [OperationContract]
     ProductCategory getCategorybyProductID(int p_ID);
 
+    [OperationContract]
+    int usersperWeek(DateTime currentDate);
 
+    [OperationContract]
+    double percentageUserChange(DateTime currentDate);
 
+    [OperationContract]
+    decimal salesPerWeek(DateTime date);
 
 }

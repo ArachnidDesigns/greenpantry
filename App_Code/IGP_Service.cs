@@ -197,6 +197,15 @@ public interface IGP_Service
 
     [OperationContract]
     double NumSaleChange(DateTime currentDate);
+    
+
+
+
+    [OperationContract]
+    int numProductSales(DateTime currentDate, int Product_ID);
+
+    [OperationContract]
+    double percProductSales(DateTime currentDate, int Product_ID);
 
 
 }

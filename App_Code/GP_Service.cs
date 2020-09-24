@@ -290,10 +290,19 @@ public class GP_Service : IGP_Service
         {
             foreach(Product pr in products)
             {
-                productsList.Add(pr);
+                var tempProduct = new Product
+                {
+                    ID = pr.ID,
+                    Name = pr.Name,
+                    Cost = pr.Cost,
+                    Price = pr.Price,
+                    Image_Location = pr.Image_Location,
+                    StockOnHand = pr.StockOnHand,
+                    SubCategoryID = pr.SubCategoryID
+                };
+                productsList.Add(tempProduct);
             }
         }
-
         return productsList;
     }
 
@@ -1631,7 +1640,7 @@ public class GP_Service : IGP_Service
     public int updateSubCategories(int id, string name)
     {
         var subcategory = (from sc in db.SubCategories
-                        where sc.ID.Equals(id)
+                        where sc.SubID.Equals(id)
                         select sc).FirstOrDefault();
 
         if (subcategory != null)
@@ -1686,7 +1695,7 @@ public class GP_Service : IGP_Service
     public int removeSubCategory(int id)
     {
         var subcategory = (from sc in db.SubCategories
-                       where sc.ID.Equals(id)
+                       where sc.SubID.Equals(id)
                        select sc).FirstOrDefault();
 
         if (subcategory == null)

@@ -491,11 +491,23 @@ public class GP_Service : IGP_Service
         else
         {
             foreach(Invoice ord in allOrders)
-            {
-                ordersList.Add(ord);
+            { 
+                var newOrder = new Invoice
+                {
+                    ID = ord.ID,
+                    CustomerID = ord.CustomerID,
+                    Status = ord.Status,
+                    Date = ord.Date,
+                    DeliveryDatetime = ord.DeliveryDatetime,
+                    Notes = ord.Notes,
+                    Points = ord.Points,
+                    Total = ord.Total
+                };
+            ordersList.Add(newOrder);
             }
+            return ordersList;
         }
-        return ordersList;
+       
     }
 
     //Function that returns a list of orders linked to a specific customer

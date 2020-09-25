@@ -165,6 +165,9 @@ public interface IGP_Service
     double percentageUserChange(DateTime currentDate);
 
     [OperationContract]
+    List<DateTime> getWeekDates(DateTime date);
+
+    [OperationContract]
     decimal salesPerWeek(DateTime date);
 
     [OperationContract]
@@ -187,7 +190,17 @@ public interface IGP_Service
 
     [OperationContract]
     double NumSaleChange(DateTime currentDate);
-    
+
+    [OperationContract]
+    decimal calcCategoryTotalSales(int cId);
+
+    [OperationContract]
+    decimal calcSalesPerDay(DateTime date);
+
+    [OperationContract]
+    List<DateTime> getMonthDates(DateTime date); 
+
+
     [OperationContract]
     int numProductSales(DateTime currentDate, int Product_ID);
 

@@ -1651,7 +1651,7 @@ public class GP_Service : IGP_Service
         return percentageChange;
     }
 
-    private List<DateTime> getWeekDates(DateTime date)
+    public List<DateTime> getWeekDates(DateTime date)
     {
         List<DateTime> weekDates = new List<DateTime>();
 
@@ -1780,6 +1780,63 @@ public class GP_Service : IGP_Service
        
         return percentage;
 
+    }
+    public decimal calcCategoryTotalSales(int cId)
+    {
+        decimal totalSales = 0;
+        dynamic invoiceSales = (from i in db.InvoiceLines
+                                select i);
+
+        foreach(InvoiceLine i in invoiceSales)
+        {
+            var productCategory = getCategorybyProductID(i.ProductID);
+            if (productCategory.ID.Equals(cId))
+            {
+                totalSales += (decimal)(i.Qty * i.Price);
+            }
+        }
+
+        return totalSales;
+    }
+
+    public decimal calcSalesPerDay(DateTime date)
+    {
+        decimal sales = 0;
+
+        dynamic invoices = (from i in db.Invoices
+                            where i.Date.Equals(date.Date)
+                            select i);
+        
+        if(invoices != null)
+        {
+            foreach(Invoice inv in invoices)
+            {
+                sales += inv.Total;
+            }
+        }
+
+        return sales;
+    }
+
+    public List<DateTime> getMonthDates(DateTime date)
+    {
+        List<DateTime> monthDates = new List<DateTime>();
+
+        //List<DateTime> daysList = Enumerable.Range(1, DateTime.DaysInMonth(date.Year, date.Month))
+        //                    .Select(day => new DateTime(date.Year, date.Month, day)).ToList();
+
+
+        //dynamic dates = daysList.Select(day => new DateTime(date.year, date.month, day)); 
+
+        dynamic daysList = Enumerable.Range(1, DateTime.DaysInMonth(date.Year, date.Month));
+
+        foreach(var d in daysList)
+        {
+            DateTime newDate = new DateTime(date.Year, date.Month, d);
+            monthDates.Add(newDate);
+        }
+
+        return monthDates;
     }
 
     //getting the weekly invoice line for a particular product

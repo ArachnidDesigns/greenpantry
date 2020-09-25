@@ -883,10 +883,10 @@ public class GP_Service : IGP_Service
     //INVOICE MANAGEMENT -----------------------------------------------------------
 
     //Get Invoice by InvoiceID
-    public Invoice getOrder(int orderId)
+    public Invoice getInvoice(int InvoiceID)
     {
         var order = (from o in db.Invoices
-                     where o.ID.Equals(orderId)
+                     where o.ID.Equals(InvoiceID)
                      select o).FirstOrDefault();
 
         if(order == null)

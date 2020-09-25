@@ -211,5 +211,11 @@ public interface IGP_Service
     List<DateTime> getMonthDates(DateTime date); 
 
 
+    [OperationContract]
+    int numProductSales(DateTime currentDate, int Product_ID);
+
+    [OperationContract]
+    double percProductSales(DateTime currentDate, int Product_ID);
+
 
 }

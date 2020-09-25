@@ -290,10 +290,19 @@ public class GP_Service : IGP_Service
         {
             foreach(Product pr in products)
             {
-                productsList.Add(pr);
+                var tempProduct = new Product
+                {
+                    ID = pr.ID,
+                    Name = pr.Name,
+                    Cost = pr.Cost,
+                    Price = pr.Price,
+                    Image_Location = pr.Image_Location,
+                    StockOnHand = pr.StockOnHand,
+                    SubCategoryID = pr.SubCategoryID
+                };
+                productsList.Add(tempProduct);
             }
         }
-
         return productsList;
     }
 
@@ -1777,7 +1786,6 @@ public class GP_Service : IGP_Service
     {
         int AllInvoices = getAllInvoices();//7
         int  numbNewSales = NumsalesPerWeek(currentDate);//4
-       //new value - old value/oldvalue *100
         int OldInvoices = AllInvoices - numbNewSales; //7-4 = 3
         double Difference = (AllInvoices - OldInvoices)*100;
         double percentage = (Difference / OldInvoices);
@@ -1842,4 +1850,62 @@ public class GP_Service : IGP_Service
 
         return monthDates;
     }
+
+    //getting the weekly invoice line for a particular product
+    public int numProductSales(DateTime currentDate, int Product_ID)
+    {
+        dynamic weekDates = getWeekDates(currentDate.Date);
+        
+        dynamic invoice = getAllOrders();
+
+        List<InvoiceLine> LineList = new List<InvoiceLine>();
+        int Count = 0;
+        //for each day get the product sales and add to the counter 
+        foreach(Invoice i in invoice)
+        {  
+            if (weekDates.Contains(i.Date))
+            {
+                dynamic invoiceLine = getallinvoiceLine(i.ID);
+                foreach (InvoiceLine inv in invoiceLine)
+                {
+                    if (inv.ProductID.Equals(Product_ID))
+                    {
+                        Count += (1*inv.Qty);
+                    }
+                }
+            }
+
+        }
+
+        return Count;
+    }
+
+    private int getallInvoiceLine(int P_ID)
+    {
+        dynamic invLine = (from i in db.InvoiceLines
+                           select i);
+        int Count = 0;
+        foreach(InvoiceLine inv in invLine)
+        {
+            if(inv.ProductID.Equals(P_ID))
+            {
+                Count += (1*inv.Qty);
+            }
+           
+        }
+        return Count;
+    }
+
+    public double percProductSales(DateTime currentDate, int Product_ID)
+    {
+        int newproductSales = numProductSales(currentDate, Product_ID); //3
+        int TotalNow = getallInvoiceLine(Product_ID);//6
+        //int newTotal = newproductSales + TotalBefore;
+        int StartingValue = TotalNow - newproductSales; //6-3 = 3
+        int Difference = (TotalNow-StartingValue) * 100; //6-3 * 100 = 300
+        double percentageChange = (Difference /StartingValue);//300/3 = 100
+        return percentageChange;
+
+    }
+
 }

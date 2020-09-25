@@ -13,7 +13,7 @@ public interface IGP_Service
     int login(string email, string password);
 
     [OperationContract]
-    int Register(string name, string surname, string email, string password, string status, DateTime date, string userType);
+    int register(string name, string surname, string email, string password, string status, DateTime date, string userType);
 
     [OperationContract]
     int addUserNumber(int id, string number);
@@ -22,10 +22,7 @@ public interface IGP_Service
     int removeUser(int id);
 
     [OperationContract]
-    int UpdateUserDetails(int id, string name, string surname, string email, string number);
-
-    [OperationContract]
-    int UpdatePassword(int id, string oldPassword, string newPassword);
+    int updateUserDetails(int id, string name, string surname, string email, string number, string oldPass, string newPass);
 
     [OperationContract]
     int addNewProduct(string name, int SubID, double price, double cost, int stockQty, string imgLocation);
@@ -49,16 +46,16 @@ public interface IGP_Service
     Invoice getOrder(int orderId);
 
     [OperationContract]
-    int addOrder(int customerId, string status, DateTime datePlaced, DateTime deliverDate, string message);
+    int addInvoice(int customerId, string status, DateTime datePlaced, DateTime deliverDate, string message, decimal total, int points);
 
     [OperationContract]
-    int UpdateOrder(int customerId, string status, DateTime datePlaced, DateTime deliverDate, string message);
+    int updateInvoice(int customerId, string status, DateTime datePlaced, DateTime deliverDate, string message, decimal total, int points);
 
     [OperationContract]
-    List<Invoice> getAllOrders();
+    List<Invoice> getAllInvoices();
 
     [OperationContract]
-    List<Invoice> getAllCustomerOrders(int customerId);
+    List<Invoice> getAllCustomerInvoices(int customerId);
 
     [OperationContract]
     int getUsersPerDay(DateTime day);
@@ -67,10 +64,10 @@ public interface IGP_Service
     Product getProduct(int Product_ID);
 
     [OperationContract]
-    int UpdateStock(int P_ID, int ItemsPurchased);
+    int updateStock(int P_ID, int ItemsPurchased);
 
     [OperationContract]
-    int AddItemsToShoppingList(int ListID ,int ShoppingList_ID, int Product_ID, int Quantity);
+    int addItemsToShoppingList(int ListID ,int ShoppingList_ID, int Product_ID, int Quantity);
     [OperationContract]
     User getUser(int User_ID);
 
@@ -78,43 +75,43 @@ public interface IGP_Service
     int getNumUsers();
 
     [OperationContract]
-    double CalculateProfit();
+    double calculateProfit();
 
     [OperationContract]
     Address getAddress(int Address_ID);
 
     [OperationContract]
-    int AddAdress(string line1, string line2, string suburb, string city, char billing, string type, int C_ID , string Province);
+    int addAddress(string line1, string line2, string suburb, string city, char billing, string type, int C_ID , string Province);
 
     [OperationContract]
-    int UpdateAddress(int A_ID, string line1, string line2, string suburb, string city, char billing, string type, int Cus_ID);
+    int updateAddress(int A_ID, string line1, string line2, string suburb, string city, char billing, string type, int Cus_ID);
 
     [OperationContract]
     Card getCard(int id);
 
     [OperationContract]
-    int AddCard(int Cus_ID,string description, string name, string number, DateTime expiry);
+    int addCard(int Cus_ID,string description, string name, string number, DateTime expiry);
 
     [OperationContract]
-    int UpdateCards(int c_ID, int Cust_ID, string description, string name, string number, DateTime expiry);
+    int updateCards(int c_ID, int Cust_ID, string description, string name, string number, DateTime expiry);
 
     [OperationContract]
     Device getDevice(int D_ID);
 
     [OperationContract]
-    int AddDevices(string os);
+    int addDevices(string os);
 
     [OperationContract]
-    ListItem getListItem(int id);
+    ListProduct getListProduct(int id);
 
     [OperationContract]
-    int AddListItems(int P_ID, int quantity);
+    int addListProduct(int P_ID, int quantity);
 
     [OperationContract]
-    int UpdateListItem(int id, int list_ID, int P_ID, int quantity);
+    int updateListProduct(int id, int list_ID, int P_ID, int quantity);
 
     [OperationContract]
-    List<InvoiceLine> getOrderedItems(int id);
+    List<InvoiceLine> getAllInvoiceLines(int InvoiceID);
 
     [OperationContract]
     List<Product> getProductByCat(int Cat_ID);
@@ -144,13 +141,7 @@ public interface IGP_Service
     decimal calcProductVAT(int P_ID);
 
     [OperationContract]
-    Product getProductByID(int P_ID);
-
-    [OperationContract]
     int getNumProductsInSub(int subID);
-
-    [OperationContract]
-    int addInvoices(int customer_ID, string status, DateTime date, DateTime deliverDate, string notes, decimal total, int points);
 
     [OperationContract]
     int addInvoiceLine(int product_ID, int invoice_ID, int quantity, decimal price);
@@ -178,17 +169,16 @@ public interface IGP_Service
 
     [OperationContract]
     int addCategory(int id, string name);
+
     [OperationContract]
     int addSubCategory(int id, string name);
+    
     [OperationContract]
     int updateSubCategories(int id, string name);
+    
     [OperationContract]
     int updateCategories(int id, string name);
-    [OperationContract]
-    int removeSubCategory(int id);
-    [OperationContract]
-    int removeCategory(int id);
-
+    
     [OperationContract]
     double percentageSaleChanger(DateTime currentDate);
 
@@ -198,14 +188,9 @@ public interface IGP_Service
     [OperationContract]
     double NumSaleChange(DateTime currentDate);
     
-
-
-
     [OperationContract]
     int numProductSales(DateTime currentDate, int Product_ID);
 
     [OperationContract]
     double percProductSales(DateTime currentDate, int Product_ID);
-
-
 }

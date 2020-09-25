@@ -16,13 +16,28 @@ public class GP_Service : IGP_Service
     //connect to dbml
     DataClassesDataContext db = new DataClassesDataContext();
 
+    //USER MANAGEMENT
+    //PRODUCT MANAGEMENT
+    //CATEGORY MANAGEMENT
+    //SUBCATEGORY MANAGEMENT
+    //SHOPPING LIST MANAGEMENT
+    //LIST MANAGEMENT
+    //ADDRESS MANAGEMENT
+    //INVOICE MANAGEMENT
+    //IINVOICE LINE MANAGEMENT
+    //CARD MANAGEMENT
+    //DEVICE MANAGEMENT
+    //REPORT MANAGEMENT
+
+    //USER MANAGEMENT -------------------------------------------------------------------------------------------------
+
+    //Login 
     public int login(string email, string password)
     {
         //check if user information is in the database
         var user = (from u in db.Users
                     where u.Email.Equals(email) && u.Password.Equals(password)
                     select u).FirstOrDefault();
-
 
         if(user != null)
         {
@@ -35,7 +50,8 @@ public class GP_Service : IGP_Service
         }
     }
 
-    public int Register(string name, string surname, string email, string password, string status, DateTime date, string userType)
+    //Register 
+    public int register(string name, string surname, string email, string password, string status, DateTime date, string userType)
     {
         //check if a user with the given email exists
         var user = (from u in db.Users
@@ -68,7 +84,6 @@ public class GP_Service : IGP_Service
                 ex.GetBaseException();
                 return -1;
             }
-
         }
         else
         {
@@ -77,6 +92,7 @@ public class GP_Service : IGP_Service
         }
     }
 
+    //Add phone number 
     public int addUserNumber(int id, string number)
     {
         var user = (from u in db.Users
@@ -103,6 +119,8 @@ public class GP_Service : IGP_Service
             return 0;
         }
     }
+
+    //Make user profile inactive 
     public int removeUser(int id)
     {
         var user = (from u in db.Users
@@ -111,7 +129,7 @@ public class GP_Service : IGP_Service
 
         if(user != null)
         {
-            user.Status = "Inactive";
+            user.Status = "inactive";
 
             try
             {
@@ -131,8 +149,10 @@ public class GP_Service : IGP_Service
         }
     }
 
-    public int UpdatePassword(int id, string oldPassword, string newPassword)
+    //Update user password 
+    private int updatePassword(int id, string oldPassword, string newPassword)
     {
+        //getUser
         var user = getUser(id);
 
         if(user == null)
@@ -168,52 +188,242 @@ public class GP_Service : IGP_Service
 
     }
 
-    public int UpdateUserDetails(int id, string name, string surname, string email, string number)
+    //Update user's details 
+    public int updateUserDetails(int id, string name, string surname, string email, string number, string oldPass, string newPass)
     {
         //check if the given email is already in use
         var tempUser = (from u in db.Users
                         where u.Email.Equals(email) && u.ID != id
                         select u).FirstOrDefault();
 
-        if (tempUser != null)
+        int updatePass = updatePassword(id, oldPass, newPass);
+        if (updatePass.Equals(-2))
         {
-            //the email they're trying to change to is already in use
             return -2;
+        }
+        else if (updatePass.Equals(-1))
+        {
+            return 0;
         }
         else
         {
-            var user = (from u in db.Users
-                    where u.ID.Equals(id)
-                    select u).FirstOrDefault();
-
-           if(user != null)
+            if (tempUser != null)
             {
-                user.Name = name;
-                user.Surname = surname;
-                user.Email = email;
-                user.PhoneNumber = number;
+                //the email they're trying to change to is already in use
+                return -1;
+            }
+            else
+            {
+                var user = (from u in db.Users
+                            where u.ID.Equals(id)
+                            select u).FirstOrDefault();
+
+                if (user != null)
+                {
+                    user.Name = name;
+                    user.Surname = surname;
+                    user.Email = email;
+                    user.PhoneNumber = number;
+
+                    try
+                    {
+                        db.SubmitChanges();
+                        return 1;
+                    }
+                    catch (Exception ex)
+                    {
+                        ex.GetBaseException();
+                        return 0;
+                    }
+                }
+                else
+                {
+                    //user doesn't exist
+                    return 0;
+                }
+            }
+        }
+    }
+
+    //Function used to get a particular user based on its ID
+    public User getUser(int User_ID)
+    {
+        var UserInfo = (from u in db.Users
+                        where u.ID.Equals(User_ID)
+                        select u).FirstOrDefault();
+
+        if (UserInfo == null)
+        {
+            return null;
+        }
+        else
+        {
+            var newuser = new User
+            {
+                ID = UserInfo.ID,
+                Name = UserInfo.Name,
+                Surname = UserInfo.Surname,
+                Email = UserInfo.Email,
+                Password = UserInfo.Password,
+                PhoneNumber = UserInfo.PhoneNumber,
+                Status = UserInfo.Status,
+                DateRegistered = UserInfo.DateRegistered,
+                UserType = UserInfo.UserType
+            };
+            return newuser;
+        }
+    }
+
+    //Function used to find the total number of users for the website
+    public int getNumUsers()
+    {
+        var TotalUsers = 0;
+        var user = (from u in db.Users
+                    select u);
+
+        foreach (User usr in user)
+        {
+            TotalUsers += 1;
+        }
+        return TotalUsers;
+    }
+
+    //ADDRESS MANAGEMENT -------------------------------------
+
+    //Function used to return the Address
+    public Address getAddress(int Address_ID)
+    {
+        var Addressinfo = (from a in db.Addresses
+                           where a.ID.Equals(Address_ID)
+                           select a).FirstOrDefault();
+
+        if (Addressinfo == null)
+        {
+            return null;
+        }
+        else
+        {
+            return Addressinfo;
+        }
+    }
+    //method used to add a new address into the database
+    public int addAddress(string line1, string line2, string suburb, string city, char billing, string type, int C_ID, string Province)
+    {
+        var newAddress = new Address
+        {
+            Line1 = line1,
+            Line2 = line2,
+            Suburb = suburb,
+            City = city,
+            Billing = billing,
+            Type = type,
+            CustomerID = C_ID,
+            Province = Province
+        };
+
+        db.Addresses.InsertOnSubmit(newAddress);
+        try
+        {
+            db.SubmitChanges();
+            return 1;
+        }
+        catch (Exception e)
+        {
+            e.GetBaseException();
+            return -1;
+        }
+    }
+
+    //method used to update the address
+    public int updateAddress(int A_ID, string line1, string line2, string suburb, string city, char billing, string type, int Cus_ID)
+    {
+        var tempAddress = (from ad in db.Addresses
+                           where ad.Line1.Equals(line1) && ad.Line2.Equals(line2) &&
+                           ad.Suburb.Equals(suburb) && ad.City.Equals(city)
+                           && ad.Billing.Equals(billing) && ad.CustomerID.Equals(Cus_ID)
+                           select ad).FirstOrDefault();
+        if (tempAddress != null)
+        {
+            return -1;
+        }
+        else
+        {
+            var address = getAddress(A_ID);
+            if (address != null)
+            {
+                address.Line1 = line1;
+                address.Line2 = line2;
+                address.Suburb = suburb;
+                address.City = city;
+                address.Billing = billing;
+                address.Type = type;
 
                 try
                 {
                     db.SubmitChanges();
                     return 1;
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     ex.GetBaseException();
-                    return -1;
+                    return -2;
                 }
             }
             else
             {
-                //user doesn't exist
                 return 0;
             }
-           
         }
-
     }
 
+    public int updatePoints(int Cust_ID, int points)
+    {
+        var user = (from u in db.Users
+                    where u.ID.Equals(Cust_ID)
+                    select u).FirstOrDefault();
+
+        if (user != null)
+        {
+            user.Points = points;
+
+            try
+            {
+                db.SubmitChanges();
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                ex.GetBaseException();
+                return -1;
+            }
+        }
+        else
+        {
+            //can''t find user
+            return 0;
+        }
+    }
+
+    public int getUserPoints(int Cus_ID)
+    {
+        User user = (from p in db.Users
+                     where p.ID.Equals(Cus_ID)
+                     select p).FirstOrDefault();
+        if (user == null)
+        {
+            //can't find user
+            return 0;
+        }
+        else
+        {
+            int points = Convert.ToInt32(Math.Round(user.Points * 0.1));
+            return points;
+        }
+    }
+
+    //PRODUCT MANAGEMENT ---------------------------------------------------------------
+
+    //add new product  
     public int addNewProduct(string name, int SubID, double price, double cost, int stockQty, string imgLocation)
     {
         var newProduct = new Product
@@ -242,7 +452,7 @@ public class GP_Service : IGP_Service
         }
     }
 
-    //Function to update product specifics
+    //Function to update product specifics  
     public int updateProduct(int id, string name, int SubId, double price, double cost, string imgLocation)
     {
         var product = getProduct(id);
@@ -275,6 +485,7 @@ public class GP_Service : IGP_Service
         }
     }
 
+    //return all products in a list  
     public List<Product> getAllProducts()
     {
         dynamic productsList = new List<Product>();
@@ -306,7 +517,7 @@ public class GP_Service : IGP_Service
         return productsList;
     }
 
-    //Function to delete a product from the product table
+    //wrong need to set to inactive  
     public int removeProduct(int productId)
     {
         var product = (from p in db.Products
@@ -320,7 +531,7 @@ public class GP_Service : IGP_Service
         }
         else
         {
-            db.Products.DeleteOnSubmit(product);
+            product.Status = "inactive";
 
             try
             {
@@ -334,9 +545,136 @@ public class GP_Service : IGP_Service
                 ex.GetBaseException();
                 return -1;
             }
-        }
-                       
+        }         
     }
+
+    //Get product by ProductID
+    public Product getProduct(int Product_ID)
+    {
+        var product = (from p in db.Products
+                       where p.ID.Equals(Product_ID)
+                       select p).FirstOrDefault();
+
+        if (product == null)
+        {
+            return null;
+        }
+        else
+        {
+            var rProduct = new Product
+            {
+                ID = product.ID,
+                Name = product.Name,
+                SubCategoryID = product.SubCategoryID,
+                Price = product.Price,
+                Cost = product.Cost,
+                StockOnHand = product.StockOnHand,
+                Image_Location = product.Image_Location
+            };
+            return rProduct;
+        }
+    }
+
+    //Update stock per product
+    public int updateStock(int P_ID, int ItemsPurchased)
+    {
+        var product = getProduct(P_ID);
+        if (product == null)
+        {
+            return 0;
+        }
+        else
+        {
+            //Subtract the items purchased from the stock of the particular product
+            product.StockOnHand -= ItemsPurchased;
+            try
+            {
+                db.SubmitChanges();
+                return 1;
+            }
+            catch (Exception e)
+            {
+                e.GetBaseException();
+                return -1;
+            }
+        }
+    }
+
+    public int getNumProductsInSub(int subID)
+    {
+        dynamic product = (from p in db.Products
+                           where p.SubCategoryID.Equals(subID)
+                           select p);
+        var ProductList = new List<Product>();
+        int count = 0;
+
+        foreach (Product pr in product)
+        {
+            count++;
+        }
+        return count;
+    }
+
+    //Method used to get all the products present within a Category
+    public List<Product> getProductByCat(int Cat_ID)
+    {
+        dynamic subcategories = (from s in db.SubCategories
+                                 where s.CategoryID.Equals(Cat_ID)
+                                 select s);
+        var ProductList = new List<Product>();
+
+        foreach (SubCategory sb in subcategories)
+        {
+            dynamic products = (from p in db.Products
+                                where p.SubCategoryID.Equals(sb.SubID)
+                                select p);
+
+            foreach (Product pr in products)
+            {
+                var tempProduct = new Product
+                {
+                    ID = pr.ID,
+                    Name = pr.Name,
+                    SubCategoryID = pr.SubCategoryID,
+                    Price = pr.Price,
+                    Cost = pr.Cost,
+                    StockOnHand = pr.StockOnHand,
+                    Image_Location = pr.Image_Location
+                };
+
+                ProductList.Add(tempProduct);
+            }
+        }
+        return ProductList;
+    }
+
+    //Method used to return all the products present in a sub category
+    public List<Product> getProductBySubCat(int Sub_ID)
+    {
+        dynamic product = (from p in db.Products
+                           where p.SubCategoryID.Equals(Sub_ID)
+                           select p);
+        var ProductList = new List<Product>();
+
+        foreach (Product pr in product)
+        {
+            var tempPro = new Product
+            {
+                ID = pr.ID,
+                Name = pr.Name,
+                SubCategoryID = pr.SubCategoryID,
+                Price = pr.Price,
+                Cost = pr.Cost,
+                StockOnHand = pr.StockOnHand,
+                Image_Location = pr.Image_Location
+            };
+
+            ProductList.Add(tempPro);
+        }
+        return ProductList;
+    }
+
+    //CATEGORY MANAGEMENT -------------------------------------------------------------------------
 
     //Function that returns all the Product Categories
     public List<ProductCategory> getAllCategories()
@@ -359,6 +697,121 @@ public class GP_Service : IGP_Service
         }
 
         return categories;
+    }
+
+    public ProductCategory getCat(int C_ID)
+    {
+        dynamic cat = (from c in db.ProductCategories
+                       where c.ID.Equals(C_ID)
+                       select c).FirstOrDefault();
+
+        if (cat == null)
+        {
+            return null;
+        }
+        else
+        {
+            var tempcat = new ProductCategory
+            {
+                Name = cat.Name,
+                ID = cat.ID
+            };
+            return tempcat;
+        }
+    }
+
+    public ProductCategory getCategorybyProductID(int p_ID)
+    {
+        dynamic product = getProduct(p_ID);
+        dynamic subcategory = getSubCat(product.SubCategoryID);
+
+        dynamic category = getCat(subcategory.CategoryID);
+
+        return category;
+    }
+
+    public int addCategory(int id, string name)
+    {
+        var category = (from c in db.ProductCategories
+                        where c.ID.Equals(id)
+                        select c).FirstOrDefault();
+
+        if (category != null)
+        {
+            category.Name = name;
+
+            try
+            {
+                db.SubmitChanges();
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                ex.GetBaseException();
+                return -1;
+            }
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+    public int updateCategories(int id, string name)
+    {
+        var category = (from c in db.ProductCategories
+                        where c.ID.Equals(id)
+                        select c).FirstOrDefault();
+
+        if (category != null)
+        {
+            category.Name = name;
+
+            try
+            {
+                db.SubmitChanges();
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                ex.GetBaseException();
+                return -1;
+            }
+        }
+        else
+        {
+
+            return 0;
+        }
+    }
+
+    //SUBCATEGORY MANAGEMENT ----------------------------------------------------------
+
+    public int addSubCategory(int id, string name)
+    {
+        var subcategory = (from sc in db.SubCategories
+                           where sc.SubID.Equals(id)
+                           select sc).FirstOrDefault();
+
+        if (subcategory != null)
+        {
+            subcategory.Name = name;
+
+            try
+            {
+                db.SubmitChanges();
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                ex.GetBaseException();
+                return -1;
+            }
+        }
+        else
+        {
+            return 0;
+        }
     }
 
     //Function that returns all the Product SubCategories
@@ -384,6 +837,52 @@ public class GP_Service : IGP_Service
         return subcategories;
     }
 
+    public SubCategory getSubCat(int S_ID)
+    {
+        dynamic subcat = (from s in db.SubCategories
+                          where s.SubID.Equals(S_ID)
+                          select s).FirstOrDefault();
+
+        if (subcat == null)
+        {
+            return null;
+        }
+        else
+        {
+            var tempsub = new SubCategory
+            {
+                SubID = subcat.SubID,
+                Name = subcat.Name,
+                CategoryID = subcat.CategoryID
+            };
+            return tempsub;
+        }
+    }
+
+    public List<SubCategory> getSubCatPerCat(int c_ID)
+    {
+        dynamic subcat = (from s in db.SubCategories
+                          where s.CategoryID.Equals(c_ID)
+                          select s);
+
+        var SubList = new List<SubCategory>();
+
+        foreach (SubCategory sc in subcat)
+        {
+            var tempsub = new SubCategory
+            {
+                SubID = sc.SubID,
+                Name = sc.Name,
+                CategoryID = sc.CategoryID
+            };
+            SubList.Add(tempsub);
+        }
+        return SubList;
+    }
+
+    //INVOICE MANAGEMENT -----------------------------------------------------------
+
+    //Get Invoice by InvoiceID
     public Invoice getOrder(int orderId)
     {
         var order = (from o in db.Invoices
@@ -406,13 +905,12 @@ public class GP_Service : IGP_Service
                 Notes = order.Notes
 
             };
-
             return temp;
         }
-
     }
 
-    public int addOrder(int customerId, string status, DateTime datePlaced, DateTime deliverDate, string message)
+    //add invoice
+    public int addInvoice(int customerId, string status, DateTime datePlaced, DateTime deliverDate, string message, decimal total, int points)
     {
         //check that a valid customer id is given
         var checkCustomerId = (from c in db.Users
@@ -421,15 +919,17 @@ public class GP_Service : IGP_Service
 
         if (checkCustomerId != null)
         {
-            var newOrder = new Invoice
+            var newInvoice = new Invoice
             {
                 CustomerID = customerId,
                 Status = status,
                 Date = datePlaced,
                 DeliveryDatetime = deliverDate,
-                Notes = message
+                Notes = message,
+                Total = total,
+                Points = points
             };
-            db.Invoices.InsertOnSubmit(newOrder);
+            db.Invoices.InsertOnSubmit(newInvoice);
 
             try
             {
@@ -449,11 +949,10 @@ public class GP_Service : IGP_Service
             //customer id provided is not valid
             return 0;
         }
-           
     }
 
-    //Function that can update order status, delivery date and gift message
-   public int UpdateOrder(int customerId, string status, DateTime datePlaced, DateTime deliverDate, string message)
+    //wrong
+   public int updateInvoice(int customerId, string status, DateTime datePlaced, DateTime deliverDate, string message, decimal total, int points)
     {
         var order = (from o in db.Invoices
                      where o.CustomerID.Equals(customerId) && o.Date.Equals(datePlaced)
@@ -469,6 +968,8 @@ public class GP_Service : IGP_Service
             order.Status = status;
             order.DeliveryDatetime = deliverDate;
             order.Notes = message;
+            order.Total = total;
+            order.Points = points;
 
             try
             {
@@ -484,9 +985,8 @@ public class GP_Service : IGP_Service
         }
     }
 
-
-    //Function that returns all orders in db
-    public List<Invoice> getAllOrders()
+    //Get all invoices
+    public List<Invoice> getAllInvoices()
     {
         dynamic ordersList = new List<Invoice>();
 
@@ -519,8 +1019,8 @@ public class GP_Service : IGP_Service
        
     }
 
-    //Function that returns a list of orders linked to a specific customer
-    public List<Invoice> getAllCustomerOrders(int customerId)
+    //Get invoice by UserID
+    public List<Invoice> getAllCustomerInvoices(int customerId)
     {
         //check that the provided customer id is valid
         var checkCus = (from c in db.Users
@@ -567,90 +1067,81 @@ public class GP_Service : IGP_Service
         }
     }
 
-    public int getUsersPerDay(DateTime day)
+    //INVOICE LINE MANAGEMENT
+
+    public int addInvoiceLine(int product_ID, int invoice_ID, int quantity, decimal price)
     {
-        int totalRegistered = 0;
-
-        dynamic users = (from u in db.Users
-                     where u.DateRegistered.Equals(day) && u.UserType.Equals("customer")
-                     select u);
-        
-        foreach(User u in users)
+        var invLine = new InvoiceLine
         {
-            totalRegistered++;
+            ProductID = product_ID,
+            InvoiceID = invoice_ID,
+            Qty = quantity,
+            Price = price
+        };
+        db.InvoiceLines.InsertOnSubmit(invLine);
+        try
+        {
+            db.SubmitChanges();
+            return 1;
         }
-
-        return totalRegistered;
+        catch (Exception ex)
+        {
+            ex.GetBaseException();
+            return -2;
+        }
     }
 
-
-    //Function used to return a product record
-    public Product getProduct(int Product_ID)
+    //Get all products in invoice line by passing invoice ID
+    public List<InvoiceLine> getAllInvoiceLines(int InvoiceID)
     {
-        var product = (from p in db.Products
-                       where p.ID.Equals(Product_ID)
-                       select p).FirstOrDefault();
+        dynamic ordereditems = (from o in db.InvoiceLines
+                                where o.InvoiceID.Equals(InvoiceID)
+                                select o);
 
-        if(product == null)
+        List<InvoiceLine> rList = new List<InvoiceLine>();
+
+        if (ordereditems == null)
         {
             return null;
-        }else
-        {
-            var rProduct = new Product
-            {
-                ID = product.ID,
-                Name = product.Name,
-                SubCategoryID = product.SubCategoryID,
-                Price = product.Price,
-                Cost = product.Cost,
-                StockOnHand = product.StockOnHand,
-                Image_Location = product.Image_Location
-            };
-            return rProduct;
         }
-    }
+        else
+        {
+            foreach (InvoiceLine line in ordereditems)
+            {
+                var temp = new InvoiceLine
+                {
+                    ID = line.ID,
+                    InvoiceID = line.InvoiceID,
+                    ProductID = line.ProductID,
+                    Qty = line.Qty,
+                    Price = line.Price
+                };
 
-    //Function that allows to subtract the items purchased from the stock
-    public int UpdateStock(int P_ID, int ItemsPurchased)
-    {
-        var product = getProduct(P_ID);
-        if(product == null)
-        {
-            return 0;   
-        }else
-        {
-            //Subtract the items purchased from the stock of the particular product
-            product.StockOnHand -= ItemsPurchased;
-            try
-            {
-                db.SubmitChanges();
-                return 1;
-            }catch(Exception e)
-            {
-                e.GetBaseException();
-                return -1;
+                rList.Add(temp);
             }
+            return rList;
         }
-        
     }
 
-    //Functions used for adding items to a shopping list
-    public int AddItemsToShoppingList(int ListID , int ShoppingList_ID, int Product_ID, int quantity)
+    //SHOPPING LIST MANAGEMENT ----------------------------------------
+
+    //shopping list table needs to be updated then this function
+    public int addItemsToShoppingList(int ListID, int ShoppingList_ID, int Product_ID, int quantity)
     {
-        var item = (from i in db.ListItems
+        var item = (from i in db.ListProducts
                     where i.ID.Equals(ListID)
                     select i).FirstOrDefault();
         //if the item does not exist on the shopping list
         if(item == null)
         {
-            var newItem = new ListItem
+            var newItem = new ListProduct
             {
                 ListID = ShoppingList_ID,
                 ProductID = Product_ID,
                 Quantity_ = quantity
 
             };
-            db.ListItems.InsertOnSubmit(newItem);
+            db.ListProducts.InsertOnSubmit(newItem);
             try
             {
                 db.SubmitChanges();
@@ -666,158 +1157,82 @@ public class GP_Service : IGP_Service
         }
     }
 
-    //Function used to get a particular user based on its ID
-    public User getUser(int User_ID)
-    {
-        var UserInfo = (from u in db.Users
-                        where u.ID.Equals(User_ID)
-                        select u).FirstOrDefault();
+    //LIST MANAGEMENT ------------------------------------
 
-        if(UserInfo == null)
+    //getter for list items
+    public ListProduct getListProduct(int id)
+    {
+        var list = (from l in db.ListProducts
+                    where l.ID.Equals(id)
+                    select l).FirstOrDefault();
+
+        if (list == null)
         {
             return null;
-        }else
-        {
-            var newuser = new User
-            {
-                ID = UserInfo.ID,
-                Name = UserInfo.Name,
-                Surname = UserInfo.Surname,
-                Email = UserInfo.Email,
-                Password = UserInfo.Password,
-                PhoneNumber = UserInfo.PhoneNumber,
-                Status = UserInfo.Status,
-                DateRegistered = UserInfo.DateRegistered,
-                UserType = UserInfo.UserType
-            };
-            return newuser;
-        }
-    }
-
-    //Function used to find the total number of users for the website
-    public int getNumUsers()
-    {
-        var TotalUsers = 0;
-        var user = (from u in db.Users
-                    select u);
-
-        foreach(User usr in user)
-        {
-            TotalUsers += 1;
-        }
-
-        return TotalUsers;
-    }
-
-    //Function used to calculate the total profit generated 
-    public double CalculateProfit()
-    {
-        var totalprofit = 0.0;
-        var Difference = 0.0;
-        var CurrentProfit = 0.0;
-
-        //Storing all the ordered items in a variable
-        var OrdItems = (from i in db.InvoiceLines
-                        select i);
-
-        foreach(InvoiceLine o in OrdItems)
-        {
-             CurrentProfit = 0.0;
-            //getting the current product
-            var CurrentProduct = getProduct(o.ProductID);
-
-            //calculating the difference (Selling price - Cost price)
-            Difference = (double)(CurrentProduct.Price - CurrentProduct.Cost);
-
-            //multiplying the difference with the number of products of a particular type sold
-            CurrentProfit = Difference * o.Qty;
-
-            //Adding the current profit to the total profit
-            totalprofit += CurrentProfit;
-
-        }
-        return totalprofit;
-
-
-    }
-    //Function used to return the Address
-    public Address getAddress(int Address_ID)
-    {
-        var Addressinfo = (from a in db.Addresses
-                           where a.ID.Equals(Address_ID)
-                           select a).FirstOrDefault();
-
-        if(Addressinfo == null)
-        {
-            return null;
-        }else
-        {
-            return Addressinfo;
-        }
-    }
-    //method used to add a new address into the database
-    public int AddAdress(string line1, string line2, string suburb, string city, char billing, string type , int C_ID, string Province)
-    {
-        var address = (from ad in db.Addresses
-                          where ad.Line1.Equals(line1) && ad.Line2.Equals(line2) && ad.Suburb.Equals(suburb)&&ad.City.Equals(city)
-                          select ad).FirstOrDefault();
-
-        if(address != null)
-        {
-            //means that the address already exists
-            return 0;
-        }else
-        {
-            var newAddress = new Address
-            {
-                Line1 = line1,
-                Line2 = line2,
-                Suburb = suburb,
-                City = city,
-                Billing = billing,
-                Type = type,
-                CustomerID = C_ID,
-                Province = Province
-            };
-
-            db.Addresses.InsertOnSubmit(newAddress);
-            try
-            {
-                db.SubmitChanges();
-                return 1;
-            }catch(Exception e)
-            {
-                e.GetBaseException();
-                return -1;
-            }
-
-        }
-
-    }
-    //method used to update the address
-    public int UpdateAddress(int A_ID, string line1, string line2, string suburb, string city, char billing, string type, int Cus_ID)
-    {
-        var tempAddress = (from ad in db.Addresses
-                           where ad.Line1.Equals(line1) && ad.Line2.Equals(line2) && 
-                           ad.Suburb.Equals(suburb) && ad.City.Equals(city)
-                           && ad.Billing.Equals(billing) && ad.CustomerID.Equals(Cus_ID)
-                           select ad).FirstOrDefault();
-        if(tempAddress != null)
-        {
-            return -1;
         }
         else
         {
-            var address = getAddress(A_ID);
-            if(address != null)
+            var tempList = new ListProduct
             {
-                address.Line1 = line1;
-                address.Line2 = line2;
-                address.Suburb = suburb;
-                address.City = city;
-                address.Billing = billing;
-                address.Type = type;
+                ID = list.ID,
+                ListID = list.ListID,
+                ProductID = list.ProductID,
+                Quantity_ = list.Quantity_
+            };
+            return tempList;
+        }
+    }
 
+    //method that allows to add new product to the listitems
+    public int addListProduct(int P_ID, int quantity)
+    {
+        var listinfo = (from l in db.ListProducts
+                        where l.ProductID.Equals(P_ID)
+                        select l).FirstOrDefault();
+        //if the product id is the same then increase the quantity only
+        if (listinfo != null)
+        {
+            // listinfo.Quantity_ += quantity;
+            return 0;
+        }
+        else
+        {
+            var newItem = new ListProduct
+            {
+                ProductID = P_ID
+            };
+            db.ListProducts.InsertOnSubmit(newItem);
+            try
+            {
+                db.SubmitChanges();
+                return 1;
+            }
+            catch (Exception e)
+            {
+                e.GetBaseException();
+                return -1;
+            }
+        }
+    }
+
+    //method that allows you to update list items
+    public int updateListProduct(int id, int list_ID, int P_ID, int quantity)
+    {
+        var tempitem = (from l in db.ListProducts
+                        where l.ProductID.Equals(P_ID) && l.Quantity_.Equals(quantity)
+                        select l).FirstOrDefault();
+        if (tempitem != null)
+        {
+            //meaning that the product is already on the list
+            return 0;
+        }
+        else
+        {
+            var list = getListProduct(id);
+            if (list != null)
+            {
+                list.ProductID = P_ID;
+                list.Quantity_ = quantity;
                 try
                 {
                     db.SubmitChanges();
@@ -828,13 +1243,15 @@ public class GP_Service : IGP_Service
                     ex.GetBaseException();
                     return -2;
                 }
-
-            }else
+            }
+            else
             {
-                return 0;
+                return -1;
             }
         }
     }
+
+    //CARD MANAGEMENT ----------------------------------------------------
 
     //Getter method for Cards
     public Card getCard(int id)
@@ -851,8 +1268,9 @@ public class GP_Service : IGP_Service
             return Cardinfo;
         }
     }
+
     //Method that allows the customer to add new card
-    public int AddCard(int Cust_ID,string description, string name, string number, DateTime expiry)
+    public int addCard(int Cust_ID,string description, string name, string number, DateTime expiry)
     {
         var tempCard = (from c in db.Cards
                         where c.Number.Equals(number)
@@ -884,8 +1302,9 @@ public class GP_Service : IGP_Service
             }
         }
     }
+
     //Function used to update card details
-    public int UpdateCards(int c_ID, int Cust_ID, string description, string name, string number, DateTime expiry)
+    public int updateCards(int c_ID, int Cust_ID, string description, string name, string number, DateTime expiry)
     {
         var tempcard = (from c in db.Cards
                         where c.Number.Equals(number) && c.Description.Equals(description) && c.Name.Equals(name)&&
@@ -921,10 +1340,11 @@ public class GP_Service : IGP_Service
             {
                 return 0;
             }
-
-
         }
     }
+
+    //DEVICE MANAGEMENT --------------------------------------------
+
     //Get method for devices
     public Device getDevice(int D_ID)
     {
@@ -941,7 +1361,7 @@ public class GP_Service : IGP_Service
         }
     }
     //Function to add the device to the database
-    public int AddDevices(string os)
+    public int addDevices(string os)
     {
         var newDevice = new Device
         {
@@ -958,180 +1378,37 @@ public class GP_Service : IGP_Service
             e.GetBaseException();
             return -1;
         }
-
     }
 
-    //getter for list items
-    public ListItem getListItem(int id)
+    //REPORT MANAGEMENT ----------------------------------
+
+    //Function used to calculate the total profit generated 
+    public double calculateProfit()
     {
-        var listitemInfo = (from l in db.ListItems
-                            where l.ID.Equals(id)
-                            select l).FirstOrDefault();
+        var totalprofit = 0.0;
+        var Difference = 0.0;
+        var CurrentProfit = 0.0;
 
-        if(listitemInfo == null)
+        //Storing all the ordered items in a variable
+        var OrdItems = (from i in db.InvoiceLines
+                        select i);
+
+        foreach (InvoiceLine o in OrdItems)
         {
-            return null;
-        }else
-        {
-            return listitemInfo;
+            CurrentProfit = 0.0;
+            //getting the current product
+            var CurrentProduct = getProduct(o.ProductID);
+
+            //calculating the difference (Selling price - Cost price)
+            Difference = (double)(CurrentProduct.Price - CurrentProduct.Cost);
+
+            //multiplying the difference with the number of products of a particular type sold
+            CurrentProfit = Difference * o.Qty;
+
+            //Adding the current profit to the total profit
+            totalprofit += CurrentProfit;
         }
-    }
-
-    //method that allows to add new product to the listitems
-    public int AddListItems(int P_ID, int quantity)
-    {
-        var listinfo = (from l in db.ListItems
-                        where l.ProductID.Equals(P_ID)
-                        select l).FirstOrDefault();
-        //if the product id is the same then increase the quantity only
-        if (listinfo != null)
-        {
-           // listinfo.Quantity_ += quantity;
-            return 0;
-        }
-        else
-        {
-            var newItem = new ListItem
-            {
-                ProductID = P_ID
-            };
-            db.ListItems.InsertOnSubmit(newItem);
-            try
-            {
-                db.SubmitChanges();
-                return 1;
-            }
-            catch (Exception e)
-            {
-                e.GetBaseException();
-                return -1;
-            }
-
-
-        }
-
-    }
-    //method that allows you to update list items
-    public int UpdateListItem(int id, int list_ID, int P_ID, int quantity)
-    {
-        var tempitem = (from l in db.ListItems
-                        where l.ProductID.Equals(P_ID) && l.Quantity_.Equals(quantity)
-                        select l).FirstOrDefault();
-        if(tempitem != null)
-        {
-            //meaning that the product is already on the list
-            return 0;
-        }else
-        {
-            var listitem = getListItem(id);
-            if(listitem != null)
-            {
-                listitem.ProductID = P_ID;
-                listitem.Quantity_ = quantity;
-                try
-                {
-                    db.SubmitChanges();
-                    return 1;
-                }
-                catch (Exception ex)
-                {
-                    ex.GetBaseException();
-                    return -2;
-                }
-
-            }
-            else
-            {
-                return -1;
-            }
-        }
-    }
-    //Get method for orderedItems
-    public List<InvoiceLine> getOrderedItems(int id)
-    {
-        dynamic ordereditems = (from o in db.InvoiceLines
-                            where o.InvoiceID.Equals(id)
-                            select o);
-
-        List<InvoiceLine> rList = new List<InvoiceLine>();
-
-        if(ordereditems == null)
-        {
-            return null;
-        }else
-        {
-            foreach(InvoiceLine line in ordereditems)
-            {
-                var temp = new InvoiceLine
-                {
-                    ID = line.ID,
-                    InvoiceID = line.InvoiceID,
-                    ProductID = line.ProductID, 
-                    Qty = line.Qty
-                };
-
-                rList.Add(temp);
-            }
-            return rList;
-        }
-    }
-    //Method used to get all the products present within a Category
-    public List<Product> getProductByCat(int Cat_ID)
-    {
-        dynamic subcategories = (from s in db.SubCategories
-                                 where s.CategoryID.Equals(Cat_ID)
-                                 select s);
-        var ProductList = new List<Product>();
-
-        foreach (SubCategory sb in subcategories)
-        {
-            dynamic products = (from p in db.Products
-                                where p.SubCategoryID.Equals(sb.SubID)
-                                select p);
-
-            foreach(Product pr in products)
-            {
-                var tempProduct = new Product
-                {
-                    ID = pr.ID,
-                    Name = pr.Name,
-                    SubCategoryID = pr.SubCategoryID,
-                    Price = pr.Price,
-                    Cost = pr.Cost,
-                    StockOnHand = pr.StockOnHand,
-                    Image_Location = pr.Image_Location
-                };
-
-                ProductList.Add(tempProduct);
-            }  
-        }
-        return ProductList;
-    }
-
-    //Method used to return all the products present in a sub category
-    public List<Product> getProductBySubCat(int Sub_ID)
-    {
-        dynamic product = (from p in db.Products
-                           where p.SubCategoryID.Equals(Sub_ID)
-                           select p);
-        var ProductList = new List<Product>();
-
-        foreach(Product pr in product)
-        {
-            var tempPro = new Product
-            {
-                ID = pr.ID,
-                Name = pr.Name,
-                SubCategoryID = pr.SubCategoryID,
-                Price = pr.Price,
-                Cost = pr.Cost,
-                StockOnHand = pr.StockOnHand,
-                Image_Location = pr.Image_Location
-            };
-
-            ProductList.Add(tempPro);
-        }
-        return ProductList;
+        return totalprofit;
     }
 
     public double profitPerProduct(int P_ID)
@@ -1139,12 +1416,13 @@ public class GP_Service : IGP_Service
         double profit = 0.0;
         double totalPrice = 0.0;
         double totalCost = 0.0;
-        dynamic product = (from p in db.InvoiceLines
+        dynamic productID = (from p in db.InvoiceLines
                            where p.ID.Equals(P_ID)
                            select p);
         dynamic Quantity = (from q in db.InvoiceLines
                             where q.ID.Equals(P_ID)
                             select q.Qty);
+        dynamic product = getProduct(productID);
 
         foreach(Product p in product)
         {
@@ -1158,98 +1436,55 @@ public class GP_Service : IGP_Service
     public double profitPerSubCat(int S_ID)
     {
         double profit = 0.0;
-        dynamic product = (from p in db.InvoiceLines
-                           select p);
-        foreach(Product p in product)
+        int productID;
+
+        dynamic allInvoices = getAllInvoices();
+        foreach(Invoice i in allInvoices)
         {
-            if(p.SubCategoryID.Equals(S_ID))
+            dynamic allLines = getAllInvoiceLines(i.ID);
+            foreach(InvoiceLine iL in allLines)
             {
-                profit += profitPerProduct(p.ID);
+                productID = iL.ProductID;
+                dynamic product = getProduct(productID);
+                if(product.SubCategoryID.Equals(S_ID))
+                { 
+                    profit += profitPerProduct(productID);
+                }
             }
         }
         return profit;
     }
 
+    //profit per category
     public double profitPerCat(int C_ID)
     {
         double profit = 0.0;
-        dynamic product = (from p in db.InvoiceLines
-                           select p);
-        foreach(Product p in product)
+        //dynamic product;
+
+        dynamic subCatList = getSubCatPerCat(C_ID);
+
+        dynamic allInvoices = getAllInvoices();
+        foreach(Invoice i in allInvoices)
         {
-            dynamic subcat = getSubCat(p.SubCategoryID);
-            foreach(SubCategory s in subcat)
+            dynamic allLines = getAllInvoiceLines(i.ID);
+            foreach(InvoiceLine iL in allLines)
             {
-                profit += profitPerSubCat(s.SubID);
+                int productID = iL.ProductID;
+                dynamic product = getProduct(productID);
+
+                foreach(SubCategory sc in subCatList)
+                {
+                    if(product.SubCategoryID.Equals(sc.SubID))
+                    {
+                        profit += profitPerProduct(product.ID);
+                    }
+                }
             }
         }
         return profit;
     }
 
-    public SubCategory getSubCat(int S_ID)
-    {
-        dynamic subcat = (from s in db.SubCategories
-                          where s.SubID.Equals(S_ID)
-                          select s).FirstOrDefault();
-
-        if (subcat == null)
-        {
-            return null;
-        }
-        else
-        {
-            var tempsub = new SubCategory
-            {
-                SubID = subcat.SubID,
-                Name = subcat.Name,
-                CategoryID = subcat.CategoryID
-            };
-            return tempsub;
-        }
-    }
-
-    public ProductCategory getCat(int C_ID)
-    {
-        dynamic cat = (from c in db.ProductCategories
-                          where c.ID.Equals(C_ID)
-                          select c).FirstOrDefault();
-
-        if (cat == null)
-        {
-            return null;
-        }
-        else
-        {
-            var tempcat = new ProductCategory
-            {
-                Name = cat.Name,
-                ID = cat.ID
-            };
-            return tempcat;
-        }
-    }
-
-    public List<SubCategory> getSubCatPerCat(int c_ID)
-    {
-        dynamic subcat = (from s in db.SubCategories
-                          where s.CategoryID.Equals(c_ID)
-                          select s);
-
-        var SubList = new List<SubCategory>();
-
-        foreach (SubCategory sc in subcat)
-        {
-            var tempsub = new SubCategory
-            {
-                SubID = sc.SubID,
-                Name = sc.Name,
-                CategoryID = sc.CategoryID
-            };
-            SubList.Add(tempsub);
-        }
-        return SubList;
-    }
-
+    //reverse calculate vat on products
     public decimal calcProductVAT(int P_ID)
     {
         decimal VAT = 0;
@@ -1263,87 +1498,7 @@ public class GP_Service : IGP_Service
         return VAT;
     }
 
-    public Product getProductByID(int P_ID)
-    {
-        dynamic product = (from p in db.Products
-                           where p.ID.Equals(P_ID)
-                           select p).FirstOrDefault();
-
-        var temppro = new Product
-        {
-            ID = product.ID,
-            Name = product.Name, 
-            SubCategoryID = product.SubCategoryID,
-            Price = product.Price, 
-            Cost = product.Cost, 
-            StockOnHand = product.StockOnHand, 
-            Image_Location = product.Image_Location
-        };
-        return temppro;
-    }
-
-    public int getNumProductsInSub(int subID)
-    {
-        dynamic product = (from p in db.Products
-                            where p.SubCategoryID.Equals(subID)
-                            select p);
-        var ProductList = new List<Product>();
-        int count = 0;
-
-        foreach (Product pr in product)
-        {
-            count++;    
-        }
-        return count;
-    }
-
-    public int addInvoices(int customer_ID, string status, DateTime date, DateTime deliverDate, string notes, decimal total, int points)
-    {
-        var invoice = new Invoice
-        {
-            CustomerID = customer_ID,
-            Status = status,
-            Date = date,
-            DeliveryDatetime = deliverDate,
-            Notes = notes,
-            Total = total,
-            Points = points
-        };
-        db.Invoices.InsertOnSubmit(invoice);
-        try
-        {
-            db.SubmitChanges();
-            return invoice.ID;
-        }
-        catch (Exception ex)
-        {
-            ex.GetBaseException();
-            return -2;
-        }
-    }
-
-    public int addInvoiceLine(int product_ID, int invoice_ID, int quantity, decimal price)
-    {
-        var invLine = new InvoiceLine
-        {
-            ProductID = product_ID,
-            InvoiceID = invoice_ID,
-            Qty = quantity,
-            Price = price
-        };
-        db.InvoiceLines.InsertOnSubmit(invLine);
-        try
-        {
-            db.SubmitChanges();
-            return 1;
-        }
-        catch (Exception ex)
-        {
-            ex.GetBaseException();
-            return -2;
-        }
-    }
-
+    //search - incomplete
     public List<Product> searchProducts(string input)
     {
         List<Product> productList = new List<Product>();
@@ -1424,6 +1579,7 @@ public class GP_Service : IGP_Service
         return productList;
     }
 
+    //helper method for search (could be used in other functions)
     Product helpAllocate(Product p)
     {
         var tempProduct = new Product
@@ -1439,61 +1595,24 @@ public class GP_Service : IGP_Service
         return tempProduct;
     }
 
-    public int updatePoints(int Cust_ID, int points)
+    //Number of users registered per day
+    public int getUsersPerDay(DateTime day)
     {
-        var user = (from u in db.Users
-                    where u.ID.Equals(Cust_ID)
-                    select u).FirstOrDefault();
+        int totalRegistered = 0;
 
-        if(user != null)
-        {
-            user.Points = points;
+        dynamic users = (from u in db.Users
+                         where u.DateRegistered.Equals(day) && u.UserType.Equals("customer")
+                         select u);
 
-            try
-            {
-                db.SubmitChanges();
-                return 1;
-            }
-            catch(Exception ex)
-            {
-                ex.GetBaseException();
-                return -1;
-            }
-        }
-        else
+        foreach (User u in users)
         {
-            //can''t find user
-            return 0;
+            totalRegistered++;
         }
+
+        return totalRegistered;
     }
 
-    public int getUserPoints(int Cus_ID)
-    {
-        User user = (from p in db.Users
-                    where p.ID.Equals(Cus_ID)
-                    select p).FirstOrDefault();
-        if (user == null)
-        {
-            //can't find user
-            return 0;
-        }
-        else
-        {
-            int points = Convert.ToInt32(Math.Round(user.Points * 0.1));
-            return points;
-        }
-    }
-
-    public ProductCategory getCategorybyProductID(int p_ID)
-    {
-        dynamic product = getProduct(p_ID);
-        dynamic subcategory = getSubCat(product.SubCategoryID);
-
-        dynamic category = getCat(subcategory.CategoryID);
-
-        return category;
-    }
-
+    //Number of users registered per week
     public int usersperWeek(DateTime currentDate)
     {
         dynamic DayList = getWeekDates(currentDate);
@@ -1504,7 +1623,9 @@ public class GP_Service : IGP_Service
         }
         return totalUsers;
     }
-    private int getAllUsers()
+
+    //Number of users
+    private int numUsers()
     {
         dynamic user = (from u in db.Users
                         select u);
@@ -1514,14 +1635,12 @@ public class GP_Service : IGP_Service
             count += 1;
         }
         return count;
- 
-
     }
 
     public double percentageUserChange(DateTime currentDate)
     {
         //getting the total number of users perweek
-        int totalBefore = getAllUsers();//20
+        int totalBefore = numUsers();//20
         int totalUsers = usersperWeek(currentDate);//1
 
         int Change = totalBefore + totalUsers; //21 
@@ -1563,91 +1682,14 @@ public class GP_Service : IGP_Service
                 totalSales += (decimal)i.Total;
             }
         }
-
         return totalSales;
     }
 
-    public int addCategory(int id, string name)
-    {
-        var category = (from c in db.ProductCategories
-                    where c.ID.Equals(id)
-                    select c).FirstOrDefault();
+    
 
-        if (category != null)
-        {
-            category.Name = name;
+    
 
-            try
-            {
-                db.SubmitChanges();
-                return 1;
-            }
-            catch (Exception ex)
-            {
-                ex.GetBaseException();
-                return -1;
-            }
-        }
-        else
-        {
-            return 0;
-        }
-    }
-
-    public int addSubCategory(int id, string name)
-    {
-        var subcategory = (from sc in db.SubCategories
-                           where sc.SubID.Equals(id)
-                           select sc).FirstOrDefault(); 
-
-        if(subcategory != null)
-        {
-            subcategory.Name = name;
-
-            try
-            {
-                db.SubmitChanges();
-                return 1; 
-            }
-            catch(Exception ex)
-            {
-                ex.GetBaseException();
-                return -1; 
-            }
-        }
-        else
-        {
-            return 0; 
-        }
-    }
-
-    public int updateCategories(int id,string name)
-    {
-        var category = (from c in db.ProductCategories
-                    where c.ID.Equals(id)
-                    select c).FirstOrDefault();
-
-        if (category != null)
-        {
-            category.Name = name;
-
-            try
-            {
-                db.SubmitChanges();
-                return 1;
-            }
-            catch (Exception ex)
-            {
-                ex.GetBaseException();
-                return -1;
-            }
-        }
-        else
-        {
-            
-            return 0;
-        }
-    }
+    
 
     public int updateSubCategories(int id, string name)
     {
@@ -1674,60 +1716,6 @@ public class GP_Service : IGP_Service
         {
 
             return 0;
-        }
-    }
-
-    public int removeCategory(int id)
-    {
-        var category = (from c in db.ProductCategories
-                       where c.ID.Equals(id)
-                       select c).FirstOrDefault();
-
-        if (category == null)
-        {
-            
-            return 0;
-        }
-        else
-        {
-            db.ProductCategories.DeleteOnSubmit(category);
-            try
-            {
-                db.SubmitChanges();
-                return 1;
-            }
-            catch (Exception ex)
-            {
-                ex.GetBaseException();
-                return -1;
-            }
-        }
-    }
-
-    public int removeSubCategory(int id)
-    {
-        var subcategory = (from sc in db.SubCategories
-                       where sc.SubID.Equals(id)
-                       select sc).FirstOrDefault();
-
-        if (subcategory == null)
-        {
-            //product does not exist
-            return 0;
-        }
-        else
-        {
-            db.SubCategories.DeleteOnSubmit(subcategory);
-            try
-            {
-                db.SubmitChanges();
-                return 1;
-            }
-            catch (Exception ex)
-            {
-                ex.GetBaseException();
-                return -1;
-            }
         }
     }
 
@@ -1770,7 +1758,7 @@ public class GP_Service : IGP_Service
         }
         return Counter;
     }
-    private int getAllInvoices()
+    private int numInvoices()
     {
         dynamic sale = (from s in db.Invoices
                         select s);
@@ -1784,7 +1772,7 @@ public class GP_Service : IGP_Service
     
     public double NumSaleChange(DateTime currentDate)
     {
-        int AllInvoices = getAllInvoices();//7
+        int AllInvoices = numInvoices();//7
         int  numbNewSales = NumsalesPerWeek(currentDate);//4
         int OldInvoices = AllInvoices - numbNewSales; //7-4 = 3
         double Difference = (AllInvoices - OldInvoices)*100;
@@ -1794,35 +1782,12 @@ public class GP_Service : IGP_Service
 
     }
 
-    //getting all the invoice lines
-    private List<InvoiceLine> getallinvoiceLine(int inv_ID)
-    {
-        dynamic invLine = (from i in db.InvoiceLines
-                           where i.InvoiceID.Equals(inv_ID)
-                           select i);
-        List<InvoiceLine> list = new List<InvoiceLine>();
-        foreach(InvoiceLine inv in invLine)
-        {
-            var tempLine = new InvoiceLine
-            {
-                ID = inv.ID,
-                ProductID = inv.ProductID,
-                InvoiceID = inv.InvoiceID,
-                Qty = inv.Qty,
-                Price = inv.Price
-            };
-            list.Add(tempLine);
-        }
-        //going to return all the invoice lines
-        return list;
-    }
-
     //getting the weekly invoice line for a particular product
     public int numProductSales(DateTime currentDate, int Product_ID)
     {
         dynamic weekDates = getWeekDates(currentDate.Date);
         
-        dynamic invoice = getAllOrders();
+        dynamic invoice = getAllInvoices();
 
         List<InvoiceLine> LineList = new List<InvoiceLine>();
         int Count = 0;
@@ -1831,7 +1796,7 @@ public class GP_Service : IGP_Service
         {  
             if (weekDates.Contains(i.Date))
             {
-                dynamic invoiceLine = getallinvoiceLine(i.ID);
+                dynamic invoiceLine = getAllInvoiceLines(i.ID);
                 foreach (InvoiceLine inv in invoiceLine)
                 {
                     if (inv.ProductID.Equals(Product_ID))
@@ -1846,7 +1811,7 @@ public class GP_Service : IGP_Service
         return Count;
     }
 
-    private int getallInvoiceLine(int P_ID)
+    private int countProductsSold(int P_ID)
     {
         dynamic invLine = (from i in db.InvoiceLines
                            select i);
@@ -1865,13 +1830,11 @@ public class GP_Service : IGP_Service
     public double percProductSales(DateTime currentDate, int Product_ID)
     {
         int newproductSales = numProductSales(currentDate, Product_ID); //3
-        int TotalNow = getallInvoiceLine(Product_ID);//6
+        int TotalNow = countProductsSold(Product_ID);//6
         //int newTotal = newproductSales + TotalBefore;
         int StartingValue = TotalNow - newproductSales; //6-3 = 3
         int Difference = (TotalNow-StartingValue) * 100; //6-3 * 100 = 300
         double percentageChange = (Difference /StartingValue);//300/3 = 100
         return percentageChange;
-
     }
-
 }

@@ -4,48 +4,8 @@
     <Type Name="ShoppingList">
       <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="CustomerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="ShoppingList_ListItem" Member="ListItems" ThisKey="ID" OtherKey="ListID" Type="ListItem" />
+      <Association Name="ShoppingList_ListProduct" Member="ListProducts" ThisKey="ID" OtherKey="ListID" Type="ListProduct" />
       <Association Name="User_ShoppingList" Member="User" ThisKey="CustomerID" OtherKey="ID" Type="User" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.SubCategory" Member="SubCategories">
-    <Type Name="SubCategory">
-      <Column Name="SubID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="CategoryID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="SubCategory_Product" Member="Products" ThisKey="SubID" OtherKey="SubCategoryID" Type="Product" />
-      <Association Name="ProductCategory_SubCategory" Member="ProductCategory" ThisKey="CategoryID" OtherKey="ID" Type="ProductCategory" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.ProductCategory" Member="ProductCategories">
-    <Type Name="ProductCategory">
-      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Association Name="ProductCategory_SubCategory" Member="SubCategories" ThisKey="ID" OtherKey="CategoryID" Type="SubCategory" />
-    </Type>
-  </Table>
-  <Table Name="dbo.Product" Member="Products">
-    <Type Name="Product">
-      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="SubCategoryID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Price" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
-      <Column Name="Cost" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
-      <Column Name="StockOnHand" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Image_Location" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
-      <Association Name="Product_ListItem" Member="ListItems" ThisKey="ID" OtherKey="ProductID" Type="ListItem" />
-      <Association Name="Product_InvoiceLine" Member="InvoiceLines" ThisKey="ID" OtherKey="ProductID" Type="InvoiceLine" />
-      <Association Name="SubCategory_Product" Member="SubCategory" ThisKey="SubCategoryID" OtherKey="SubID" Type="SubCategory" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.ListItem" Member="ListItems">
-    <Type Name="ListItem">
-      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="ListID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="ProductID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="[Quantity ]" Member="Quantity_" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="ShoppingList_ListItem" Member="ShoppingList" ThisKey="ListID" OtherKey="ID" Type="ShoppingList" IsForeignKey="true" />
-      <Association Name="Product_ListItem" Member="Product" ThisKey="ProductID" OtherKey="ID" Type="Product" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.Card" Member="Cards">
@@ -88,8 +48,8 @@
       <Column Name="InvoiceID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Qty" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Price" Type="System.Decimal" DbType="Money" CanBeNull="true" />
-      <Association Name="Product_InvoiceLine" Member="Product" ThisKey="ProductID" OtherKey="ID" Type="Product" IsForeignKey="true" />
       <Association Name="Invoice_InvoiceLine" Member="Invoice" ThisKey="InvoiceID" OtherKey="ID" Type="Invoice" IsForeignKey="true" />
+      <Association Name="Product_InvoiceLine" Member="Product" ThisKey="ProductID" OtherKey="ID" Type="Product" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.[User]" Member="Users">
@@ -123,6 +83,49 @@
       <Column Name="Points" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Association Name="Invoice_InvoiceLine" Member="InvoiceLines" ThisKey="ID" OtherKey="InvoiceID" Type="InvoiceLine" />
       <Association Name="User_Invoice" Member="User" ThisKey="CustomerID" OtherKey="ID" Type="User" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Product" Member="Products">
+    <Type Name="Product">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="SubCategoryID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Price" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Column Name="Cost" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Column Name="StockOnHand" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Image_Location" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="Status" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="Product_InvoiceLine" Member="InvoiceLines" ThisKey="ID" OtherKey="ProductID" Type="InvoiceLine" />
+      <Association Name="Product_ListProduct" Member="ListProducts" ThisKey="ID" OtherKey="ProductID" Type="ListProduct" />
+      <Association Name="SubCategory_Product" Member="SubCategory" ThisKey="SubCategoryID" OtherKey="SubID" Type="SubCategory" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ProductCategory" Member="ProductCategories">
+    <Type Name="ProductCategory">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Status" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="ProductCategory_SubCategory" Member="SubCategories" ThisKey="ID" OtherKey="CategoryID" Type="SubCategory" />
+    </Type>
+  </Table>
+  <Table Name="dbo.SubCategory" Member="SubCategories">
+    <Type Name="SubCategory">
+      <Column Name="SubID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="CategoryID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Status" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="SubCategory_Product" Member="Products" ThisKey="SubID" OtherKey="SubCategoryID" Type="Product" />
+      <Association Name="ProductCategory_SubCategory" Member="ProductCategory" ThisKey="CategoryID" OtherKey="ID" Type="ProductCategory" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ListProducts" Member="ListProducts">
+    <Type Name="ListProduct">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ListID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ProductID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="[Quantity ]" Member="Quantity_" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="ShoppingList_ListProduct" Member="ShoppingList" ThisKey="ListID" OtherKey="ID" Type="ShoppingList" IsForeignKey="true" />
+      <Association Name="Product_ListProduct" Member="Product" ThisKey="ProductID" OtherKey="ID" Type="Product" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

@@ -1,14 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data.Linq.SqlClient;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Security.Cryptography;
-using System.ServiceModel;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Web.UI;
 
 // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "GP_Service" in code, svc and config file together.
 public class GP_Service : IGP_Service
@@ -36,7 +28,7 @@ public class GP_Service : IGP_Service
     {
         //check if user information is in the database
         var user = (from u in db.Users
-                    where u.Email.Equals(email) && u.Password.Equals(password)
+                    where u.Email.Equals(email) && u.Password.Equals(Secrecy.HashPassword(password))
                     select u).FirstOrDefault();
 
         if(user != null)
@@ -66,7 +58,7 @@ public class GP_Service : IGP_Service
                 Name = name,
                 Surname = surname,
                 Email = email,
-                Password = password,
+                Password = Secrecy.HashPassword(password),
                 Status = status,
                 DateRegistered = date,
                 UserType = userType
@@ -153,7 +145,9 @@ public class GP_Service : IGP_Service
     private int updatePassword(int id, string oldPassword, string newPassword)
     {
         //getUser
-        var user = getUser(id);
+        var user = (from u in db.Users
+                    where u.ID.Equals(id)
+                    select u).FirstOrDefault();
 
         if(user == null)
         {
@@ -196,7 +190,7 @@ public class GP_Service : IGP_Service
                         where u.Email.Equals(email) && u.ID != id
                         select u).FirstOrDefault();
 
-        int updatePass = updatePassword(id, oldPass, newPass);
+        int updatePass = updatePassword(id, oldPass, Secrecy.HashPassword(newPass));
         if (updatePass.Equals(-2))
         {
             return -2;
@@ -672,6 +666,104 @@ public class GP_Service : IGP_Service
             ProductList.Add(tempPro);
         }
         return ProductList;
+
+    }   
+    
+    //basic search
+    public List<Product> searchProducts(string input)
+    {
+        List<Product> productList = new List<Product>();
+        dynamic product = (from p in db.Products
+                           select p);
+        dynamic category = (from c in db.ProductCategories
+                            select c);
+        dynamic subcategories = (from s in db.SubCategories
+                                 select s);
+
+        //Regex r = new Regex(@input.ToUpper() + "?");
+
+        foreach (Product p in product)
+        {
+            //MatchCollection matchedNames = r.Matches(p.Name.ToUpper());
+            //if(r.IsMatch(p.Name.ToUpper()))
+            if (p.Name.ToUpper().Contains(input.ToUpper()))
+            {
+                dynamic pro = helpAllocate(p);
+                productList.Add(pro);
+            }
+        }
+        foreach (SubCategory s in subcategories)
+        {
+            //if (r.IsMatch(s.Name.ToUpper()))
+            if (s.Name.ToUpper().Contains(input.ToUpper()))
+            {
+                dynamic productbysubCat = getProductBySubCat(s.SubID);
+
+                foreach (Product p in productbysubCat)
+                {
+                    dynamic pro = helpAllocate(p);
+
+                    Boolean contains = false;
+                    foreach (Product pr in productList)
+                    {
+                        if (pr.ID.Equals(pro.ID))
+                        {
+                            contains = true;
+                        }
+                    }
+                    if (contains.Equals(false))
+                    {
+                        productList.Add(pro);
+                    }
+                }
+            }
+        }
+        foreach (ProductCategory c in category)
+        {
+            //if (r.IsMatch(c.Name.ToUpper()))
+            if (c.Name.ToUpper().Contains(input.ToUpper()))
+            {
+                dynamic productbycat = getProductByCat(c.ID);
+
+                foreach (Product pr in productbycat)
+                {
+                    dynamic pro = helpAllocate(pr);
+
+                    Boolean contains = false;
+                    foreach (Product p in productList)
+                    {
+                        if (p.ID.Equals(pro.ID))
+                        {
+                            contains = true;
+                        }
+                    }
+                    if (contains.Equals(false))
+                    {
+                        productList.Add(pro);
+                    }
+
+                    //if (productList.Contains(pr) == false)
+                    //  productList.Add(pro);
+                }
+            }
+        }
+        return productList;
+    }
+
+    //helper method for search (could be used in other functions)
+    Product helpAllocate(Product p)
+    {
+        var tempProduct = new Product
+        {
+            ID = p.ID,
+            Name = p.Name,
+            Cost = p.Cost,
+            Price = p.Price,
+            Image_Location = p.Image_Location,
+            SubCategoryID = p.SubCategoryID,
+            StockOnHand = p.StockOnHand
+        };
+        return tempProduct;
     }
 
     //CATEGORY MANAGEMENT -------------------------------------------------------------------------
@@ -785,6 +877,34 @@ public class GP_Service : IGP_Service
         }
     }
 
+    public int removeCategory(int catID)
+    {
+        var cat = (from c in db.ProductCategories
+                   where c.ID.Equals(catID)
+                   select c).FirstOrDefault();
+
+        if (cat != null)
+        {
+            cat.Status = "inactive";
+
+            try
+            {
+                db.SubmitChanges();
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                ex.GetBaseException();
+                return -1;
+            }
+        }
+        else
+        {
+            //can't find users
+            return 0;
+        }
+    }
+
     //SUBCATEGORY MANAGEMENT ----------------------------------------------------------
 
     public int addSubCategory(int id, string name)
@@ -878,6 +998,34 @@ public class GP_Service : IGP_Service
             SubList.Add(tempsub);
         }
         return SubList;
+    }
+
+    public int removeSubCat(int subID)
+    {
+        var sub = (from s in db.SubCategories
+                   where s.SubID.Equals(subID)
+                   select s).FirstOrDefault();
+
+        if (sub != null)
+        {
+            sub.Status = "inactive";
+
+            try
+            {
+                db.SubmitChanges();
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                ex.GetBaseException();
+                return -1;
+            }
+        }
+        else
+        {
+            //can't find users
+            return 0;
+        }
     }
 
     //INVOICE MANAGEMENT -----------------------------------------------------------
@@ -1496,103 +1644,6 @@ public class GP_Service : IGP_Service
         VAT = product.Price * (decimal)(0.15/1.15);
 
         return VAT;
-    }
-
-    //search - incomplete
-    public List<Product> searchProducts(string input)
-    {
-        List<Product> productList = new List<Product>();
-        dynamic product = (from p in db.Products
-                           select p);
-        dynamic category = (from c in db.ProductCategories
-                            select c);
-        dynamic subcategories = (from s in db.SubCategories
-                                 select s);
-
-        Regex r = new Regex(@"" + input.ToUpper() + "?");
-
-        foreach (Product p in product)
-        {
-            //MatchCollection matchedNames = r.Matches(p.Name.ToUpper());
-            if(r.IsMatch(p.Name.ToUpper()))
-            //if (p.Name.ToUpper().Contains(input.ToUpper()))
-            {
-                dynamic pro = helpAllocate(p);
-                productList.Add(pro);
-            }
-        }
-        foreach (SubCategory s in subcategories)
-        {
-            if (r.IsMatch(s.Name.ToUpper()))
-            //if (s.Name.ToUpper().Contains(input.ToUpper()))
-            {
-                dynamic productbysubCat = getProductBySubCat(s.SubID);
-
-                foreach (Product p in productbysubCat)
-                {
-                    dynamic pro = helpAllocate(p);
-                    
-                    Boolean contains = false;
-                    foreach (Product pr in productList)
-                    {
-                        if (pr.ID.Equals(pro.ID))
-                        {
-                            contains = true;
-                        }
-                    }
-                    if (contains.Equals(false))
-                    {
-                        productList.Add(pro);
-                    }
-                }
-            }
-        }
-        foreach (ProductCategory c in category)
-        {
-            if (r.IsMatch(c.Name.ToUpper()))
-            //if(c.Name.ToUpper().Contains(input.ToUpper()))
-            {
-                dynamic productbycat = getProductByCat(c.ID);
-
-                foreach(Product pr in productbycat)
-                {
-                    dynamic pro = helpAllocate(pr);
-                    
-                    Boolean contains = false;
-                    foreach (Product p in productList)
-                    {
-                        if(p.ID.Equals(pro.ID))
-                        {
-                            contains = true;
-                        }
-                    }
-                    if(contains.Equals(false))
-                    {
-                        productList.Add(pro);
-                    }
-                    
-                    //if (productList.Contains(pr) == false)
-                      //  productList.Add(pro);
-                }
-            }
-        }
-        return productList;
-    }
-
-    //helper method for search (could be used in other functions)
-    Product helpAllocate(Product p)
-    {
-        var tempProduct = new Product
-        {
-            ID = p.ID,
-            Name = p.Name,
-            Cost = p.Cost,
-            Price = p.Price,
-            Image_Location = p.Image_Location,
-            SubCategoryID = p.SubCategoryID,
-            StockOnHand = p.StockOnHand
-        };
-        return tempProduct;
     }
 
     //Number of users registered per day

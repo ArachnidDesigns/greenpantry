@@ -1540,7 +1540,7 @@ public class GP_Service : IGP_Service
         }
     }
 
-    //REPORT MANAGEMENT ----------------------------------
+    //REPORT MANAGEMENT ------------------------------------------
 
     //Function used to calculate the total profit generated 
     public double calculateProfit()
@@ -1771,6 +1771,7 @@ public class GP_Service : IGP_Service
         double percentage = ((difference * 100) / Salesbefore);
         return percentage;
     }
+
     public int NumsalesPerWeek(DateTime date)
     {
         dynamic weekDates = getWeekDates(date.Date);
@@ -1783,10 +1784,10 @@ public class GP_Service : IGP_Service
             {
                 Counter += 1; 
             }
-         
         }
         return Counter;
     }
+
     private int numInvoices()
     {
         dynamic sale = (from s in db.Invoices
@@ -1808,8 +1809,8 @@ public class GP_Service : IGP_Service
         double percentage = (Difference / OldInvoices);
        
         return percentage;
-
     }
+
     public decimal calcCategoryTotalSales(int cId)
     {
         decimal totalSales = 0;
@@ -1824,7 +1825,6 @@ public class GP_Service : IGP_Service
                 totalSales += (decimal)(i.Qty * i.Price);
             }
         }
-
         return totalSales;
     }
 
@@ -1843,7 +1843,6 @@ public class GP_Service : IGP_Service
                 sales += inv.Total;
             }
         }
-
         return sales;
     }
 
@@ -1864,7 +1863,6 @@ public class GP_Service : IGP_Service
             DateTime newDate = new DateTime(date.Year, date.Month, d);
             monthDates.Add(newDate);
         }
-
         return monthDates;
     }
 
@@ -1891,9 +1889,7 @@ public class GP_Service : IGP_Service
                     }
                 }
             }
-
         }
-
         return Count;
     }
 
@@ -1907,8 +1903,7 @@ public class GP_Service : IGP_Service
             if(inv.ProductID.Equals(P_ID))
             {
                 Count += (1*inv.Qty);
-            }
-           
+            }           
         }
         return Count;
     }
@@ -1950,11 +1945,9 @@ public class GP_Service : IGP_Service
             productlist.Add(tempProduct);
         }
         return productlist;
-
     }
 
-    //TRAFFIC MANAGEMENT-----------------------------------------------------------------
-
+    //TRAFFIC MANAGEMENT -----------------------------------------------------------------
     public int addTraffic(string pageName, DateTime currentdate,int unique)
     {
         var newTraffic = new Traffic
@@ -2030,10 +2023,8 @@ public class GP_Service : IGP_Service
                     Count += 1;
                 }
             }
-            
         }
         return Count;
-
     }
 
     private int getTrafficNum()
@@ -2047,9 +2038,9 @@ public class GP_Service : IGP_Service
         }
         return Count;
     }
+
     public double TrafficChange(DateTime currentDate)
-    {
-        
+    {   
         //total current traffic(new Traffic)
         int newTraffic = getTrafficNum();//2
         //Current weeks traffic 
@@ -2065,7 +2056,6 @@ public class GP_Service : IGP_Service
         double percentage = difference / StartingValue;
         
         return percentage;
-
     }
 
     public int singlePageUniqueTraffic(string pageName)
@@ -2080,6 +2070,7 @@ public class GP_Service : IGP_Service
         }
         return Count;
     }
+
     public List<string> topPages()
     {
         dynamic page = (from t in db.Traffics
@@ -2087,6 +2078,7 @@ public class GP_Service : IGP_Service
                         group t by t into grp
                         orderby grp.Count() descending
                         select grp.Key);
+
         dynamic pageList = new List<String>();
         
         foreach(Traffic p in page)
@@ -2094,7 +2086,7 @@ public class GP_Service : IGP_Service
             pageList.Add(p.PageName);
         }
         dynamic topPages = pageList.GetRange(0,2);
+
         return topPages;
     }
 }
-//}

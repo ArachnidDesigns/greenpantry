@@ -1923,4 +1923,178 @@ public class GP_Service : IGP_Service
         double percentageChange = (Difference /StartingValue);//300/3 = 100
         return percentageChange;
     }
+
+    //Function used to return products in the given price range
+    public List<Product> getfilteredProducts(int minPrice, int maxPrice)
+    {
+        List<Product> productlist = new List<Product>();
+        //Retreiving all the products between a price range
+        dynamic product = (from p in db.Products
+                           where p.Price <= maxPrice && p.Price >= minPrice
+                           select p);
+
+        foreach(Product p in product)
+        {
+            var tempProduct = new Product
+            {
+                ID = p.ID,
+                Name = p.Name,
+                SubCategoryID = p.SubCategoryID,
+                Price = p.Price,
+                Cost = p.Cost,
+                StockOnHand = p.StockOnHand,
+                Image_Location = p.Image_Location,
+                Status = p.Status
+            };
+            //Adding the required products to the product list
+            productlist.Add(tempProduct);
+        }
+        return productlist;
+
+    }
+
+    //TRAFFIC MANAGEMENT-----------------------------------------------------------------
+
+    public int addTraffic(string pageName, DateTime currentdate,int unique)
+    {
+        var newTraffic = new Traffic
+        {
+            PageName = pageName,
+            Day = currentdate,
+            Unique = unique
+        };
+
+        db.Traffics.InsertOnSubmit(newTraffic);
+        try
+        {
+            db.SubmitChanges();
+            return newTraffic.SessionId;
+        }
+        catch (Exception e)
+        {
+            e.GetBaseException();
+            return -1;
+        }
+    }
+
+    private List<Traffic> getAllTrafic()
+    {
+        dynamic traffic = (from t in db.Traffics
+                           select t);
+        dynamic trafList = new List<Traffic>();
+        if(traffic ==null)
+        {
+            return null;
+        }
+        else
+        {
+            foreach(Traffic t in traffic)
+            {
+                var tempTraffic = new Traffic
+                {
+                    SessionId = t.SessionId,
+                    PageName = t.PageName,
+                    Day = t.Day,
+                    Unique = t.Unique
+                };
+                trafList.Add(tempTraffic);
+            }
+            return trafList;
+        }
+    }
+
+    public int singlePageTraffic(string pageName)
+    {
+        dynamic traffic = (from t in db.Traffics
+                           where t.PageName.Equals(pageName)
+                           select t);
+        int Count = 0;
+        foreach(Traffic t in traffic)
+        {
+            Count += 1;
+        }
+        return Count;
+    }
+
+    public int trafficPerWeek(DateTime currentDate)
+    {
+        dynamic weekDates = getWeekDates(currentDate.Date);
+        dynamic traffic = getAllTrafic();
+        int Count = 0;
+        foreach(Traffic t in traffic)
+        {
+            foreach(DateTime d in weekDates)
+            {
+                if (d.ToString("d").Equals(t.Day.ToString("d")))
+                {
+                    Count += 1;
+                }
+            }
+            
+        }
+        return Count;
+
+    }
+
+    private int getTrafficNum()
+    {
+        dynamic traffic = (from t in db.Traffics
+                           select t);
+        int Count = 0;
+        foreach(Traffic t in traffic)
+        {
+            Count += 1;
+        }
+        return Count;
+    }
+    public double TrafficChange(DateTime currentDate)
+    {
+        
+        //total current traffic(new Traffic)
+        int newTraffic = getTrafficNum();//2
+        //Current weeks traffic 
+        int weeksTraffic = trafficPerWeek(currentDate);//2
+
+        //Starting value
+        int StartingValue = newTraffic - weeksTraffic;//0
+        int difference = (newTraffic - StartingValue)*100;
+        if(StartingValue ==0)
+        {
+            return difference;
+        }
+        double percentage = difference / StartingValue;
+        
+        return percentage;
+
+    }
+
+    public int singlePageUniqueTraffic(string pageName)
+    {
+        dynamic traffic = (from t in db.Traffics
+                           where t.PageName.Equals(pageName) && t.Unique.Equals(1)
+                           select t);
+        int Count = 0;
+        foreach (Traffic t in traffic)
+        {
+            Count += 1;
+        }
+        return Count;
+    }
+    public List<string> topPages()
+    {
+        dynamic page = (from t in db.Traffics
+                        where t!=null
+                        group t by t into grp
+                        orderby grp.Count() descending
+                        select grp.Key);
+        dynamic pageList = new List<String>();
+        
+        foreach(Traffic p in page)
+        {
+            pageList.Add(p.PageName);
+        }
+        dynamic topPages = pageList.GetRange(0,2);
+        return topPages;
+    }
 }
+//}

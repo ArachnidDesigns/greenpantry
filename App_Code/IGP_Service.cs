@@ -244,4 +244,26 @@ public interface IGP_Service
 
     [OperationContract]
     double percProductSales(DateTime currentDate, int Product_ID);
+
+    [OperationContract]
+    List<Product> getfilteredProducts(int minPrice, int maxPrice);
+
+    //TRAFFIC MANAGEMENT ------------------------------------------------------------
+    [OperationContract]
+    int addTraffic(string pageName, DateTime currentdate, int unique);
+
+    [OperationContract]
+    int singlePageTraffic(string pageName);
+
+    [OperationContract]
+    int trafficPerWeek(DateTime currentDate);
+
+    [OperationContract]
+    double TrafficChange(DateTime currentDate);
+
+    [OperationContract]
+    int singlePageUniqueTraffic(string pageName);
+
+    [OperationContract]
+    List<String> topPages();
 }

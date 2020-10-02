@@ -62,6 +62,9 @@ public partial class DataClassesDataContext : System.Data.Linq.DataContext
   partial void InsertListProduct(ListProduct instance);
   partial void UpdateListProduct(ListProduct instance);
   partial void DeleteListProduct(ListProduct instance);
+  partial void InsertTraffic(Traffic instance);
+  partial void UpdateTraffic(Traffic instance);
+  partial void DeleteTraffic(Traffic instance);
   #endregion
 	
 	public DataClassesDataContext() : 
@@ -179,6 +182,14 @@ public partial class DataClassesDataContext : System.Data.Linq.DataContext
 		get
 		{
 			return this.GetTable<ListProduct>();
+		}
+	}
+	
+	public System.Data.Linq.Table<Traffic> Traffics
+	{
+		get
+		{
+			return this.GetTable<Traffic>();
 		}
 	}
 }
@@ -2823,6 +2834,140 @@ public partial class ListProduct : INotifyPropertyChanging, INotifyPropertyChang
 					this._ProductID = default(int);
 				}
 				this.SendPropertyChanged("Product");
+			}
+		}
+	}
+	
+	public event PropertyChangingEventHandler PropertyChanging;
+	
+	public event PropertyChangedEventHandler PropertyChanged;
+	
+	protected virtual void SendPropertyChanging()
+	{
+		if ((this.PropertyChanging != null))
+		{
+			this.PropertyChanging(this, emptyChangingEventArgs);
+		}
+	}
+	
+	protected virtual void SendPropertyChanged(String propertyName)
+	{
+		if ((this.PropertyChanged != null))
+		{
+			this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+		}
+	}
+}
+
+[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Traffic")]
+public partial class Traffic : INotifyPropertyChanging, INotifyPropertyChanged
+{
+	
+	private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+	
+	private int _SessionId;
+	
+	private string _PageName;
+	
+	private System.DateTime _Day;
+	
+	private int _Unique;
+	
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnSessionIdChanging(int value);
+    partial void OnSessionIdChanged();
+    partial void OnPageNameChanging(string value);
+    partial void OnPageNameChanged();
+    partial void OnDayChanging(System.DateTime value);
+    partial void OnDayChanged();
+    partial void OnUniqueChanging(int value);
+    partial void OnUniqueChanged();
+    #endregion
+	
+	public Traffic()
+	{
+		OnCreated();
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SessionId", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+	public int SessionId
+	{
+		get
+		{
+			return this._SessionId;
+		}
+		set
+		{
+			if ((this._SessionId != value))
+			{
+				this.OnSessionIdChanging(value);
+				this.SendPropertyChanging();
+				this._SessionId = value;
+				this.SendPropertyChanged("SessionId");
+				this.OnSessionIdChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PageName", DbType="VarChar(MAX) NOT NULL", CanBeNull=false)]
+	public string PageName
+	{
+		get
+		{
+			return this._PageName;
+		}
+		set
+		{
+			if ((this._PageName != value))
+			{
+				this.OnPageNameChanging(value);
+				this.SendPropertyChanging();
+				this._PageName = value;
+				this.SendPropertyChanged("PageName");
+				this.OnPageNameChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Day", DbType="DateTime NOT NULL")]
+	public System.DateTime Day
+	{
+		get
+		{
+			return this._Day;
+		}
+		set
+		{
+			if ((this._Day != value))
+			{
+				this.OnDayChanging(value);
+				this.SendPropertyChanging();
+				this._Day = value;
+				this.SendPropertyChanged("Day");
+				this.OnDayChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Name="[Unique]", Storage="_Unique", DbType="Int NOT NULL")]
+	public int Unique
+	{
+		get
+		{
+			return this._Unique;
+		}
+		set
+		{
+			if ((this._Unique != value))
+			{
+				this.OnUniqueChanging(value);
+				this.SendPropertyChanging();
+				this._Unique = value;
+				this.SendPropertyChanged("Unique");
+				this.OnUniqueChanged();
 			}
 		}
 	}

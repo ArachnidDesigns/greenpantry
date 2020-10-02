@@ -59,7 +59,7 @@
         <classShapeMoniker Id="c5a20b25-b2cd-4039-a46b-75df206c4f6b" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(3.65625 : 3.60740397135417); (3.65625 : 6.09699625651042); (2.5 : 6.09699625651042)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(3.65625 : 3.60740397135417); (3.65625 : 6.09699625651042); (2.5 : 6.09699625651042)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/DataClassesDataContext/User/User_Address" />
       <nodes>
         <classShapeMoniker Id="c11d2019-8bfb-4415-8a4a-663f479d06d2" />
@@ -131,19 +131,25 @@
         <elementListCompartment Id="17315e60-1c48-4327-84e7-e2c0a206bc5a" absoluteBounds="4.015, 6.96, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(4.9375 : 5.69399251302083); (4.9375 : 6.5)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(4.9375 : 5.69399251302083); (4.9375 : 6.5)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/DataClassesDataContext/ShoppingList/ShoppingList_ListProduct" />
       <nodes>
         <classShapeMoniker Id="9339173d-bf22-44d8-9071-af022c60f9b4" />
         <classShapeMoniker Id="fe65521d-5fc4-4c59-a1ed-90ab6572e54b" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(7 : 7.28929768880208); (6 : 7.28929768880208)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(7 : 7.28929768880208); (6 : 7.28929768880208)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/DataClassesDataContext/Product/Product_ListProduct" />
       <nodes>
         <classShapeMoniker Id="b120bfd9-494b-43e9-9832-e634c2eb7abd" />
         <classShapeMoniker Id="fe65521d-5fc4-4c59-a1ed-90ab6572e54b" />
       </nodes>
     </associationConnector>
+    <classShape Id="4bb66464-c584-45bf-90de-248967bf1e04" absoluteBounds="0.75, 8.875, 2, 1.5785953776041666">
+      <DataClassMoniker Name="/DataClassesDataContext/Traffic" />
+      <nestedChildShapes>
+        <elementListCompartment Id="9bbbb034-3b0a-4bdb-95d8-24ff6e5c9c2f" absoluteBounds="0.76500000000000012, 9.335, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
   </nestedChildShapes>
 </ordesignerObjectsDiagram>

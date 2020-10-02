@@ -142,7 +142,7 @@ public class GP_Service : IGP_Service
     }
 
     //Update user password 
-    private int updatePassword(int id, string oldPassword, string newPassword)
+    public int updatePassword(int id, string oldPassword, string newPassword)
     {
         //getUser
         var user = (from u in db.Users
@@ -156,14 +156,14 @@ public class GP_Service : IGP_Service
         }
         else
         {
-            if(user.Password != oldPassword)
+            if(user.Password != Secrecy.HashPassword(oldPassword))
             {
                 //given password doesn't match existing password
                 return -2;
             }
             else
             {
-                user.Password = newPassword;
+                user.Password = Secrecy.HashPassword(newPassword);
 
                 try
                 {
@@ -183,59 +183,47 @@ public class GP_Service : IGP_Service
     }
 
     //Update user's details 
-    public int updateUserDetails(int id, string name, string surname, string email, string number, string oldPass, string newPass)
+    public int updateUserDetails(int id, string name, string surname, string email, string number)
     {
         //check if the given email is already in use
         var tempUser = (from u in db.Users
                         where u.Email.Equals(email) && u.ID != id
                         select u).FirstOrDefault();
 
-        int updatePass = updatePassword(id, oldPass, Secrecy.HashPassword(newPass));
-        if (updatePass.Equals(-2))
+        if (tempUser != null)
         {
-            return -2;
-        }
-        else if (updatePass.Equals(-1))
-        {
-            return 0;
+            //the email they're trying to change to is already in use
+            return -1;
         }
         else
         {
-            if (tempUser != null)
-            {
-                //the email they're trying to change to is already in use
-                return -1;
-            }
-            else
-            {
-                var user = (from u in db.Users
-                            where u.ID.Equals(id)
-                            select u).FirstOrDefault();
+            var user = (from u in db.Users
+                        where u.ID.Equals(id)
+                        select u).FirstOrDefault();
 
-                if (user != null)
+            if (user != null)
+            {
+                user.Name = name;
+                user.Surname = surname;
+                user.Email = email;
+                user.PhoneNumber = number;
+
+                try
                 {
-                    user.Name = name;
-                    user.Surname = surname;
-                    user.Email = email;
-                    user.PhoneNumber = number;
-
-                    try
-                    {
-                        db.SubmitChanges();
-                        return 1;
-                    }
-                    catch (Exception ex)
-                    {
-                        ex.GetBaseException();
-                        return 0;
-                    }
+                    db.SubmitChanges();
+                    return 1;
                 }
-                else
+                catch (Exception ex)
                 {
-                    //user doesn't exist
+                    ex.GetBaseException();
                     return 0;
                 }
             }
+            else
+            {
+                //user doesn't exist
+                return 0;
+            }  
         }
     }
 
@@ -1028,6 +1016,33 @@ public class GP_Service : IGP_Service
         }
     }
 
+    public int updateSubCategories(int id, string name)
+    {
+        var subcategory = (from sc in db.SubCategories
+                           where sc.SubID.Equals(id)
+                           select sc).FirstOrDefault();
+
+        if (subcategory != null)
+        {
+            subcategory.Name = name;
+
+            try
+            {
+                db.SubmitChanges();
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                ex.GetBaseException();
+                return -1;
+            }
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
     //INVOICE MANAGEMENT -----------------------------------------------------------
 
     //Get Invoice by InvoiceID
@@ -1274,82 +1289,27 @@ public class GP_Service : IGP_Service
     //SHOPPING LIST MANAGEMENT ----------------------------------------
 
     //shopping list table needs to be updated then this function
-    public int addItemsToShoppingList(int ListID, int ShoppingList_ID, int Product_ID, int quantity)
+    public int addToList(int userID, int productID, int quantity)
     {
-        var item = (from i in db.ListProducts
-                    where i.ID.Equals(ListID)
-                    select i).FirstOrDefault();
-        //if the item does not exist on the shopping list
-        if(item == null)
-        {
-            var newItem = new ListProduct
-            {
-                ListID = ShoppingList_ID,
-                ProductID = Product_ID,
-                Quantity_ = quantity
+        var product = (from s in db.ShoppingLists
+                       where s.UserID.Equals(userID) && s.ProductID.Equals(productID)
+                       select s).FirstOrDefault();
 
-            };
-            db.ListProducts.InsertOnSubmit(newItem);
-            try
-            {
-                db.SubmitChanges();
-                return 1;
-            }catch(Exception e)
-            {
-                e.GetBaseException();
-                return -1;
-            }
-        }else
+        if (product != null)
         {
-            return 0;
-        }
-    }
-
-    //LIST MANAGEMENT ------------------------------------
-
-    //getter for list items
-    public ListProduct getListProduct(int id)
-    {
-        var list = (from l in db.ListProducts
-                    where l.ID.Equals(id)
-                    select l).FirstOrDefault();
-
-        if (list == null)
-        {
-            return null;
-        }
-        else
-        {
-            var tempList = new ListProduct
-            {
-                ID = list.ID,
-                ListID = list.ListID,
-                ProductID = list.ProductID,
-                Quantity_ = list.Quantity_
-            };
-            return tempList;
-        }
-    }
-
-    //method that allows to add new product to the listitems
-    public int addListProduct(int P_ID, int quantity)
-    {
-        var listinfo = (from l in db.ListProducts
-                        where l.ProductID.Equals(P_ID)
-                        select l).FirstOrDefault();
-        //if the product id is the same then increase the quantity only
-        if (listinfo != null)
-        {
-            // listinfo.Quantity_ += quantity;
+            //already in list
             return 0;
         }
         else
         {
-            var newItem = new ListProduct
+            var newList = new ShoppingList
             {
-                ProductID = P_ID
+                UserID = userID,
+                ProductID = productID,
+                Quantity = quantity
+
             };
-            db.ListProducts.InsertOnSubmit(newItem);
+            db.ShoppingLists.InsertOnSubmit(newList);
             try
             {
                 db.SubmitChanges();
@@ -1363,39 +1323,91 @@ public class GP_Service : IGP_Service
         }
     }
 
-    //method that allows you to update list items
-    public int updateListProduct(int id, int list_ID, int P_ID, int quantity)
+    //getter for list items
+    public List<ShoppingList> getList(int userID)
     {
-        var tempitem = (from l in db.ListProducts
-                        where l.ProductID.Equals(P_ID) && l.Quantity_.Equals(quantity)
-                        select l).FirstOrDefault();
-        if (tempitem != null)
+        var list = (from s in db.ShoppingLists
+                    where s.UserID.Equals(userID)
+                    select s);
+
+        List<ShoppingList> listS = new List<ShoppingList>();
+        if (!list.Any())
         {
-            //meaning that the product is already on the list
-            return 0;
+            return null;
         }
         else
         {
-            var list = getListProduct(id);
-            if (list != null)
+            foreach (ShoppingList s in list)
             {
-                list.ProductID = P_ID;
-                list.Quantity_ = quantity;
-                try
+                if (s.UserID == null)
+                    return null;
+
+                var tempList = new ShoppingList
                 {
-                    db.SubmitChanges();
-                    return 1;
-                }
-                catch (Exception ex)
-                {
-                    ex.GetBaseException();
-                    return -2;
-                }
+                    UserID = s.UserID,
+                    ProductID = s.ProductID,
+                    Quantity = s.Quantity
+                };
+                listS.Add(tempList);
             }
-            else
+            return listS;
+        }
+    }
+
+    //method that allows you to update list items
+    public int updateList(int userID, int P_ID, int quantity)
+    {
+        var list = (from s in db.ShoppingLists
+                        where s.UserID.Equals(userID) && s.ProductID.Equals(P_ID)
+                        select s).FirstOrDefault();
+
+        if (list != null)
+        {
+            list.Quantity = quantity;
+            
+            try
             {
+                db.SubmitChanges();
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                ex.GetBaseException();
+                return -2;
+            }
+        }
+        else
+        {
+            return -1;
+        }
+    }
+
+    public int removeList(int userID, int productID)
+    {
+        var list = (from s in db.ShoppingLists
+                    where s.UserID.Equals(userID) && s.ProductID.Equals(productID)
+                    select s).FirstOrDefault();
+
+        if (list != null)
+        {
+            db.ShoppingLists.DeleteOnSubmit(list);
+            try
+            {
+                //all is well
+                db.SubmitChanges();
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                //something else went wrong
+                ex.GetBaseException();
                 return -1;
             }
+        }
+        else
+        {
+            //doesn't exist
+            return 0;
         }
     }
 
@@ -1734,40 +1746,6 @@ public class GP_Service : IGP_Service
             }
         }
         return totalSales;
-    }
-
-    
-
-    
-
-    
-
-    public int updateSubCategories(int id, string name)
-    {
-        var subcategory = (from sc in db.SubCategories
-                        where sc.SubID.Equals(id)
-                        select sc).FirstOrDefault();
-
-        if (subcategory != null)
-        {
-            subcategory.Name = name;
-
-            try
-            {
-                db.SubmitChanges();
-                return 1;
-            }
-            catch (Exception ex)
-            {
-                ex.GetBaseException();
-                return -1;
-            }
-        }
-        else
-        {
-
-            return 0;
-        }
     }
 
     private double getAllSales()

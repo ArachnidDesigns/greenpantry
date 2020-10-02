@@ -1,13 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Database Name="Database" Class="DataClassesDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
   <Connection Mode="WebSettings" ConnectionString="Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Database.mdf;Integrated Security=True" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="DatabaseConnectionString" Provider="System.Data.SqlClient" />
-  <Table Name="dbo.ShoppingList" Member="ShoppingLists">
-    <Type Name="ShoppingList">
-      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="CustomerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="ShoppingList_ListProduct" Member="ListProducts" ThisKey="ID" OtherKey="ListID" Type="ListProduct" />
-      <Association Name="User_ShoppingList" Member="User" ThisKey="CustomerID" OtherKey="ID" Type="User" IsForeignKey="true" />
-    </Type>
-  </Table>
   <Table Name="dbo.Card" Member="Cards">
     <Type Name="Card">
       <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -64,11 +56,11 @@
       <Column Name="DateRegistered" Type="System.DateTime" DbType="Date" CanBeNull="true" />
       <Column Name="UserType" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="Points" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="User_ShoppingList" Member="ShoppingLists" ThisKey="ID" OtherKey="CustomerID" Type="ShoppingList" />
       <Association Name="User_Card" Member="Cards" ThisKey="ID" OtherKey="CustomerID" Type="Card" />
       <Association Name="User_Device" Member="Devices" ThisKey="ID" OtherKey="CustomerID" Type="Device" />
       <Association Name="User_Address" Member="Addresses" ThisKey="ID" OtherKey="CustomerID" Type="Address" />
       <Association Name="User_Invoice" Member="Invoices" ThisKey="ID" OtherKey="CustomerID" Type="Invoice" />
+      <Association Name="User_ShoppingList" Member="ShoppingLists" ThisKey="ID" OtherKey="UserID" Type="ShoppingList" />
     </Type>
   </Table>
   <Table Name="dbo.Invoice" Member="Invoices">
@@ -96,7 +88,7 @@
       <Column Name="Image_Location" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
       <Column Name="Status" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Association Name="Product_InvoiceLine" Member="InvoiceLines" ThisKey="ID" OtherKey="ProductID" Type="InvoiceLine" />
-      <Association Name="Product_ListProduct" Member="ListProducts" ThisKey="ID" OtherKey="ProductID" Type="ListProduct" />
+      <Association Name="Product_ShoppingList" Member="ShoppingLists" ThisKey="ID" OtherKey="ProductID" Type="ShoppingList" />
       <Association Name="SubCategory_Product" Member="SubCategory" ThisKey="SubCategoryID" OtherKey="SubID" Type="SubCategory" IsForeignKey="true" />
     </Type>
   </Table>
@@ -118,14 +110,22 @@
       <Association Name="ProductCategory_SubCategory" Member="ProductCategory" ThisKey="CategoryID" OtherKey="ID" Type="ProductCategory" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.ListProducts" Member="ListProducts">
-    <Type Name="ListProduct">
+  <Table Name="dbo.ShoppingList" Member="ShoppingLists">
+    <Type Name="ShoppingList">
       <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="ListID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="UserID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="ProductID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="[Quantity ]" Member="Quantity_" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="ShoppingList_ListProduct" Member="ShoppingList" ThisKey="ListID" OtherKey="ID" Type="ShoppingList" IsForeignKey="true" />
-      <Association Name="Product_ListProduct" Member="Product" ThisKey="ProductID" OtherKey="ID" Type="Product" IsForeignKey="true" />
+      <Column Name="Quantity" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="User_ShoppingList" Member="User" ThisKey="UserID" OtherKey="ID" Type="User" IsForeignKey="true" />
+      <Association Name="Product_ShoppingList" Member="Product" ThisKey="ProductID" OtherKey="ID" Type="Product" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Traffic" Member="Traffics">
+    <Type Name="Traffic">
+      <Column Name="SessionId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="PageName" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="Day" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="[Unique]" Member="Unique" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
 </Database>

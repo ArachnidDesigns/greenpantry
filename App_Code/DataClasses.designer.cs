@@ -29,9 +29,6 @@ public partial class DataClassesDataContext : System.Data.Linq.DataContext
 	
   #region Extensibility Method Definitions
   partial void OnCreated();
-  partial void InsertShoppingList(ShoppingList instance);
-  partial void UpdateShoppingList(ShoppingList instance);
-  partial void DeleteShoppingList(ShoppingList instance);
   partial void InsertCard(Card instance);
   partial void UpdateCard(Card instance);
   partial void DeleteCard(Card instance);
@@ -59,9 +56,12 @@ public partial class DataClassesDataContext : System.Data.Linq.DataContext
   partial void InsertSubCategory(SubCategory instance);
   partial void UpdateSubCategory(SubCategory instance);
   partial void DeleteSubCategory(SubCategory instance);
-  partial void InsertListProduct(ListProduct instance);
-  partial void UpdateListProduct(ListProduct instance);
-  partial void DeleteListProduct(ListProduct instance);
+  partial void InsertShoppingList(ShoppingList instance);
+  partial void UpdateShoppingList(ShoppingList instance);
+  partial void DeleteShoppingList(ShoppingList instance);
+  partial void InsertTraffic(Traffic instance);
+  partial void UpdateTraffic(Traffic instance);
+  partial void DeleteTraffic(Traffic instance);
   #endregion
 	
 	public DataClassesDataContext() : 
@@ -92,14 +92,6 @@ public partial class DataClassesDataContext : System.Data.Linq.DataContext
 			base(connection, mappingSource)
 	{
 		OnCreated();
-	}
-	
-	public System.Data.Linq.Table<ShoppingList> ShoppingLists
-	{
-		get
-		{
-			return this.GetTable<ShoppingList>();
-		}
 	}
 	
 	public System.Data.Linq.Table<Card> Cards
@@ -174,167 +166,20 @@ public partial class DataClassesDataContext : System.Data.Linq.DataContext
 		}
 	}
 	
-	public System.Data.Linq.Table<ListProduct> ListProducts
+	public System.Data.Linq.Table<ShoppingList> ShoppingLists
 	{
 		get
 		{
-			return this.GetTable<ListProduct>();
+			return this.GetTable<ShoppingList>();
 		}
 	}
-}
-
-[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ShoppingList")]
-public partial class ShoppingList : INotifyPropertyChanging, INotifyPropertyChanged
-{
 	
-	private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-	
-	private int _ID;
-	
-	private int _CustomerID;
-	
-	private EntitySet<ListProduct> _ListProducts;
-	
-	private EntityRef<User> _User;
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnIDChanging(int value);
-    partial void OnIDChanged();
-    partial void OnCustomerIDChanging(int value);
-    partial void OnCustomerIDChanged();
-    #endregion
-	
-	public ShoppingList()
-	{
-		this._ListProducts = new EntitySet<ListProduct>(new Action<ListProduct>(this.attach_ListProducts), new Action<ListProduct>(this.detach_ListProducts));
-		this._User = default(EntityRef<User>);
-		OnCreated();
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-	public int ID
+	public System.Data.Linq.Table<Traffic> Traffics
 	{
 		get
 		{
-			return this._ID;
+			return this.GetTable<Traffic>();
 		}
-		set
-		{
-			if ((this._ID != value))
-			{
-				this.OnIDChanging(value);
-				this.SendPropertyChanging();
-				this._ID = value;
-				this.SendPropertyChanged("ID");
-				this.OnIDChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CustomerID", DbType="Int NOT NULL")]
-	public int CustomerID
-	{
-		get
-		{
-			return this._CustomerID;
-		}
-		set
-		{
-			if ((this._CustomerID != value))
-			{
-				if (this._User.HasLoadedOrAssignedValue)
-				{
-					throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				}
-				this.OnCustomerIDChanging(value);
-				this.SendPropertyChanging();
-				this._CustomerID = value;
-				this.SendPropertyChanged("CustomerID");
-				this.OnCustomerIDChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ShoppingList_ListProduct", Storage="_ListProducts", ThisKey="ID", OtherKey="ListID")]
-	public EntitySet<ListProduct> ListProducts
-	{
-		get
-		{
-			return this._ListProducts;
-		}
-		set
-		{
-			this._ListProducts.Assign(value);
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_ShoppingList", Storage="_User", ThisKey="CustomerID", OtherKey="ID", IsForeignKey=true)]
-	public User User
-	{
-		get
-		{
-			return this._User.Entity;
-		}
-		set
-		{
-			User previousValue = this._User.Entity;
-			if (((previousValue != value) 
-						|| (this._User.HasLoadedOrAssignedValue == false)))
-			{
-				this.SendPropertyChanging();
-				if ((previousValue != null))
-				{
-					this._User.Entity = null;
-					previousValue.ShoppingLists.Remove(this);
-				}
-				this._User.Entity = value;
-				if ((value != null))
-				{
-					value.ShoppingLists.Add(this);
-					this._CustomerID = value.ID;
-				}
-				else
-				{
-					this._CustomerID = default(int);
-				}
-				this.SendPropertyChanged("User");
-			}
-		}
-	}
-	
-	public event PropertyChangingEventHandler PropertyChanging;
-	
-	public event PropertyChangedEventHandler PropertyChanged;
-	
-	protected virtual void SendPropertyChanging()
-	{
-		if ((this.PropertyChanging != null))
-		{
-			this.PropertyChanging(this, emptyChangingEventArgs);
-		}
-	}
-	
-	protected virtual void SendPropertyChanged(String propertyName)
-	{
-		if ((this.PropertyChanged != null))
-		{
-			this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
-	}
-	
-	private void attach_ListProducts(ListProduct entity)
-	{
-		this.SendPropertyChanging();
-		entity.ShoppingList = this;
-	}
-	
-	private void detach_ListProducts(ListProduct entity)
-	{
-		this.SendPropertyChanging();
-		entity.ShoppingList = null;
 	}
 }
 
@@ -1273,8 +1118,6 @@ public partial class User : INotifyPropertyChanging, INotifyPropertyChanged
 	
 	private int _Points;
 	
-	private EntitySet<ShoppingList> _ShoppingLists;
-	
 	private EntitySet<Card> _Cards;
 	
 	private EntitySet<Device> _Devices;
@@ -1282,6 +1125,8 @@ public partial class User : INotifyPropertyChanging, INotifyPropertyChanged
 	private EntitySet<Address> _Addresses;
 	
 	private EntitySet<Invoice> _Invoices;
+	
+	private EntitySet<ShoppingList> _ShoppingLists;
 	
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -1311,11 +1156,11 @@ public partial class User : INotifyPropertyChanging, INotifyPropertyChanged
 	
 	public User()
 	{
-		this._ShoppingLists = new EntitySet<ShoppingList>(new Action<ShoppingList>(this.attach_ShoppingLists), new Action<ShoppingList>(this.detach_ShoppingLists));
 		this._Cards = new EntitySet<Card>(new Action<Card>(this.attach_Cards), new Action<Card>(this.detach_Cards));
 		this._Devices = new EntitySet<Device>(new Action<Device>(this.attach_Devices), new Action<Device>(this.detach_Devices));
 		this._Addresses = new EntitySet<Address>(new Action<Address>(this.attach_Addresses), new Action<Address>(this.detach_Addresses));
 		this._Invoices = new EntitySet<Invoice>(new Action<Invoice>(this.attach_Invoices), new Action<Invoice>(this.detach_Invoices));
+		this._ShoppingLists = new EntitySet<ShoppingList>(new Action<ShoppingList>(this.attach_ShoppingLists), new Action<ShoppingList>(this.detach_ShoppingLists));
 		OnCreated();
 	}
 	
@@ -1519,19 +1364,6 @@ public partial class User : INotifyPropertyChanging, INotifyPropertyChanged
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_ShoppingList", Storage="_ShoppingLists", ThisKey="ID", OtherKey="CustomerID")]
-	public EntitySet<ShoppingList> ShoppingLists
-	{
-		get
-		{
-			return this._ShoppingLists;
-		}
-		set
-		{
-			this._ShoppingLists.Assign(value);
-		}
-	}
-	
 	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_Card", Storage="_Cards", ThisKey="ID", OtherKey="CustomerID")]
 	public EntitySet<Card> Cards
 	{
@@ -1584,6 +1416,19 @@ public partial class User : INotifyPropertyChanging, INotifyPropertyChanged
 		}
 	}
 	
+	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_ShoppingList", Storage="_ShoppingLists", ThisKey="ID", OtherKey="UserID")]
+	public EntitySet<ShoppingList> ShoppingLists
+	{
+		get
+		{
+			return this._ShoppingLists;
+		}
+		set
+		{
+			this._ShoppingLists.Assign(value);
+		}
+	}
+	
 	public event PropertyChangingEventHandler PropertyChanging;
 	
 	public event PropertyChangedEventHandler PropertyChanged;
@@ -1602,18 +1447,6 @@ public partial class User : INotifyPropertyChanging, INotifyPropertyChanged
 		{
 			this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 		}
-	}
-	
-	private void attach_ShoppingLists(ShoppingList entity)
-	{
-		this.SendPropertyChanging();
-		entity.User = this;
-	}
-	
-	private void detach_ShoppingLists(ShoppingList entity)
-	{
-		this.SendPropertyChanging();
-		entity.User = null;
 	}
 	
 	private void attach_Cards(Card entity)
@@ -1659,6 +1492,18 @@ public partial class User : INotifyPropertyChanging, INotifyPropertyChanged
 	}
 	
 	private void detach_Invoices(Invoice entity)
+	{
+		this.SendPropertyChanging();
+		entity.User = null;
+	}
+	
+	private void attach_ShoppingLists(ShoppingList entity)
+	{
+		this.SendPropertyChanging();
+		entity.User = this;
+	}
+	
+	private void detach_ShoppingLists(ShoppingList entity)
 	{
 		this.SendPropertyChanging();
 		entity.User = null;
@@ -1988,7 +1833,7 @@ public partial class Product : INotifyPropertyChanging, INotifyPropertyChanged
 	
 	private EntitySet<InvoiceLine> _InvoiceLines;
 	
-	private EntitySet<ListProduct> _ListProducts;
+	private EntitySet<ShoppingList> _ShoppingLists;
 	
 	private EntityRef<SubCategory> _SubCategory;
 	
@@ -2017,7 +1862,7 @@ public partial class Product : INotifyPropertyChanging, INotifyPropertyChanged
 	public Product()
 	{
 		this._InvoiceLines = new EntitySet<InvoiceLine>(new Action<InvoiceLine>(this.attach_InvoiceLines), new Action<InvoiceLine>(this.detach_InvoiceLines));
-		this._ListProducts = new EntitySet<ListProduct>(new Action<ListProduct>(this.attach_ListProducts), new Action<ListProduct>(this.detach_ListProducts));
+		this._ShoppingLists = new EntitySet<ShoppingList>(new Action<ShoppingList>(this.attach_ShoppingLists), new Action<ShoppingList>(this.detach_ShoppingLists));
 		this._SubCategory = default(EntityRef<SubCategory>);
 		OnCreated();
 	}
@@ -2199,16 +2044,16 @@ public partial class Product : INotifyPropertyChanging, INotifyPropertyChanged
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Product_ListProduct", Storage="_ListProducts", ThisKey="ID", OtherKey="ProductID")]
-	public EntitySet<ListProduct> ListProducts
+	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Product_ShoppingList", Storage="_ShoppingLists", ThisKey="ID", OtherKey="ProductID")]
+	public EntitySet<ShoppingList> ShoppingLists
 	{
 		get
 		{
-			return this._ListProducts;
+			return this._ShoppingLists;
 		}
 		set
 		{
-			this._ListProducts.Assign(value);
+			this._ShoppingLists.Assign(value);
 		}
 	}
 	
@@ -2278,13 +2123,13 @@ public partial class Product : INotifyPropertyChanging, INotifyPropertyChanged
 		entity.Product = null;
 	}
 	
-	private void attach_ListProducts(ListProduct entity)
+	private void attach_ShoppingLists(ShoppingList entity)
 	{
 		this.SendPropertyChanging();
 		entity.Product = this;
 	}
 	
-	private void detach_ListProducts(ListProduct entity)
+	private void detach_ShoppingLists(ShoppingList entity)
 	{
 		this.SendPropertyChanging();
 		entity.Product = null;
@@ -2632,21 +2477,21 @@ public partial class SubCategory : INotifyPropertyChanging, INotifyPropertyChang
 	}
 }
 
-[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ListProducts")]
-public partial class ListProduct : INotifyPropertyChanging, INotifyPropertyChanged
+[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ShoppingList")]
+public partial class ShoppingList : INotifyPropertyChanging, INotifyPropertyChanged
 {
 	
 	private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 	
 	private int _ID;
 	
-	private int _ListID;
+	private int _UserID;
 	
 	private int _ProductID;
 	
-	private int _Quantity_;
+	private int _Quantity;
 	
-	private EntityRef<ShoppingList> _ShoppingList;
+	private EntityRef<User> _User;
 	
 	private EntityRef<Product> _Product;
 	
@@ -2656,17 +2501,17 @@ public partial class ListProduct : INotifyPropertyChanging, INotifyPropertyChang
     partial void OnCreated();
     partial void OnIDChanging(int value);
     partial void OnIDChanged();
-    partial void OnListIDChanging(int value);
-    partial void OnListIDChanged();
+    partial void OnUserIDChanging(int value);
+    partial void OnUserIDChanged();
     partial void OnProductIDChanging(int value);
     partial void OnProductIDChanged();
-    partial void OnQuantity_Changing(int value);
-    partial void OnQuantity_Changed();
+    partial void OnQuantityChanging(int value);
+    partial void OnQuantityChanged();
     #endregion
 	
-	public ListProduct()
+	public ShoppingList()
 	{
-		this._ShoppingList = default(EntityRef<ShoppingList>);
+		this._User = default(EntityRef<User>);
 		this._Product = default(EntityRef<Product>);
 		OnCreated();
 	}
@@ -2691,26 +2536,26 @@ public partial class ListProduct : INotifyPropertyChanging, INotifyPropertyChang
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ListID", DbType="Int NOT NULL")]
-	public int ListID
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UserID", DbType="Int NOT NULL")]
+	public int UserID
 	{
 		get
 		{
-			return this._ListID;
+			return this._UserID;
 		}
 		set
 		{
-			if ((this._ListID != value))
+			if ((this._UserID != value))
 			{
-				if (this._ShoppingList.HasLoadedOrAssignedValue)
+				if (this._User.HasLoadedOrAssignedValue)
 				{
 					throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 				}
-				this.OnListIDChanging(value);
+				this.OnUserIDChanging(value);
 				this.SendPropertyChanging();
-				this._ListID = value;
-				this.SendPropertyChanged("ListID");
-				this.OnListIDChanged();
+				this._UserID = value;
+				this.SendPropertyChanged("UserID");
+				this.OnUserIDChanged();
 			}
 		}
 	}
@@ -2739,61 +2584,61 @@ public partial class ListProduct : INotifyPropertyChanging, INotifyPropertyChang
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Name="[Quantity ]", Storage="_Quantity_", DbType="Int NOT NULL")]
-	public int Quantity_
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Quantity", DbType="Int NOT NULL")]
+	public int Quantity
 	{
 		get
 		{
-			return this._Quantity_;
+			return this._Quantity;
 		}
 		set
 		{
-			if ((this._Quantity_ != value))
+			if ((this._Quantity != value))
 			{
-				this.OnQuantity_Changing(value);
+				this.OnQuantityChanging(value);
 				this.SendPropertyChanging();
-				this._Quantity_ = value;
-				this.SendPropertyChanged("Quantity_");
-				this.OnQuantity_Changed();
+				this._Quantity = value;
+				this.SendPropertyChanged("Quantity");
+				this.OnQuantityChanged();
 			}
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ShoppingList_ListProduct", Storage="_ShoppingList", ThisKey="ListID", OtherKey="ID", IsForeignKey=true)]
-	public ShoppingList ShoppingList
+	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_ShoppingList", Storage="_User", ThisKey="UserID", OtherKey="ID", IsForeignKey=true)]
+	public User User
 	{
 		get
 		{
-			return this._ShoppingList.Entity;
+			return this._User.Entity;
 		}
 		set
 		{
-			ShoppingList previousValue = this._ShoppingList.Entity;
+			User previousValue = this._User.Entity;
 			if (((previousValue != value) 
-						|| (this._ShoppingList.HasLoadedOrAssignedValue == false)))
+						|| (this._User.HasLoadedOrAssignedValue == false)))
 			{
 				this.SendPropertyChanging();
 				if ((previousValue != null))
 				{
-					this._ShoppingList.Entity = null;
-					previousValue.ListProducts.Remove(this);
+					this._User.Entity = null;
+					previousValue.ShoppingLists.Remove(this);
 				}
-				this._ShoppingList.Entity = value;
+				this._User.Entity = value;
 				if ((value != null))
 				{
-					value.ListProducts.Add(this);
-					this._ListID = value.ID;
+					value.ShoppingLists.Add(this);
+					this._UserID = value.ID;
 				}
 				else
 				{
-					this._ListID = default(int);
+					this._UserID = default(int);
 				}
-				this.SendPropertyChanged("ShoppingList");
+				this.SendPropertyChanged("User");
 			}
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Product_ListProduct", Storage="_Product", ThisKey="ProductID", OtherKey="ID", IsForeignKey=true)]
+	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Product_ShoppingList", Storage="_Product", ThisKey="ProductID", OtherKey="ID", IsForeignKey=true)]
 	public Product Product
 	{
 		get
@@ -2810,12 +2655,12 @@ public partial class ListProduct : INotifyPropertyChanging, INotifyPropertyChang
 				if ((previousValue != null))
 				{
 					this._Product.Entity = null;
-					previousValue.ListProducts.Remove(this);
+					previousValue.ShoppingLists.Remove(this);
 				}
 				this._Product.Entity = value;
 				if ((value != null))
 				{
-					value.ListProducts.Add(this);
+					value.ShoppingLists.Add(this);
 					this._ProductID = value.ID;
 				}
 				else
@@ -2823,6 +2668,140 @@ public partial class ListProduct : INotifyPropertyChanging, INotifyPropertyChang
 					this._ProductID = default(int);
 				}
 				this.SendPropertyChanged("Product");
+			}
+		}
+	}
+	
+	public event PropertyChangingEventHandler PropertyChanging;
+	
+	public event PropertyChangedEventHandler PropertyChanged;
+	
+	protected virtual void SendPropertyChanging()
+	{
+		if ((this.PropertyChanging != null))
+		{
+			this.PropertyChanging(this, emptyChangingEventArgs);
+		}
+	}
+	
+	protected virtual void SendPropertyChanged(String propertyName)
+	{
+		if ((this.PropertyChanged != null))
+		{
+			this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+		}
+	}
+}
+
+[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Traffic")]
+public partial class Traffic : INotifyPropertyChanging, INotifyPropertyChanged
+{
+	
+	private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+	
+	private int _SessionId;
+	
+	private string _PageName;
+	
+	private System.DateTime _Day;
+	
+	private int _Unique;
+	
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnSessionIdChanging(int value);
+    partial void OnSessionIdChanged();
+    partial void OnPageNameChanging(string value);
+    partial void OnPageNameChanged();
+    partial void OnDayChanging(System.DateTime value);
+    partial void OnDayChanged();
+    partial void OnUniqueChanging(int value);
+    partial void OnUniqueChanged();
+    #endregion
+	
+	public Traffic()
+	{
+		OnCreated();
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SessionId", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+	public int SessionId
+	{
+		get
+		{
+			return this._SessionId;
+		}
+		set
+		{
+			if ((this._SessionId != value))
+			{
+				this.OnSessionIdChanging(value);
+				this.SendPropertyChanging();
+				this._SessionId = value;
+				this.SendPropertyChanged("SessionId");
+				this.OnSessionIdChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PageName", DbType="VarChar(MAX) NOT NULL", CanBeNull=false)]
+	public string PageName
+	{
+		get
+		{
+			return this._PageName;
+		}
+		set
+		{
+			if ((this._PageName != value))
+			{
+				this.OnPageNameChanging(value);
+				this.SendPropertyChanging();
+				this._PageName = value;
+				this.SendPropertyChanged("PageName");
+				this.OnPageNameChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Day", DbType="DateTime NOT NULL")]
+	public System.DateTime Day
+	{
+		get
+		{
+			return this._Day;
+		}
+		set
+		{
+			if ((this._Day != value))
+			{
+				this.OnDayChanging(value);
+				this.SendPropertyChanging();
+				this._Day = value;
+				this.SendPropertyChanged("Day");
+				this.OnDayChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Name="[Unique]", Storage="_Unique", DbType="Int NOT NULL")]
+	public int Unique
+	{
+		get
+		{
+			return this._Unique;
+		}
+		set
+		{
+			if ((this._Unique != value))
+			{
+				this.OnUniqueChanging(value);
+				this.SendPropertyChanging();
+				this._Unique = value;
+				this.SendPropertyChanged("Unique");
+				this.OnUniqueChanged();
 			}
 		}
 	}

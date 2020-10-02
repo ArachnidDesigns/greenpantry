@@ -37,7 +37,10 @@ public interface IGP_Service
     int removeUser(int id);
 
     [OperationContract]
-    int updateUserDetails(int id, string name, string surname, string email, string number, string oldPass, string newPass);
+    int updateUserDetails(int id, string name, string surname, string email, string number);
+
+    [OperationContract]
+    int updatePassword(int id, string oldPassword, string newPassword);
 
     [OperationContract]
     User getUser(int User_ID);
@@ -139,7 +142,16 @@ public interface IGP_Service
     //SHOPPING LIST MANAGEMENT ---------------------------------------------------------
 
     [OperationContract]
-    int addItemsToShoppingList(int ListID, int ShoppingList_ID, int Product_ID, int Quantity);
+    int addToList(int userID, int productID, int quantity);
+
+    [OperationContract]
+    List<ShoppingList> getList(int userID);
+
+    [OperationContract]
+    int updateList(int userID, int P_ID, int quantity);
+
+    [OperationContract]
+    int removeList(int userID, int productID);
 
     //ADDRESS MANAGEMENT -------------------------------------------------------------
 
@@ -170,17 +182,6 @@ public interface IGP_Service
 
     [OperationContract]
     int addDevices(string os);
-
-    //SHOPPING LIST PRODUCT MANAGEMENT ------------------------------------------------------------
-
-    [OperationContract]
-    ListProduct getListProduct(int id);
-
-    [OperationContract]
-    int addListProduct(int P_ID, int quantity);
-
-    [OperationContract]
-    int updateListProduct(int id, int list_ID, int P_ID, int quantity);
 
     //REPORT MANAGEMENT ------------------------------------------------------------
 

@@ -77,6 +77,9 @@ public interface IGP_Service
     [OperationContract]
     List<Product> getProductBySubCat(int Sub_ID);
 
+    [OperationContract]
+    List<Product> searchProducts(string input);
+
     //CATEGORY MANAGEMENT --------------------------------------------------------
 
     [OperationContract]
@@ -196,7 +199,6 @@ public interface IGP_Service
     [OperationContract]
     double profitPerCat(int C_ID);
 
-
     [OperationContract]
     decimal calcProductVAT(int P_ID);
 
@@ -205,9 +207,6 @@ public interface IGP_Service
 
     [OperationContract]
     int addInvoiceLine(int product_ID, int invoice_ID, int quantity, decimal price);
-
-    [OperationContract]
-    List<Product> searchProducts(string input);
 
     [OperationContract]
     int usersperWeek(DateTime currentDate);

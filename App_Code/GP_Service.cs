@@ -406,7 +406,7 @@ public class GP_Service : IGP_Service
     //PRODUCT MANAGEMENT ---------------------------------------------------------------
 
     //add new product  
-    public int addNewProduct(string name, int SubID, double price, double cost, int stockQty, string imgLocation)
+    public int addNewProduct(string name, int SubID, double price, double cost, int stockQty, string imgLocation,string status)
     {
         var newProduct = new Product
         {
@@ -415,7 +415,8 @@ public class GP_Service : IGP_Service
             Price = (decimal)price,
             Cost = (decimal) cost,
             StockOnHand = stockQty,
-            Image_Location = imgLocation
+            Image_Location = imgLocation,
+            Status = status
         };
 
         db.Products.InsertOnSubmit(newProduct);
@@ -435,7 +436,7 @@ public class GP_Service : IGP_Service
     }
 
     //Function to update product specifics  
-    public int updateProduct(int id, string name, int SubId, double price, double cost, string imgLocation)
+    public int updateProduct(int id, string name, int SubId, double price, double cost, string imgLocation,string status)
     {
         var product = getProduct(id);
 
@@ -451,6 +452,7 @@ public class GP_Service : IGP_Service
             product.Price = (decimal)price;
             product.Cost = (decimal)cost;
             product.Image_Location = imgLocation;
+            product.Status = status;
 
             try
             {
@@ -491,7 +493,8 @@ public class GP_Service : IGP_Service
                     Price = pr.Price,
                     Image_Location = pr.Image_Location,
                     StockOnHand = pr.StockOnHand,
-                    SubCategoryID = pr.SubCategoryID
+                    SubCategoryID = pr.SubCategoryID,
+                    Status = pr.Status
                 };
                 productsList.Add(tempProduct);
             }
@@ -621,7 +624,8 @@ public class GP_Service : IGP_Service
                     Price = pr.Price,
                     Cost = pr.Cost,
                     StockOnHand = pr.StockOnHand,
-                    Image_Location = pr.Image_Location
+                    Image_Location = pr.Image_Location,
+                    Status = pr.Status
                 };
 
                 ProductList.Add(tempProduct);
@@ -648,7 +652,8 @@ public class GP_Service : IGP_Service
                 Price = pr.Price,
                 Cost = pr.Cost,
                 StockOnHand = pr.StockOnHand,
-                Image_Location = pr.Image_Location
+                Image_Location = pr.Image_Location,
+                Status = pr.Status
             };
 
             ProductList.Add(tempPro);
@@ -770,7 +775,8 @@ public class GP_Service : IGP_Service
             var tempCat = new ProductCategory
             {
                 ID = pc.ID,
-                Name = pc.Name
+                Name = pc.Name,
+                Status = pc.Status
             };
 
             categories.Add(tempCat);
@@ -794,7 +800,8 @@ public class GP_Service : IGP_Service
             var tempcat = new ProductCategory
             {
                 Name = cat.Name,
-                ID = cat.ID
+                ID = cat.ID,
+                Status = cat.Status
             };
             return tempcat;
         }
@@ -810,7 +817,7 @@ public class GP_Service : IGP_Service
         return category;
     }
 
-    public int addCategory(int id, string name)
+    public int addCategory(int id, string name,string status)
     {
         var category = (from c in db.ProductCategories
                         where c.ID.Equals(id)
@@ -819,6 +826,7 @@ public class GP_Service : IGP_Service
         if (category != null)
         {
             category.Name = name;
+            category.Status = status;
 
             try
             {
@@ -837,7 +845,7 @@ public class GP_Service : IGP_Service
         }
     }
 
-    public int updateCategories(int id, string name)
+    public int updateCategories(int id, string name,string status)
     {
         var category = (from c in db.ProductCategories
                         where c.ID.Equals(id)
@@ -846,6 +854,7 @@ public class GP_Service : IGP_Service
         if (category != null)
         {
             category.Name = name;
+            category.Status = status;
 
             try
             {
@@ -895,7 +904,7 @@ public class GP_Service : IGP_Service
 
     //SUBCATEGORY MANAGEMENT ----------------------------------------------------------
 
-    public int addSubCategory(int id, string name)
+    public int addSubCategory(int id, string name,string status)
     {
         var subcategory = (from sc in db.SubCategories
                            where sc.SubID.Equals(id)
@@ -904,6 +913,7 @@ public class GP_Service : IGP_Service
         if (subcategory != null)
         {
             subcategory.Name = name;
+            subcategory.Status = status;
 
             try
             {
@@ -936,7 +946,8 @@ public class GP_Service : IGP_Service
             {
                 SubID = sc.SubID,
                 Name = sc.Name,
-                CategoryID = sc.CategoryID
+                CategoryID = sc.CategoryID,
+                Status = sc.Status
             };
 
             subcategories.Add(tempSubCat);
@@ -961,7 +972,8 @@ public class GP_Service : IGP_Service
             {
                 SubID = subcat.SubID,
                 Name = subcat.Name,
-                CategoryID = subcat.CategoryID
+                CategoryID = subcat.CategoryID,
+                Status = subcat.Status
             };
             return tempsub;
         }
@@ -981,7 +993,8 @@ public class GP_Service : IGP_Service
             {
                 SubID = sc.SubID,
                 Name = sc.Name,
-                CategoryID = sc.CategoryID
+                CategoryID = sc.CategoryID,
+                Status = sc.Status
             };
             SubList.Add(tempsub);
         }
@@ -1016,7 +1029,7 @@ public class GP_Service : IGP_Service
         }
     }
 
-    public int updateSubCategories(int id, string name)
+    public int updateSubCategories(int id, string name,string status)
     {
         var subcategory = (from sc in db.SubCategories
                            where sc.SubID.Equals(id)
@@ -1025,6 +1038,7 @@ public class GP_Service : IGP_Service
         if (subcategory != null)
         {
             subcategory.Name = name;
+            subcategory.Status = status;
 
             try
             {

@@ -23,6 +23,8 @@ public interface IGP_Service
     //REPORT MANAGEMENT
 
     //USER MANAGEMENT -------------------------------
+    [OperationContract]
+    void newsletter(string senderemail, string subscriberemail, string subject, string body, string smtp);
 
     [OperationContract]
     int login(string email, string password);
@@ -57,7 +59,7 @@ public interface IGP_Service
     //PRODUCT MANAGEMENT --------------------------------------------------------
 
     [OperationContract]
-    int addNewProduct(string name, int SubID, double price, double cost, int stockQty, string imgLocation,string status);
+    int addNewProduct(string name, int SubID, double price, double cost, int stockQty, string imgLocation,string status,string description);
 
     [OperationContract]
     int updateProduct(int id, string name, int SubId, double price, double cost, string imgLocation,string status, int stock);
@@ -115,7 +117,7 @@ public interface IGP_Service
     int addSubCategory(int id, string name,string status);
 
     [OperationContract]
-    int updateSubCategories(int id, string name,string status);
+    int updateSubCategories(int id, int cat_ID,string name,string status);
 
     //INVOICE MANAGEMENT --------------------------------------------------------
 
@@ -181,7 +183,7 @@ public interface IGP_Service
     Device getDevice(int D_ID);
 
     [OperationContract]
-    int addDevices(string os);
+    int addDevices(int cust_ID,string useragent);
 
     //REPORT MANAGEMENT ------------------------------------------------------------
 

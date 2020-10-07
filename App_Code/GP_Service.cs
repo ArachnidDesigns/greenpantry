@@ -406,7 +406,7 @@ public class GP_Service : IGP_Service
     //PRODUCT MANAGEMENT ---------------------------------------------------------------
 
     //add new product  
-    public int addNewProduct(string name, int SubID, double price, double cost, int stockQty, string imgLocation,string status)
+    public int addNewProduct(string name, int SubID, double price, double cost, int stockQty, string imgLocation,string status,string description)
     {
         var newProduct = new Product
         {
@@ -416,7 +416,8 @@ public class GP_Service : IGP_Service
             Cost = (decimal) cost,
             StockOnHand = stockQty,
             Image_Location = imgLocation,
-            Status = status
+            Status = status,
+            Description = description
         };
 
         db.Products.InsertOnSubmit(newProduct);
@@ -436,7 +437,7 @@ public class GP_Service : IGP_Service
     }
 
     //Function to update product specifics  
-    public int updateProduct(int id, string name, int SubId, double price, double cost, string imgLocation,string status)
+    public int updateProduct(int id, string name, int SubId, double price, double cost, string imgLocation,string status,string description)
     {
         var product = getProduct(id);
 
@@ -453,6 +454,7 @@ public class GP_Service : IGP_Service
             product.Cost = (decimal)cost;
             product.Image_Location = imgLocation;
             product.Status = status;
+            product.Description = description;
 
             try
             {
@@ -494,7 +496,8 @@ public class GP_Service : IGP_Service
                     Image_Location = pr.Image_Location,
                     StockOnHand = pr.StockOnHand,
                     SubCategoryID = pr.SubCategoryID,
-                    Status = pr.Status
+                    Status = pr.Status,
+                    Description = pr.Description
                 };
                 productsList.Add(tempProduct);
             }
@@ -554,7 +557,8 @@ public class GP_Service : IGP_Service
                 Price = product.Price,
                 Cost = product.Cost,
                 StockOnHand = product.StockOnHand,
-                Image_Location = product.Image_Location
+                Image_Location = product.Image_Location,
+                Description = product.Description
             };
             return rProduct;
         }
@@ -625,7 +629,8 @@ public class GP_Service : IGP_Service
                     Cost = pr.Cost,
                     StockOnHand = pr.StockOnHand,
                     Image_Location = pr.Image_Location,
-                    Status = pr.Status
+                    Status = pr.Status,
+                    Description = pr.Description
                 };
 
                 ProductList.Add(tempProduct);
@@ -653,7 +658,8 @@ public class GP_Service : IGP_Service
                 Cost = pr.Cost,
                 StockOnHand = pr.StockOnHand,
                 Image_Location = pr.Image_Location,
-                Status = pr.Status
+                Status = pr.Status,
+                Description = pr.Description
             };
 
             ProductList.Add(tempPro);
@@ -754,7 +760,8 @@ public class GP_Service : IGP_Service
             Price = p.Price,
             Image_Location = p.Image_Location,
             SubCategoryID = p.SubCategoryID,
-            StockOnHand = p.StockOnHand
+            StockOnHand = p.StockOnHand,
+            Description = p.Description
         };
         return tempProduct;
     }
@@ -1954,7 +1961,8 @@ public class GP_Service : IGP_Service
                 Cost = p.Cost,
                 StockOnHand = p.StockOnHand,
                 Image_Location = p.Image_Location,
-                Status = p.Status
+                Status = p.Status,
+                Description = p.Description
             };
             //Adding the required products to the product list
             productlist.Add(tempProduct);

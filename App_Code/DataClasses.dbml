@@ -77,21 +77,6 @@
       <Association Name="User_Invoice" Member="User" ThisKey="CustomerID" OtherKey="ID" Type="User" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.Product" Member="Products">
-    <Type Name="Product">
-      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="SubCategoryID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Price" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
-      <Column Name="Cost" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
-      <Column Name="StockOnHand" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Image_Location" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
-      <Column Name="Status" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Association Name="Product_InvoiceLine" Member="InvoiceLines" ThisKey="ID" OtherKey="ProductID" Type="InvoiceLine" />
-      <Association Name="Product_ShoppingList" Member="ShoppingLists" ThisKey="ID" OtherKey="ProductID" Type="ShoppingList" />
-      <Association Name="SubCategory_Product" Member="SubCategory" ThisKey="SubCategoryID" OtherKey="SubID" Type="SubCategory" IsForeignKey="true" />
-    </Type>
-  </Table>
   <Table Name="dbo.ProductCategory" Member="ProductCategories">
     <Type Name="ProductCategory">
       <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -128,12 +113,20 @@
       <Column Name="[Unique]" Member="Unique" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
-  <Table Name="dbo.Traffic" Member="Traffics">
-    <Type Name="Traffic">
-      <Column Name="SessionId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="PageName" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
-      <Column Name="Day" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
-      <Column Name="[Unique]" Member="Unique" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+  <Table Name="dbo.Product" Member="Products">
+    <Type Name="Product">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="SubCategoryID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Price" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Column Name="Cost" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Column Name="StockOnHand" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Image_Location" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="Status" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Association Name="Product_InvoiceLine" Member="InvoiceLines" ThisKey="ID" OtherKey="ProductID" Type="InvoiceLine" />
+      <Association Name="Product_ShoppingList" Member="ShoppingLists" ThisKey="ID" OtherKey="ProductID" Type="ShoppingList" />
+      <Association Name="SubCategory_Product" Member="SubCategory" ThisKey="SubCategoryID" OtherKey="SubID" Type="SubCategory" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

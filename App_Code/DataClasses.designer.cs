@@ -47,9 +47,6 @@ public partial class DataClassesDataContext : System.Data.Linq.DataContext
   partial void InsertInvoice(Invoice instance);
   partial void UpdateInvoice(Invoice instance);
   partial void DeleteInvoice(Invoice instance);
-  partial void InsertProduct(Product instance);
-  partial void UpdateProduct(Product instance);
-  partial void DeleteProduct(Product instance);
   partial void InsertProductCategory(ProductCategory instance);
   partial void UpdateProductCategory(ProductCategory instance);
   partial void DeleteProductCategory(ProductCategory instance);
@@ -62,6 +59,9 @@ public partial class DataClassesDataContext : System.Data.Linq.DataContext
   partial void InsertTraffic(Traffic instance);
   partial void UpdateTraffic(Traffic instance);
   partial void DeleteTraffic(Traffic instance);
+  partial void InsertProduct(Product instance);
+  partial void UpdateProduct(Product instance);
+  partial void DeleteProduct(Product instance);
   #endregion
 	
 	public DataClassesDataContext() : 
@@ -142,14 +142,6 @@ public partial class DataClassesDataContext : System.Data.Linq.DataContext
 		}
 	}
 	
-	public System.Data.Linq.Table<Product> Products
-	{
-		get
-		{
-			return this.GetTable<Product>();
-		}
-	}
-	
 	public System.Data.Linq.Table<ProductCategory> ProductCategories
 	{
 		get
@@ -179,6 +171,14 @@ public partial class DataClassesDataContext : System.Data.Linq.DataContext
 		get
 		{
 			return this.GetTable<Traffic>();
+		}
+	}
+	
+	public System.Data.Linq.Table<Product> Products
+	{
+		get
+		{
+			return this.GetTable<Product>();
 		}
 	}
 }
@@ -1809,333 +1809,6 @@ public partial class Invoice : INotifyPropertyChanging, INotifyPropertyChanged
 	}
 }
 
-[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Product")]
-public partial class Product : INotifyPropertyChanging, INotifyPropertyChanged
-{
-	
-	private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-	
-	private int _ID;
-	
-	private string _Name;
-	
-	private int _SubCategoryID;
-	
-	private decimal _Price;
-	
-	private decimal _Cost;
-	
-	private int _StockOnHand;
-	
-	private string _Image_Location;
-	
-	private string _Status;
-	
-	private EntitySet<InvoiceLine> _InvoiceLines;
-	
-	private EntitySet<ShoppingList> _ShoppingLists;
-	
-	private EntityRef<SubCategory> _SubCategory;
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnIDChanging(int value);
-    partial void OnIDChanged();
-    partial void OnNameChanging(string value);
-    partial void OnNameChanged();
-    partial void OnSubCategoryIDChanging(int value);
-    partial void OnSubCategoryIDChanged();
-    partial void OnPriceChanging(decimal value);
-    partial void OnPriceChanged();
-    partial void OnCostChanging(decimal value);
-    partial void OnCostChanged();
-    partial void OnStockOnHandChanging(int value);
-    partial void OnStockOnHandChanged();
-    partial void OnImage_LocationChanging(string value);
-    partial void OnImage_LocationChanged();
-    partial void OnStatusChanging(string value);
-    partial void OnStatusChanged();
-    #endregion
-	
-	public Product()
-	{
-		this._InvoiceLines = new EntitySet<InvoiceLine>(new Action<InvoiceLine>(this.attach_InvoiceLines), new Action<InvoiceLine>(this.detach_InvoiceLines));
-		this._ShoppingLists = new EntitySet<ShoppingList>(new Action<ShoppingList>(this.attach_ShoppingLists), new Action<ShoppingList>(this.detach_ShoppingLists));
-		this._SubCategory = default(EntityRef<SubCategory>);
-		OnCreated();
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-	public int ID
-	{
-		get
-		{
-			return this._ID;
-		}
-		set
-		{
-			if ((this._ID != value))
-			{
-				this.OnIDChanging(value);
-				this.SendPropertyChanging();
-				this._ID = value;
-				this.SendPropertyChanged("ID");
-				this.OnIDChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-	public string Name
-	{
-		get
-		{
-			return this._Name;
-		}
-		set
-		{
-			if ((this._Name != value))
-			{
-				this.OnNameChanging(value);
-				this.SendPropertyChanging();
-				this._Name = value;
-				this.SendPropertyChanged("Name");
-				this.OnNameChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SubCategoryID", DbType="Int NOT NULL")]
-	public int SubCategoryID
-	{
-		get
-		{
-			return this._SubCategoryID;
-		}
-		set
-		{
-			if ((this._SubCategoryID != value))
-			{
-				if (this._SubCategory.HasLoadedOrAssignedValue)
-				{
-					throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				}
-				this.OnSubCategoryIDChanging(value);
-				this.SendPropertyChanging();
-				this._SubCategoryID = value;
-				this.SendPropertyChanged("SubCategoryID");
-				this.OnSubCategoryIDChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Price", DbType="Money NOT NULL")]
-	public decimal Price
-	{
-		get
-		{
-			return this._Price;
-		}
-		set
-		{
-			if ((this._Price != value))
-			{
-				this.OnPriceChanging(value);
-				this.SendPropertyChanging();
-				this._Price = value;
-				this.SendPropertyChanged("Price");
-				this.OnPriceChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Cost", DbType="Money NOT NULL")]
-	public decimal Cost
-	{
-		get
-		{
-			return this._Cost;
-		}
-		set
-		{
-			if ((this._Cost != value))
-			{
-				this.OnCostChanging(value);
-				this.SendPropertyChanging();
-				this._Cost = value;
-				this.SendPropertyChanged("Cost");
-				this.OnCostChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StockOnHand", DbType="Int NOT NULL")]
-	public int StockOnHand
-	{
-		get
-		{
-			return this._StockOnHand;
-		}
-		set
-		{
-			if ((this._StockOnHand != value))
-			{
-				this.OnStockOnHandChanging(value);
-				this.SendPropertyChanging();
-				this._StockOnHand = value;
-				this.SendPropertyChanged("StockOnHand");
-				this.OnStockOnHandChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Image_Location", DbType="VarChar(MAX) NOT NULL", CanBeNull=false)]
-	public string Image_Location
-	{
-		get
-		{
-			return this._Image_Location;
-		}
-		set
-		{
-			if ((this._Image_Location != value))
-			{
-				this.OnImage_LocationChanging(value);
-				this.SendPropertyChanging();
-				this._Image_Location = value;
-				this.SendPropertyChanged("Image_Location");
-				this.OnImage_LocationChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Status", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-	public string Status
-	{
-		get
-		{
-			return this._Status;
-		}
-		set
-		{
-			if ((this._Status != value))
-			{
-				this.OnStatusChanging(value);
-				this.SendPropertyChanging();
-				this._Status = value;
-				this.SendPropertyChanged("Status");
-				this.OnStatusChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Product_InvoiceLine", Storage="_InvoiceLines", ThisKey="ID", OtherKey="ProductID")]
-	public EntitySet<InvoiceLine> InvoiceLines
-	{
-		get
-		{
-			return this._InvoiceLines;
-		}
-		set
-		{
-			this._InvoiceLines.Assign(value);
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Product_ShoppingList", Storage="_ShoppingLists", ThisKey="ID", OtherKey="ProductID")]
-	public EntitySet<ShoppingList> ShoppingLists
-	{
-		get
-		{
-			return this._ShoppingLists;
-		}
-		set
-		{
-			this._ShoppingLists.Assign(value);
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="SubCategory_Product", Storage="_SubCategory", ThisKey="SubCategoryID", OtherKey="SubID", IsForeignKey=true)]
-	public SubCategory SubCategory
-	{
-		get
-		{
-			return this._SubCategory.Entity;
-		}
-		set
-		{
-			SubCategory previousValue = this._SubCategory.Entity;
-			if (((previousValue != value) 
-						|| (this._SubCategory.HasLoadedOrAssignedValue == false)))
-			{
-				this.SendPropertyChanging();
-				if ((previousValue != null))
-				{
-					this._SubCategory.Entity = null;
-					previousValue.Products.Remove(this);
-				}
-				this._SubCategory.Entity = value;
-				if ((value != null))
-				{
-					value.Products.Add(this);
-					this._SubCategoryID = value.SubID;
-				}
-				else
-				{
-					this._SubCategoryID = default(int);
-				}
-				this.SendPropertyChanged("SubCategory");
-			}
-		}
-	}
-	
-	public event PropertyChangingEventHandler PropertyChanging;
-	
-	public event PropertyChangedEventHandler PropertyChanged;
-	
-	protected virtual void SendPropertyChanging()
-	{
-		if ((this.PropertyChanging != null))
-		{
-			this.PropertyChanging(this, emptyChangingEventArgs);
-		}
-	}
-	
-	protected virtual void SendPropertyChanged(String propertyName)
-	{
-		if ((this.PropertyChanged != null))
-		{
-			this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
-	}
-	
-	private void attach_InvoiceLines(InvoiceLine entity)
-	{
-		this.SendPropertyChanging();
-		entity.Product = this;
-	}
-	
-	private void detach_InvoiceLines(InvoiceLine entity)
-	{
-		this.SendPropertyChanging();
-		entity.Product = null;
-	}
-	
-	private void attach_ShoppingLists(ShoppingList entity)
-	{
-		this.SendPropertyChanging();
-		entity.Product = this;
-	}
-	
-	private void detach_ShoppingLists(ShoppingList entity)
-	{
-		this.SendPropertyChanging();
-		entity.Product = null;
-	}
-}
-
 [global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ProductCategory")]
 public partial class ProductCategory : INotifyPropertyChanging, INotifyPropertyChanged
 {
@@ -2824,6 +2497,357 @@ public partial class Traffic : INotifyPropertyChanging, INotifyPropertyChanged
 		{
 			this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 		}
+	}
+}
+
+[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Product")]
+public partial class Product : INotifyPropertyChanging, INotifyPropertyChanged
+{
+	
+	private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+	
+	private int _ID;
+	
+	private string _Name;
+	
+	private int _SubCategoryID;
+	
+	private decimal _Price;
+	
+	private decimal _Cost;
+	
+	private int _StockOnHand;
+	
+	private string _Image_Location;
+	
+	private string _Status;
+	
+	private string _Description;
+	
+	private EntitySet<InvoiceLine> _InvoiceLines;
+	
+	private EntitySet<ShoppingList> _ShoppingLists;
+	
+	private EntityRef<SubCategory> _SubCategory;
+	
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIDChanging(int value);
+    partial void OnIDChanged();
+    partial void OnNameChanging(string value);
+    partial void OnNameChanged();
+    partial void OnSubCategoryIDChanging(int value);
+    partial void OnSubCategoryIDChanged();
+    partial void OnPriceChanging(decimal value);
+    partial void OnPriceChanged();
+    partial void OnCostChanging(decimal value);
+    partial void OnCostChanged();
+    partial void OnStockOnHandChanging(int value);
+    partial void OnStockOnHandChanged();
+    partial void OnImage_LocationChanging(string value);
+    partial void OnImage_LocationChanged();
+    partial void OnStatusChanging(string value);
+    partial void OnStatusChanged();
+    partial void OnDescriptionChanging(string value);
+    partial void OnDescriptionChanged();
+    #endregion
+	
+	public Product()
+	{
+		this._InvoiceLines = new EntitySet<InvoiceLine>(new Action<InvoiceLine>(this.attach_InvoiceLines), new Action<InvoiceLine>(this.detach_InvoiceLines));
+		this._ShoppingLists = new EntitySet<ShoppingList>(new Action<ShoppingList>(this.attach_ShoppingLists), new Action<ShoppingList>(this.detach_ShoppingLists));
+		this._SubCategory = default(EntityRef<SubCategory>);
+		OnCreated();
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+	public int ID
+	{
+		get
+		{
+			return this._ID;
+		}
+		set
+		{
+			if ((this._ID != value))
+			{
+				this.OnIDChanging(value);
+				this.SendPropertyChanging();
+				this._ID = value;
+				this.SendPropertyChanged("ID");
+				this.OnIDChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+	public string Name
+	{
+		get
+		{
+			return this._Name;
+		}
+		set
+		{
+			if ((this._Name != value))
+			{
+				this.OnNameChanging(value);
+				this.SendPropertyChanging();
+				this._Name = value;
+				this.SendPropertyChanged("Name");
+				this.OnNameChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SubCategoryID", DbType="Int NOT NULL")]
+	public int SubCategoryID
+	{
+		get
+		{
+			return this._SubCategoryID;
+		}
+		set
+		{
+			if ((this._SubCategoryID != value))
+			{
+				if (this._SubCategory.HasLoadedOrAssignedValue)
+				{
+					throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+				}
+				this.OnSubCategoryIDChanging(value);
+				this.SendPropertyChanging();
+				this._SubCategoryID = value;
+				this.SendPropertyChanged("SubCategoryID");
+				this.OnSubCategoryIDChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Price", DbType="Money NOT NULL")]
+	public decimal Price
+	{
+		get
+		{
+			return this._Price;
+		}
+		set
+		{
+			if ((this._Price != value))
+			{
+				this.OnPriceChanging(value);
+				this.SendPropertyChanging();
+				this._Price = value;
+				this.SendPropertyChanged("Price");
+				this.OnPriceChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Cost", DbType="Money NOT NULL")]
+	public decimal Cost
+	{
+		get
+		{
+			return this._Cost;
+		}
+		set
+		{
+			if ((this._Cost != value))
+			{
+				this.OnCostChanging(value);
+				this.SendPropertyChanging();
+				this._Cost = value;
+				this.SendPropertyChanged("Cost");
+				this.OnCostChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StockOnHand", DbType="Int NOT NULL")]
+	public int StockOnHand
+	{
+		get
+		{
+			return this._StockOnHand;
+		}
+		set
+		{
+			if ((this._StockOnHand != value))
+			{
+				this.OnStockOnHandChanging(value);
+				this.SendPropertyChanging();
+				this._StockOnHand = value;
+				this.SendPropertyChanged("StockOnHand");
+				this.OnStockOnHandChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Image_Location", DbType="VarChar(MAX) NOT NULL", CanBeNull=false)]
+	public string Image_Location
+	{
+		get
+		{
+			return this._Image_Location;
+		}
+		set
+		{
+			if ((this._Image_Location != value))
+			{
+				this.OnImage_LocationChanging(value);
+				this.SendPropertyChanging();
+				this._Image_Location = value;
+				this.SendPropertyChanged("Image_Location");
+				this.OnImage_LocationChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Status", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+	public string Status
+	{
+		get
+		{
+			return this._Status;
+		}
+		set
+		{
+			if ((this._Status != value))
+			{
+				this.OnStatusChanging(value);
+				this.SendPropertyChanging();
+				this._Status = value;
+				this.SendPropertyChanged("Status");
+				this.OnStatusChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Description", DbType="VarChar(MAX)")]
+	public string Description
+	{
+		get
+		{
+			return this._Description;
+		}
+		set
+		{
+			if ((this._Description != value))
+			{
+				this.OnDescriptionChanging(value);
+				this.SendPropertyChanging();
+				this._Description = value;
+				this.SendPropertyChanged("Description");
+				this.OnDescriptionChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Product_InvoiceLine", Storage="_InvoiceLines", ThisKey="ID", OtherKey="ProductID")]
+	public EntitySet<InvoiceLine> InvoiceLines
+	{
+		get
+		{
+			return this._InvoiceLines;
+		}
+		set
+		{
+			this._InvoiceLines.Assign(value);
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Product_ShoppingList", Storage="_ShoppingLists", ThisKey="ID", OtherKey="ProductID")]
+	public EntitySet<ShoppingList> ShoppingLists
+	{
+		get
+		{
+			return this._ShoppingLists;
+		}
+		set
+		{
+			this._ShoppingLists.Assign(value);
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="SubCategory_Product", Storage="_SubCategory", ThisKey="SubCategoryID", OtherKey="SubID", IsForeignKey=true)]
+	public SubCategory SubCategory
+	{
+		get
+		{
+			return this._SubCategory.Entity;
+		}
+		set
+		{
+			SubCategory previousValue = this._SubCategory.Entity;
+			if (((previousValue != value) 
+						|| (this._SubCategory.HasLoadedOrAssignedValue == false)))
+			{
+				this.SendPropertyChanging();
+				if ((previousValue != null))
+				{
+					this._SubCategory.Entity = null;
+					previousValue.Products.Remove(this);
+				}
+				this._SubCategory.Entity = value;
+				if ((value != null))
+				{
+					value.Products.Add(this);
+					this._SubCategoryID = value.SubID;
+				}
+				else
+				{
+					this._SubCategoryID = default(int);
+				}
+				this.SendPropertyChanged("SubCategory");
+			}
+		}
+	}
+	
+	public event PropertyChangingEventHandler PropertyChanging;
+	
+	public event PropertyChangedEventHandler PropertyChanged;
+	
+	protected virtual void SendPropertyChanging()
+	{
+		if ((this.PropertyChanging != null))
+		{
+			this.PropertyChanging(this, emptyChangingEventArgs);
+		}
+	}
+	
+	protected virtual void SendPropertyChanged(String propertyName)
+	{
+		if ((this.PropertyChanged != null))
+		{
+			this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+		}
+	}
+	
+	private void attach_InvoiceLines(InvoiceLine entity)
+	{
+		this.SendPropertyChanging();
+		entity.Product = this;
+	}
+	
+	private void detach_InvoiceLines(InvoiceLine entity)
+	{
+		this.SendPropertyChanging();
+		entity.Product = null;
+	}
+	
+	private void attach_ShoppingLists(ShoppingList entity)
+	{
+		this.SendPropertyChanging();
+		entity.Product = this;
+	}
+	
+	private void detach_ShoppingLists(ShoppingList entity)
+	{
+		this.SendPropertyChanging();
+		entity.Product = null;
 	}
 }
 #pragma warning restore 1591

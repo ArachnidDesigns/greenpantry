@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 
+//email
+using System.Web;
+using System.Net.Mail;
+
 // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "GP_Service" in code, svc and config file together.
 public class GP_Service : IGP_Service
 {
@@ -24,6 +28,17 @@ public class GP_Service : IGP_Service
     //USER MANAGEMENT -------------------------------------------------------------------------------------------------
 
     //Login 
+
+    public void newsletter(string senderemail, string subscriberemail, string subject, string body,string smtp )
+    {
+        
+        MailMessage mail = new MailMessage(senderemail, subscriberemail, subject, body);
+        SmtpClient client = new SmtpClient(smtp);
+        client.Port = 587; //this port is used by gmail and also 465
+        client.EnableSsl = true; //ssl is required by gmail
+        client.Send(mail); 
+        
+    }
     public int login(string email, string password)
     {
         //check if user information is in the database

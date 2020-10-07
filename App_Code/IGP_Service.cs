@@ -23,6 +23,8 @@ public interface IGP_Service
     //REPORT MANAGEMENT
 
     //USER MANAGEMENT -------------------------------
+    [OperationContract]
+    void newsletter(string senderemail, string subscriberemail, string subject, string body, string smtp);
 
     [OperationContract]
     int login(string email, string password);

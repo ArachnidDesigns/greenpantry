@@ -1029,7 +1029,7 @@ public class GP_Service : IGP_Service
         }
     }
 
-    public int updateSubCategories(int id, string name,string status)
+    public int updateSubCategories(int id,int cat_ID, string name,string status)
     {
         var subcategory = (from sc in db.SubCategories
                            where sc.SubID.Equals(id)
@@ -1038,6 +1038,7 @@ public class GP_Service : IGP_Service
         if (subcategory != null)
         {
             subcategory.Name = name;
+            subcategory.CategoryID = cat_ID;
             subcategory.Status = status;
 
             try

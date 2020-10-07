@@ -115,7 +115,7 @@ public interface IGP_Service
     int addSubCategory(int id, string name,string status);
 
     [OperationContract]
-    int updateSubCategories(int id, string name,string status);
+    int updateSubCategories(int id, int cat_ID,string name,string status);
 
     //INVOICE MANAGEMENT --------------------------------------------------------
 

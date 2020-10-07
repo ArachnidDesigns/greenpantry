@@ -1382,15 +1382,19 @@ public class GP_Service : IGP_Service
         }
     }
 
-    public int removeList(int userID, int productID)
+    public int removeList(int userID)
     {
-        var list = (from s in db.ShoppingLists
-                    where s.UserID.Equals(userID) && s.ProductID.Equals(productID)
-                    select s).FirstOrDefault();
+       dynamic list = (from s in db.ShoppingLists
+                    where s.UserID.Equals(userID)
+                    select s);
 
         if (list != null)
         {
-            db.ShoppingLists.DeleteOnSubmit(list);
+            foreach(ShoppingList s in list)
+            {
+                db.ShoppingLists.DeleteOnSubmit(s);
+            }
+            
             try
             {
                 //all is well

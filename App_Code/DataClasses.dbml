@@ -11,14 +11,6 @@
       <Association Name="User_Card" Member="User" ThisKey="CustomerID" OtherKey="ID" Type="User" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.Device" Member="Devices">
-    <Type Name="Device">
-      <Column Name="DeviceID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="OS" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="CustomerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="User_Device" Member="User" ThisKey="CustomerID" OtherKey="ID" Type="User" IsForeignKey="true" />
-    </Type>
-  </Table>
   <Table Name="dbo.Address" Member="Addresses">
     <Type Name="Address">
       <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -57,10 +49,10 @@
       <Column Name="UserType" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="Points" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Association Name="User_Card" Member="Cards" ThisKey="ID" OtherKey="CustomerID" Type="Card" />
-      <Association Name="User_Device" Member="Devices" ThisKey="ID" OtherKey="CustomerID" Type="Device" />
       <Association Name="User_Address" Member="Addresses" ThisKey="ID" OtherKey="CustomerID" Type="Address" />
       <Association Name="User_Invoice" Member="Invoices" ThisKey="ID" OtherKey="CustomerID" Type="Invoice" />
       <Association Name="User_ShoppingList" Member="ShoppingLists" ThisKey="ID" OtherKey="UserID" Type="ShoppingList" />
+      <Association Name="User_Device" Member="Devices" ThisKey="ID" OtherKey="CustomerID" Type="Device" />
     </Type>
   </Table>
   <Table Name="dbo.Invoice" Member="Invoices">
@@ -127,6 +119,14 @@
       <Association Name="Product_InvoiceLine" Member="InvoiceLines" ThisKey="ID" OtherKey="ProductID" Type="InvoiceLine" />
       <Association Name="Product_ShoppingList" Member="ShoppingLists" ThisKey="ID" OtherKey="ProductID" Type="ShoppingList" />
       <Association Name="SubCategory_Product" Member="SubCategory" ThisKey="SubCategoryID" OtherKey="SubID" Type="SubCategory" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Device" Member="Devices">
+    <Type Name="Device">
+      <Column Name="DeviceID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="OS" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="CustomerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="User_Device" Member="User" ThisKey="CustomerID" OtherKey="ID" Type="User" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

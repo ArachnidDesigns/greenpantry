@@ -117,7 +117,7 @@ public interface IGP_Service
     int addSubCategory(int id, string name,string status);
 
     [OperationContract]
-    int updateSubCategories(int id, string name,string status);
+    int updateSubCategories(int id, int cat_ID,string name,string status);
 
     //INVOICE MANAGEMENT --------------------------------------------------------
 
@@ -183,7 +183,7 @@ public interface IGP_Service
     Device getDevice(int D_ID);
 
     [OperationContract]
-    int addDevices(string os);
+    int addDevices(int cust_ID,string useragent);
 
     //REPORT MANAGEMENT ------------------------------------------------------------
 

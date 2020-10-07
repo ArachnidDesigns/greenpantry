@@ -1051,7 +1051,7 @@ public class GP_Service : IGP_Service
         }
     }
 
-    public int updateSubCategories(int id, string name,string status)
+    public int updateSubCategories(int id,int cat_ID, string name,string status)
     {
         var subcategory = (from sc in db.SubCategories
                            where sc.SubID.Equals(id)
@@ -1060,6 +1060,7 @@ public class GP_Service : IGP_Service
         if (subcategory != null)
         {
             subcategory.Name = name;
+            subcategory.CategoryID = cat_ID;
             subcategory.Status = status;
 
             try
@@ -1557,11 +1558,13 @@ public class GP_Service : IGP_Service
         }
     }
     //Function to add the device to the database
-    public int addDevices(string os)
+    public int addDevices(int cust_ID,string useragent)
     {
         var newDevice = new Device
         {
-            OS = os
+            CustomerID = cust_ID,
+            OS = useragent
+         
         };
         db.Devices.InsertOnSubmit(newDevice);
         try

@@ -57,10 +57,10 @@ public interface IGP_Service
     //PRODUCT MANAGEMENT --------------------------------------------------------
 
     [OperationContract]
-    int addNewProduct(string name, int SubID, double price, double cost, int stockQty, string imgLocation);
+    int addNewProduct(string name, int SubID, double price, double cost, int stockQty, string imgLocation,string status);
 
     [OperationContract]
-    int updateProduct(int id, string name, int SubId, double price, double cost, string imgLocation);
+    int updateProduct(int id, string name, int SubId, double price, double cost, string imgLocation,string status);
 
     [OperationContract]
     List<Product> getAllProducts();
@@ -95,10 +95,10 @@ public interface IGP_Service
     ProductCategory getCategorybyProductID(int p_ID);
 
     [OperationContract]
-    int addCategory(int id, string name);
+    int addCategory(int id, string name,string status);
 
     [OperationContract]
-    int updateCategories(int id, string name);
+    int updateCategories(int id, string name,string status);
 
     //SUBCATEGORY MANAGEMENT --------------------------------------------------------
 
@@ -112,10 +112,10 @@ public interface IGP_Service
     List<SubCategory> getSubCatPerCat(int c_ID);
 
     [OperationContract]
-    int addSubCategory(int id, string name);
+    int addSubCategory(int id, string name,string status);
 
     [OperationContract]
-    int updateSubCategories(int id, string name);
+    int updateSubCategories(int id, string name,string status);
 
     //INVOICE MANAGEMENT --------------------------------------------------------
 

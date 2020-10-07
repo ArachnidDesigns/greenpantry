@@ -62,7 +62,7 @@ public interface IGP_Service
     int addNewProduct(string name, int SubID, double price, double cost, int stockQty, string imgLocation,string status,string description);
 
     [OperationContract]
-    int updateProduct(int id, string name, int SubId, double price, double cost, string imgLocation,string status, int stock);
+    int updateProduct(int id, string name, int SubId, double price, double cost, string imgLocation,string status, int stock, string description);
 
     [OperationContract]
     List<Product> getAllProducts();

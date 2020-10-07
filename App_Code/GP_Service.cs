@@ -452,7 +452,7 @@ public class GP_Service : IGP_Service
     }
 
     //Function to update product specifics  
-    public int updateProduct(int id, string name, int SubId, double price, double cost, string imgLocation, string status, int stock)
+    public int updateProduct(int id, string name, int SubId, double price, double cost, string imgLocation, string status, int stock, string description)
     {
         var product = (from p in db.Products
                        where p.ID.Equals(id)
@@ -576,8 +576,7 @@ public class GP_Service : IGP_Service
                 Cost = product.Cost,
                 StockOnHand = product.StockOnHand,
                 Image_Location = product.Image_Location,
-                Description = product.Description
-                Image_Location = product.Image_Location,
+                Description = product.Description,
                 Status = product.Status
             };
             return rProduct;
@@ -1381,8 +1380,8 @@ public class GP_Service : IGP_Service
         {
             foreach (ShoppingList s in list)
             {
-                if (s.UserID == null)
-                    return null;
+                //if (s.UserID == null)
+                  //  return null;
 
                 var tempList = new ShoppingList
                 {

@@ -436,9 +436,11 @@ public class GP_Service : IGP_Service
     }
 
     //Function to update product specifics  
-    public int updateProduct(int id, string name, int SubId, double price, double cost, string imgLocation,string status)
+    public int updateProduct(int id, string name, int SubId, double price, double cost, string imgLocation, string status, int stock)
     {
-        var product = getProduct(id);
+        var product = (from p in db.Products
+                       where p.ID.Equals(id)
+                       select p).FirstOrDefault();
 
         if(product == null)
         {
@@ -453,6 +455,7 @@ public class GP_Service : IGP_Service
             product.Cost = (decimal)cost;
             product.Image_Location = imgLocation;
             product.Status = status;
+            product.StockOnHand = stock;
 
             try
             {
@@ -554,7 +557,8 @@ public class GP_Service : IGP_Service
                 Price = product.Price,
                 Cost = product.Cost,
                 StockOnHand = product.StockOnHand,
-                Image_Location = product.Image_Location
+                Image_Location = product.Image_Location,
+                Status = product.Status
             };
             return rProduct;
         }

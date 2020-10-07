@@ -153,7 +153,7 @@ public interface IGP_Service
     int updateList(int userID, int P_ID, int quantity);
 
     [OperationContract]
-    int removeList(int userID, int productID);
+    int removeList(int userID);
 
     //ADDRESS MANAGEMENT -------------------------------------------------------------
 

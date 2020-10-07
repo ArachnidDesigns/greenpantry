@@ -181,7 +181,7 @@ public interface IGP_Service
     Device getDevice(int D_ID);
 
     [OperationContract]
-    int addDevices(string os);
+    int addDevices(int cust_ID,string useragent);
 
     //REPORT MANAGEMENT ------------------------------------------------------------
 

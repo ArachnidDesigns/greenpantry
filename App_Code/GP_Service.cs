@@ -1543,11 +1543,13 @@ public class GP_Service : IGP_Service
         }
     }
     //Function to add the device to the database
-    public int addDevices(string os)
+    public int addDevices(int cust_ID,string useragent)
     {
         var newDevice = new Device
         {
-            OS = os
+            CustomerID = cust_ID,
+            OS = useragent
+         
         };
         db.Devices.InsertOnSubmit(newDevice);
         try

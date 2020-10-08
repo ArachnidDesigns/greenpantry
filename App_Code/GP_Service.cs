@@ -29,15 +29,19 @@ public class GP_Service : IGP_Service
 
     //Login 
 
-    public void newsletter(string senderemail, string subscriberemail, string subject, string body,string smtp )
+    public void newsletter(string senderemail, string subscriberemail, string subject, string body,string password,string smtp )
     {
-        
+
         MailMessage mail = new MailMessage(senderemail, subscriberemail, subject, body);
         SmtpClient client = new SmtpClient(smtp);
-        client.Port = 587; //this port is used by gmail and also 465
+        client.UseDefaultCredentials = false;
+        client.Port = 25; //this port is used by gmail and also 465 587
+        client.Credentials = new System.Net.NetworkCredential(senderemail, password);
         client.EnableSsl = true; //ssl is required by gmail
-        client.Send(mail); 
         
+        client.Send(mail);
+        
+
     }
     public int login(string email, string password)
     {
@@ -441,7 +445,7 @@ public class GP_Service : IGP_Service
         {
             //product successfully added
             db.SubmitChanges();
-            return 1;
+            return newProduct.ID;
         }
         catch (Exception ex)
         {
@@ -843,31 +847,25 @@ public class GP_Service : IGP_Service
         return category;
     }
 
-    public int addCategory(int id, string name,string status)
+    public int addCategory(string name,string status)
     {
-        var category = (from c in db.ProductCategories
-                        where c.ID.Equals(id)
-                        select c).FirstOrDefault();
-
-        if (category != null)
+        var newCat = new ProductCategory
         {
-            category.Name = name;
-            category.Status = status;
+            Name = name,
+            Status = status
+        };
 
-            try
-            {
-                db.SubmitChanges();
-                return 1;
-            }
-            catch (Exception ex)
-            {
-                ex.GetBaseException();
-                return -1;
-            }
+        db.ProductCategories.InsertOnSubmit(newCat);
+
+        try
+        {
+            db.SubmitChanges();
+            return newCat.ID;
         }
-        else
+        catch (Exception ex)
         {
-            return 0;
+            ex.GetBaseException();
+            return -1;
         }
     }
 
@@ -930,31 +928,27 @@ public class GP_Service : IGP_Service
 
     //SUBCATEGORY MANAGEMENT ----------------------------------------------------------
 
-    public int addSubCategory(int id, string name,string status)
+    public int addSubCategory(int catid, string name, string status)
     {
-        var subcategory = (from sc in db.SubCategories
-                           where sc.SubID.Equals(id)
-                           select sc).FirstOrDefault();
-
-        if (subcategory != null)
+        var newSub = new SubCategory
         {
-            subcategory.Name = name;
-            subcategory.Status = status;
+            Name = name,
+            CategoryID = catid,
+            Status = status
+        };
 
-            try
-            {
-                db.SubmitChanges();
-                return 1;
-            }
-            catch (Exception ex)
-            {
-                ex.GetBaseException();
-                return -1;
-            }
+        db.SubCategories.InsertOnSubmit(newSub);
+        try
+        {
+            //sub successfully added
+            db.SubmitChanges();
+            return newSub.SubID;
         }
-        else
+        catch (Exception ex)
         {
-            return 0;
+            //error occurred when attempting to add sub
+            ex.GetBaseException();
+            return -1;
         }
     }
 

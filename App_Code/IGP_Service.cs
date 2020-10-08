@@ -24,7 +24,8 @@ public interface IGP_Service
 
     //USER MANAGEMENT -------------------------------
     [OperationContract]
-    void newsletter(string senderemail, string subscriberemail, string subject, string body, string smtp);
+    //void newsletter(string subject, string body, string password);
+    void newsletter(string senderemail, string subscriberemail, string subject, string body, string password, string smtp);
 
     [OperationContract]
     int login(string email, string password);
@@ -97,7 +98,7 @@ public interface IGP_Service
     ProductCategory getCategorybyProductID(int p_ID);
 
     [OperationContract]
-    int addCategory(int id, string name, string status);
+    int addCategory(string name, string status);
 
     [OperationContract]
     int updateCategories(int id, string name, string status);
@@ -114,7 +115,7 @@ public interface IGP_Service
     List<SubCategory> getSubCatPerCat(int c_ID);
 
     [OperationContract]
-    int addSubCategory(int id, string name, string status);
+    int addSubCategory(int catid, string name, string status);
 
     [OperationContract]
     int updateSubCategories(int id, int cat_ID, string name, string status);

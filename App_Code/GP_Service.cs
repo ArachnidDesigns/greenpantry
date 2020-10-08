@@ -29,15 +29,19 @@ public class GP_Service : IGP_Service
 
     //Login 
 
-    public void newsletter(string senderemail, string subscriberemail, string subject, string body,string smtp )
+    public void newsletter(string senderemail, string subscriberemail, string subject, string body,string password,string smtp )
     {
-        
+
         MailMessage mail = new MailMessage(senderemail, subscriberemail, subject, body);
         SmtpClient client = new SmtpClient(smtp);
-        client.Port = 587; //this port is used by gmail and also 465
+        client.UseDefaultCredentials = false;
+        client.Port = 25; //this port is used by gmail and also 465 587
+        client.Credentials = new System.Net.NetworkCredential(senderemail, password);
         client.EnableSsl = true; //ssl is required by gmail
-        client.Send(mail); 
         
+        client.Send(mail);
+        
+
     }
     public int login(string email, string password)
     {
@@ -2187,8 +2191,70 @@ public class GP_Service : IGP_Service
         int TotalNewCount = getallsalesbyCategory(Cat_ID);
         int weeklySale = numProductSalesperCategory( currentDate, Cat_ID);
         int StartingValue = TotalNewCount - weeklySale; //6-3 = 3
-        int Difference = (TotalNewCount - StartingValue) * 100; //6-3 * 100 = 300
+        int Difference = (TotalNewCount - StartingValue) * 100;
+        if (StartingValue == 0)
+        {
+            return Difference;
+        }
         double percentageChange = (Difference / StartingValue);//300/3 = 100
         return percentageChange;
+    }
+
+    //Subcategory management-------------------------------------------------------
+    private int getallsalesbySubCategory(int SubCatID)
+    {
+        dynamic sale = (from s in db.InvoiceLines
+                        select s);
+        int Count = 0;
+        foreach (InvoiceLine i in sale)
+        {
+            dynamic product = getProduct(i.ProductID);
+                if (product.SubCategoryID.Equals(SubCatID))
+                {
+                    Count += 1;
+                }   
+        }
+        return Count;
+    }
+    public double percentageSubCategorySales(DateTime currentDate, int SubCat_ID)
+    {
+        int TotalNewCount = getallsalesbySubCategory(SubCat_ID);
+        int weeklySale = numProductSalesperSubCategory(currentDate,SubCat_ID);
+        int StartingValue = TotalNewCount - weeklySale; //6-3 = 3
+        int Difference = (TotalNewCount - StartingValue) * 100;
+        if (StartingValue == 0)
+        {
+            return Difference;
+        }
+        double percentageChange = (Difference / StartingValue);//300/3 = 100
+        return percentageChange;
+
+    }
+    public int numProductSalesperSubCategory(DateTime currentDate, int SubCat_ID)
+    {
+        dynamic weekDates = getWeekDates(currentDate.Date);
+
+        dynamic invoice = getAllInvoices();
+
+        List<InvoiceLine> LineList = new List<InvoiceLine>();
+        int Count = 0;
+        //for each day get the product sales and add to the counter 
+        foreach (Invoice i in invoice)
+        {
+            if (weekDates.Contains(i.Date))
+            {
+                dynamic invoiceLine = getAllInvoiceLines(i.ID);
+                foreach (InvoiceLine inv in invoiceLine)
+                {
+                    dynamic product = getProduct(inv.ProductID);
+                    if (product.ID.Equals(SubCat_ID))
+                    {
+                        Count += 1;
+                    }
+                }
+            }
+        }
+        return Count;
+
     }
 }

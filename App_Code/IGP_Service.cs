@@ -24,7 +24,8 @@ public interface IGP_Service
 
     //USER MANAGEMENT -------------------------------
     [OperationContract]
-    void newsletter(string senderemail, string subscriberemail, string subject, string body, string smtp);
+    //void newsletter(string subject, string body, string password);
+    void newsletter(string senderemail, string subscriberemail, string subject, string body, string password, string smtp);
 
     [OperationContract]
     int login(string email, string password);
@@ -269,9 +270,17 @@ public interface IGP_Service
     [OperationContract]
     List<String> topPages();
 
+    //CATEGORY SALES MANAGEMENT ------------------------------------------------------------
     [OperationContract]
     double percentageCategorySales(DateTime currentDate, int Cat_ID);
 
     [OperationContract]
     int numProductSalesperCategory(DateTime currentDate, int Cat_ID);
+
+    //SubCATEGORY SALES MANAGEMENT ------------------------------------------------------------
+    [OperationContract]
+    double percentageSubCategorySales(DateTime currentDate, int SubCat_ID);
+
+    [OperationContract]
+    int numProductSalesperSubCategory(DateTime currentDate, int SubCat_ID);
 }

@@ -29,15 +29,19 @@ public class GP_Service : IGP_Service
 
     //Login 
 
-    public void newsletter(string senderemail, string subscriberemail, string subject, string body,string smtp )
+    public void newsletter(string senderemail, string subscriberemail, string subject, string body,string password,string smtp )
     {
-        
+
         MailMessage mail = new MailMessage(senderemail, subscriberemail, subject, body);
         SmtpClient client = new SmtpClient(smtp);
-        client.Port = 587; //this port is used by gmail and also 465
+        client.UseDefaultCredentials = false;
+        client.Port = 25; //this port is used by gmail and also 465 587
+        client.Credentials = new System.Net.NetworkCredential(senderemail, password);
         client.EnableSsl = true; //ssl is required by gmail
-        client.Send(mail); 
         
+        client.Send(mail);
+        
+
     }
     public int login(string email, string password)
     {

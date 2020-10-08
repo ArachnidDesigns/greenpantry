@@ -2114,4 +2114,58 @@ public class GP_Service : IGP_Service
 
         return topPages;
     }
+
+    //ProductCategory Management
+    private int getallsalesbyCategory(int CatID)
+    {
+        dynamic sale = (from s in db.InvoiceLines
+                        select s);
+        int Count = 0;
+        foreach (InvoiceLine i in sale)
+        {
+            dynamic category = getCategorybyProductID(i.ProductID);
+            if(category.ID.Equals(CatID))
+            {
+                Count += 1;
+            }
+
+        }
+        return Count;
+    }
+    public int numProductSalesperCategory(DateTime currentDate, int Cat_ID)
+    {
+        dynamic weekDates = getWeekDates(currentDate.Date);
+
+        dynamic invoice = getAllInvoices();
+
+        List<InvoiceLine> LineList = new List<InvoiceLine>();
+        int Count = 0;
+        //for each day get the product sales and add to the counter 
+        foreach (Invoice i in invoice)
+        {
+            if (weekDates.Contains(i.Date))
+            {
+                dynamic invoiceLine = getAllInvoiceLines(i.ID);
+                foreach (InvoiceLine inv in invoiceLine)
+                {
+                    dynamic category = getCategorybyProductID(inv.ProductID);
+                    if (category.ID.Equals(Cat_ID))
+                    {
+                        Count += 1;
+                    }
+                }
+            }
+        }
+        return Count;
+
+    }
+    public double percentageCategorySales(DateTime currentDate, int Cat_ID)
+    {
+        int TotalNewCount = getallsalesbyCategory(Cat_ID);
+        int weeklySale = numProductSalesperCategory( currentDate, Cat_ID);
+        int StartingValue = TotalNewCount - weeklySale; //6-3 = 3
+        int Difference = (TotalNewCount - StartingValue) * 100; //6-3 * 100 = 300
+        double percentageChange = (Difference / StartingValue);//300/3 = 100
+        return percentageChange;
+    }
 }

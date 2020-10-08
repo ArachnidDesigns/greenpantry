@@ -2248,17 +2248,17 @@ public class GP_Service : IGP_Service
 
     }
 
-    public List<Product> TopProducts()
+    public List<int> TopProducts()
     {
         dynamic product = (from t in db.InvoiceLines
                         where t != null
-                        group t by t into grp
+                        group t by t.ProductID into grp
                         orderby grp.Count() descending
                         select grp.Key);
 
-        dynamic productList = new List<Product>();
+        dynamic productList = new List<int>();
 
-        foreach (InvoiceLine inv in product)
+        foreach (int inv in product)
         {
             productList.Add(inv);
         }

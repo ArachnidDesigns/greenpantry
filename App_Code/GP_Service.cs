@@ -441,7 +441,7 @@ public class GP_Service : IGP_Service
         {
             //product successfully added
             db.SubmitChanges();
-            return 1;
+            return newProduct.ID;
         }
         catch (Exception ex)
         {

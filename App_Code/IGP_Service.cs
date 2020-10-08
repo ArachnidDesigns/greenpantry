@@ -269,9 +269,17 @@ public interface IGP_Service
     [OperationContract]
     List<String> topPages();
 
+    //CATEGORY SALES MANAGEMENT ------------------------------------------------------------
     [OperationContract]
     double percentageCategorySales(DateTime currentDate, int Cat_ID);
 
     [OperationContract]
     int numProductSalesperCategory(DateTime currentDate, int Cat_ID);
+
+    //SubCATEGORY SALES MANAGEMENT ------------------------------------------------------------
+    [OperationContract]
+    double percentageSubCategorySales(DateTime currentDate, int SubCat_ID);
+
+    [OperationContract]
+    int numProductSalesperSubCategory(DateTime currentDate, int SubCat_ID);
 }

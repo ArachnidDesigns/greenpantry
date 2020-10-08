@@ -282,4 +282,11 @@ public interface IGP_Service
 
     [OperationContract]
     int numProductSalesperSubCategory(DateTime currentDate, int SubCat_ID);
+
+    [OperationContract]
+    List<Product> TopProducts();
+
+    [OperationContract]
+    int getProQtySold(int P_ID);
+
 }

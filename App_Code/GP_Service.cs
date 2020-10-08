@@ -2253,4 +2253,36 @@ public class GP_Service : IGP_Service
         return Count;
 
     }
+
+    public List<Product> TopProducts()
+    {
+        dynamic product = (from t in db.InvoiceLines
+                        where t != null
+                        group t by t into grp
+                        orderby grp.Count() descending
+                        select grp.Key);
+
+        dynamic productList = new List<Product>();
+
+        foreach (InvoiceLine inv in product)
+        {
+            productList.Add(inv);
+        }
+        dynamic topproducts = productList.GetRange(0, 5);
+
+        return topproducts;
+    }
+    public int getProQtySold (int P_ID)
+    {
+        dynamic product = (from p in db.InvoiceLines
+                           where p.ProductID.Equals(P_ID)
+                           select p);
+        int Count = 0;
+        foreach(InvoiceLine inv in product)
+        {
+            Count += inv.Qty;
+        }
+        return Count;
+
+    }
 }

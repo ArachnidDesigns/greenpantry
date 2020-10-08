@@ -60,10 +60,10 @@ public interface IGP_Service
     //PRODUCT MANAGEMENT --------------------------------------------------------
 
     [OperationContract]
-    int addNewProduct(string name, int SubID, double price, double cost, int stockQty, string imgLocation,string status,string description);
+    int addNewProduct(string name, int SubID, double price, double cost, int stockQty, string imgLocation, string status, string description);
 
     [OperationContract]
-    int updateProduct(int id, string name, int SubId, double price, double cost, string imgLocation,string status,string description);
+    int updateProduct(int id, string name, int SubId, double price, double cost, string imgLocation,string status, int stock, string description);
 
     [OperationContract]
     List<Product> getAllProducts();
@@ -93,15 +93,15 @@ public interface IGP_Service
 
     [OperationContract]
     ProductCategory getCat(int C_ID);
-    
+
     [OperationContract]
     ProductCategory getCategorybyProductID(int p_ID);
 
     [OperationContract]
-    int addCategory(int id, string name,string status);
+    int addCategory(int id, string name, string status);
 
     [OperationContract]
-    int updateCategories(int id, string name,string status);
+    int updateCategories(int id, string name, string status);
 
     //SUBCATEGORY MANAGEMENT --------------------------------------------------------
 
@@ -115,10 +115,10 @@ public interface IGP_Service
     List<SubCategory> getSubCatPerCat(int c_ID);
 
     [OperationContract]
-    int addSubCategory(int id, string name,string status);
+    int addSubCategory(int id, string name, string status);
 
     [OperationContract]
-    int updateSubCategories(int id, int cat_ID,string name,string status);
+    int updateSubCategories(int id, int cat_ID, string name, string status);
 
     //INVOICE MANAGEMENT --------------------------------------------------------
 
@@ -154,7 +154,7 @@ public interface IGP_Service
     int updateList(int userID, int P_ID, int quantity);
 
     [OperationContract]
-    int removeList(int userID, int productID);
+    int removeList(int userID);
 
     //ADDRESS MANAGEMENT -------------------------------------------------------------
 
@@ -184,7 +184,7 @@ public interface IGP_Service
     Device getDevice(int D_ID);
 
     [OperationContract]
-    int addDevices(int cust_ID,string useragent);
+    int addDevices(int cust_ID, string useragent);
 
     //REPORT MANAGEMENT ------------------------------------------------------------
 
@@ -223,7 +223,7 @@ public interface IGP_Service
 
     [OperationContract]
     decimal salesPerWeek(DateTime date);
-    
+
     [OperationContract]
     double percentageSaleChanger(DateTime currentDate);
 
@@ -240,7 +240,7 @@ public interface IGP_Service
     decimal calcSalesPerDay(DateTime date);
 
     [OperationContract]
-    List<DateTime> getMonthDates(DateTime date); 
+    List<DateTime> getMonthDates(DateTime date);
 
     [OperationContract]
     int numProductSales(DateTime currentDate, int Product_ID);
@@ -269,4 +269,18 @@ public interface IGP_Service
 
     [OperationContract]
     List<String> topPages();
+
+    //CATEGORY SALES MANAGEMENT ------------------------------------------------------------
+    [OperationContract]
+    double percentageCategorySales(DateTime currentDate, int Cat_ID);
+
+    [OperationContract]
+    int numProductSalesperCategory(DateTime currentDate, int Cat_ID);
+
+    //SubCATEGORY SALES MANAGEMENT ------------------------------------------------------------
+    [OperationContract]
+    double percentageSubCategorySales(DateTime currentDate, int SubCat_ID);
+
+    [OperationContract]
+    int numProductSalesperSubCategory(DateTime currentDate, int SubCat_ID);
 }

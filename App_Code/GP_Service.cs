@@ -456,9 +456,11 @@ public class GP_Service : IGP_Service
     }
 
     //Function to update product specifics  
-    public int updateProduct(int id, string name, int SubId, double price, double cost, string imgLocation,string status,string description)
+    public int updateProduct(int id, string name, int SubId, double price, double cost, string imgLocation, string status, int stock, string description)
     {
-        var product = getProduct(id);
+        var product = (from p in db.Products
+                       where p.ID.Equals(id)
+                       select p).FirstOrDefault();
 
         if(product == null)
         {
@@ -473,6 +475,7 @@ public class GP_Service : IGP_Service
             product.Cost = (decimal)cost;
             product.Image_Location = imgLocation;
             product.Status = status;
+            product.StockOnHand = stock;
             product.Description = description;
 
             try
@@ -577,7 +580,8 @@ public class GP_Service : IGP_Service
                 Cost = product.Cost,
                 StockOnHand = product.StockOnHand,
                 Image_Location = product.Image_Location,
-                Description = product.Description
+                Description = product.Description,
+                Status = product.Status
             };
             return rProduct;
         }
@@ -1380,8 +1384,8 @@ public class GP_Service : IGP_Service
         {
             foreach (ShoppingList s in list)
             {
-                if (s.UserID == null)
-                    return null;
+                //if (s.UserID == null)
+                  //  return null;
 
                 var tempList = new ShoppingList
                 {
@@ -1423,15 +1427,19 @@ public class GP_Service : IGP_Service
         }
     }
 
-    public int removeList(int userID, int productID)
+    public int removeList(int userID)
     {
-        var list = (from s in db.ShoppingLists
-                    where s.UserID.Equals(userID) && s.ProductID.Equals(productID)
-                    select s).FirstOrDefault();
+       dynamic list = (from s in db.ShoppingLists
+                    where s.UserID.Equals(userID)
+                    select s);
 
         if (list != null)
         {
-            db.ShoppingLists.DeleteOnSubmit(list);
+            foreach(ShoppingList s in list)
+            {
+                db.ShoppingLists.DeleteOnSubmit(s);
+            }
+            
             try
             {
                 //all is well
@@ -2132,5 +2140,121 @@ public class GP_Service : IGP_Service
         dynamic topPages = pageList.GetRange(0,2);
 
         return topPages;
+    }
+
+    //ProductCategory Management
+    private int getallsalesbyCategory(int CatID)
+    {
+        dynamic sale = (from s in db.InvoiceLines
+                        select s);
+        int Count = 0;
+        foreach (InvoiceLine i in sale)
+        {
+            dynamic category = getCategorybyProductID(i.ProductID);
+            if(category.ID.Equals(CatID))
+            {
+                Count += 1;
+            }
+
+        }
+        return Count;
+    }
+    public int numProductSalesperCategory(DateTime currentDate, int Cat_ID)
+    {
+        dynamic weekDates = getWeekDates(currentDate.Date);
+
+        dynamic invoice = getAllInvoices();
+
+        List<InvoiceLine> LineList = new List<InvoiceLine>();
+        int Count = 0;
+        //for each day get the product sales and add to the counter 
+        foreach (Invoice i in invoice)
+        {
+            if (weekDates.Contains(i.Date))
+            {
+                dynamic invoiceLine = getAllInvoiceLines(i.ID);
+                foreach (InvoiceLine inv in invoiceLine)
+                {
+                    dynamic category = getCategorybyProductID(inv.ProductID);
+                    if (category.ID.Equals(Cat_ID))
+                    {
+                        Count += 1;
+                    }
+                }
+            }
+        }
+        return Count;
+
+    }
+    public double percentageCategorySales(DateTime currentDate, int Cat_ID)
+    {
+        int TotalNewCount = getallsalesbyCategory(Cat_ID);
+        int weeklySale = numProductSalesperCategory( currentDate, Cat_ID);
+        int StartingValue = TotalNewCount - weeklySale; //6-3 = 3
+        int Difference = (TotalNewCount - StartingValue) * 100;
+        if (StartingValue == 0)
+        {
+            return Difference;
+        }
+        double percentageChange = (Difference / StartingValue);//300/3 = 100
+        return percentageChange;
+    }
+
+    //Subcategory management-------------------------------------------------------
+    private int getallsalesbySubCategory(int SubCatID)
+    {
+        dynamic sale = (from s in db.InvoiceLines
+                        select s);
+        int Count = 0;
+        foreach (InvoiceLine i in sale)
+        {
+            dynamic product = getProduct(i.ProductID);
+                if (product.SubCategoryID.Equals(SubCatID))
+                {
+                    Count += 1;
+                }   
+        }
+        return Count;
+    }
+    public double percentageSubCategorySales(DateTime currentDate, int SubCat_ID)
+    {
+        int TotalNewCount = getallsalesbySubCategory(SubCat_ID);
+        int weeklySale = numProductSalesperSubCategory(currentDate,SubCat_ID);
+        int StartingValue = TotalNewCount - weeklySale; //6-3 = 3
+        int Difference = (TotalNewCount - StartingValue) * 100;
+        if (StartingValue == 0)
+        {
+            return Difference;
+        }
+        double percentageChange = (Difference / StartingValue);//300/3 = 100
+        return percentageChange;
+
+    }
+    public int numProductSalesperSubCategory(DateTime currentDate, int SubCat_ID)
+    {
+        dynamic weekDates = getWeekDates(currentDate.Date);
+
+        dynamic invoice = getAllInvoices();
+
+        List<InvoiceLine> LineList = new List<InvoiceLine>();
+        int Count = 0;
+        //for each day get the product sales and add to the counter 
+        foreach (Invoice i in invoice)
+        {
+            if (weekDates.Contains(i.Date))
+            {
+                dynamic invoiceLine = getAllInvoiceLines(i.ID);
+                foreach (InvoiceLine inv in invoiceLine)
+                {
+                    dynamic product = getProduct(inv.ProductID);
+                    if (product.ID.Equals(SubCat_ID))
+                    {
+                        Count += 1;
+                    }
+                }
+            }
+        }
+        return Count;
+
     }
 }

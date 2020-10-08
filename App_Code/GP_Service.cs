@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 
+//email
+using System.Web;
+using System.Net.Mail;
+
 // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "GP_Service" in code, svc and config file together.
 public class GP_Service : IGP_Service
 {
@@ -24,6 +28,17 @@ public class GP_Service : IGP_Service
     //USER MANAGEMENT -------------------------------------------------------------------------------------------------
 
     //Login 
+
+    public void newsletter(string senderemail, string subscriberemail, string subject, string body,string smtp )
+    {
+        
+        MailMessage mail = new MailMessage(senderemail, subscriberemail, subject, body);
+        SmtpClient client = new SmtpClient(smtp);
+        client.Port = 587; //this port is used by gmail and also 465
+        client.EnableSsl = true; //ssl is required by gmail
+        client.Send(mail); 
+        
+    }
     public int login(string email, string password)
     {
         //check if user information is in the database
@@ -437,9 +452,11 @@ public class GP_Service : IGP_Service
     }
 
     //Function to update product specifics  
-    public int updateProduct(int id, string name, int SubId, double price, double cost, string imgLocation,string status,string description)
+    public int updateProduct(int id, string name, int SubId, double price, double cost, string imgLocation, string status, int stock, string description)
     {
-        var product = getProduct(id);
+        var product = (from p in db.Products
+                       where p.ID.Equals(id)
+                       select p).FirstOrDefault();
 
         if(product == null)
         {
@@ -454,6 +471,7 @@ public class GP_Service : IGP_Service
             product.Cost = (decimal)cost;
             product.Image_Location = imgLocation;
             product.Status = status;
+            product.StockOnHand = stock;
             product.Description = description;
 
             try
@@ -558,7 +576,8 @@ public class GP_Service : IGP_Service
                 Cost = product.Cost,
                 StockOnHand = product.StockOnHand,
                 Image_Location = product.Image_Location,
-                Description = product.Description
+                Description = product.Description,
+                Status = product.Status
             };
             return rProduct;
         }
@@ -1361,8 +1380,8 @@ public class GP_Service : IGP_Service
         {
             foreach (ShoppingList s in list)
             {
-                if (s.UserID == null)
-                    return null;
+                //if (s.UserID == null)
+                  //  return null;
 
                 var tempList = new ShoppingList
                 {
@@ -1404,15 +1423,19 @@ public class GP_Service : IGP_Service
         }
     }
 
-    public int removeList(int userID, int productID)
+    public int removeList(int userID)
     {
-        var list = (from s in db.ShoppingLists
-                    where s.UserID.Equals(userID) && s.ProductID.Equals(productID)
-                    select s).FirstOrDefault();
+       dynamic list = (from s in db.ShoppingLists
+                    where s.UserID.Equals(userID)
+                    select s);
 
         if (list != null)
         {
-            db.ShoppingLists.DeleteOnSubmit(list);
+            foreach(ShoppingList s in list)
+            {
+                db.ShoppingLists.DeleteOnSubmit(s);
+            }
+            
             try
             {
                 //all is well

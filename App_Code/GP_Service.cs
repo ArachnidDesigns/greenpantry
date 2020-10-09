@@ -784,7 +784,8 @@ public class GP_Service : IGP_Service
             Image_Location = p.Image_Location,
             SubCategoryID = p.SubCategoryID,
             StockOnHand = p.StockOnHand,
-            Description = p.Description
+            Description = p.Description,
+            Status = p.Status
         };
         return tempProduct;
     }

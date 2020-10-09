@@ -204,6 +204,9 @@ public interface IGP_Service
     double profitPerCat(int C_ID);
 
     [OperationContract]
+    decimal calcProfitPerday(DateTime date);
+
+    [OperationContract]
     decimal calcProductVAT(int P_ID);
 
     [OperationContract]

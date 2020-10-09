@@ -1686,6 +1686,32 @@ public class GP_Service : IGP_Service
         return profit;
     }
 
+    //calculate the profit on sales for the given date
+    public decimal calcProfitPerday(DateTime date)
+    {
+        decimal profit = 0;
+
+        dynamic invoices = (from i in db.Invoices
+                            where i.Date.Equals(date.ToShortDateString())
+                            select i);
+
+        if(invoices != null)
+        {
+            foreach(Invoice i in invoices)
+            {
+                dynamic invLines = getAllInvoiceLines(i.ID);
+
+                foreach(InvoiceLine iLine in invLines)
+                {
+                    var invProduct = getProduct(iLine.ProductID);
+
+                    profit += (decimal)((iLine.Price - invProduct.Cost) * iLine.Qty);
+                }
+            }
+        }
+        return profit;
+    }
+
     //reverse calculate vat on products
     public decimal calcProductVAT(int P_ID)
     {

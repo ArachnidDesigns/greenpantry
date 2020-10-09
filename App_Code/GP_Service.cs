@@ -5,6 +5,13 @@ using System.Linq;
 //email
 using System.Web;
 using System.Net.Mail;
+using System.Activities.Expressions;
+
+public class recommended
+{
+    public Product product;
+    public double rating;
+}
 
 // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "GP_Service" in code, svc and config file together.
 public class GP_Service : IGP_Service
@@ -348,10 +355,10 @@ public class GP_Service : IGP_Service
     //ADDRESS MANAGEMENT -------------------------------------
 
     //Function used to return the Address
-    public Address getAddress(int Address_ID)
+    public Address getAddress(int userID)
     {
         var Addressinfo = (from a in db.Addresses
-                           where a.ID.Equals(Address_ID)
+                           where a.CustomerID.Equals(userID)
                            select a).FirstOrDefault();
 
         if (Addressinfo == null)
@@ -360,7 +367,19 @@ public class GP_Service : IGP_Service
         }
         else
         {
-            return Addressinfo;
+            var tempAddress = new Address
+            {
+                ID = Addressinfo.ID,
+                CustomerID = Addressinfo.CustomerID,
+                Type = Addressinfo.Type,
+                Billing = Addressinfo.Billing,
+                Line1 = Addressinfo.Line1,
+                Line2 = Addressinfo.Line2,
+                Suburb = Addressinfo.Suburb,
+                City = Addressinfo.City,
+                Province = Addressinfo.Province
+            };
+            return tempAddress;
         }
     }
     //method used to add a new address into the database
@@ -392,43 +411,35 @@ public class GP_Service : IGP_Service
     }
 
     //method used to update the address
-    public int updateAddress(int A_ID, string line1, string line2, string suburb, string city, char billing, string type, int Cus_ID)
+    public int updateAddress(string line1, string line2, string suburb, string city, string province, char billing, string type, int Cus_ID)
     {
-        var tempAddress = (from ad in db.Addresses
-                           where ad.Line1.Equals(line1) && ad.Line2.Equals(line2) &&
-                           ad.Suburb.Equals(suburb) && ad.City.Equals(city)
-                           && ad.Billing.Equals(billing) && ad.CustomerID.Equals(Cus_ID)
+        var address = (from ad in db.Addresses
+                           where ad.CustomerID.Equals(Cus_ID)
                            select ad).FirstOrDefault();
-        if (tempAddress != null)
+        
+        if (address == null)
         {
             return -1;
         }
         else
         {
-            var address = getAddress(A_ID);
-            if (address != null)
-            {
-                address.Line1 = line1;
-                address.Line2 = line2;
-                address.Suburb = suburb;
-                address.City = city;
-                address.Billing = billing;
-                address.Type = type;
+            address.Line1 = line1;
+            address.Line2 = line2;
+            address.Suburb = suburb;
+            address.City = city;
+            address.Province = province;
+            address.Billing = billing;
+            address.Type = type;
 
-                try
-                {
-                    db.SubmitChanges();
-                    return 1;
-                }
-                catch (Exception ex)
-                {
-                    ex.GetBaseException();
-                    return -2;
-                }
-            }
-            else
+            try
             {
-                return 0;
+                db.SubmitChanges();
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                ex.GetBaseException();
+                return -1;
             }
         }
     }
@@ -1603,18 +1614,25 @@ public class GP_Service : IGP_Service
     //DEVICE MANAGEMENT --------------------------------------------
 
     //Get method for devices
-    public Device getDevice(int D_ID)
+    public Device getDevice(int userID)
     {
         var DeviceInfo = (from d in db.Devices
-                          where d.DeviceID.Equals(D_ID)
+                          where d.CustomerID.Equals(userID)
                           select d).FirstOrDefault();
+        
         if(DeviceInfo == null)
         {
             return null;
         }
         else
         {
-            return DeviceInfo;
+            var tempDevice = new Device
+            {
+                DeviceID = DeviceInfo.DeviceID,
+                CustomerID = DeviceInfo.CustomerID,
+                OS = DeviceInfo.OS
+            };
+            return tempDevice;
         }
     }
     //Function to add the device to the database
@@ -2185,7 +2203,7 @@ public class GP_Service : IGP_Service
         {
             pageList.Add(p.PageName);
         }
-        dynamic topPages = pageList.GetRange(0,2);
+        dynamic topPages = pageList.GetRange(0,5);
 
         return topPages;
     }
@@ -2336,5 +2354,248 @@ public class GP_Service : IGP_Service
         }
         return Count;
 
+    }
+
+    public List<Product> recommendedProducts(int userID)
+    {
+        List<Product> list = new List<Product>();
+
+        //user similarity-----------------
+        //our location
+        dynamic ourAddress = getAddress(userID);
+        //device used
+        dynamic ourDevice = getDevice(userID);
+        
+        //get all products
+        dynamic allProducts = getAllProducts();
+
+        List<Product> ourProductList = new List<Product>();
+        foreach (Product p in allProducts)
+        {
+            double userSimilar = 0;
+            double productSimilar = 0;
+            double categorySimilar = 0;
+            double subSimilar = 0;
+
+            //get all users
+            dynamic allUsers = getAllUsers();
+            foreach(User u in allUsers)
+            {
+                //invoice per user
+                dynamic invoices = getAllCustomerInvoices(u.ID);
+                foreach(Invoice i in invoices)
+                {
+                    //invoice line per invoice
+                    dynamic allLines = getAllInvoiceLines(i.ID);
+                    foreach(InvoiceLine il in allLines)
+                    {
+                        //has this user bought product p before?
+                        if(p.ID.Equals(il.ProductID))
+                        {
+                            double location = 0;
+                            //YES so is this user similar to us?
+                            dynamic userAddress = getAddress(u.ID);
+                            if(userAddress != null)
+                            {
+                                int province = 0;
+                                int city = 0;
+                                int suburb = 0;
+                                if (userAddress.Province.Equals(ourAddress.Province))
+                                {
+                                    province = 1;
+                                }
+                                if (userAddress.City.Equals(ourAddress.City))
+                                {
+                                    city = 1;
+                                }
+                                if (userAddress.Suburb.Equals(ourAddress.Suburb))
+                                {
+                                    suburb = 1;
+                                }
+                                location = ((province + city + suburb) * 100) / 3;
+                            }
+
+                            //does user use same device?
+                            int device = 0;
+                            dynamic userDevice = getDevice(u.ID);
+                            if (userDevice.OS.Equals(ourDevice.OS))
+                            {
+                                device = 100;
+                            }
+                            else if (userDevice.OS.Contains(ourDevice.OS))
+                            {
+                                device = 50;
+                            }
+                            //location is worth 60%, device worth 40% ---- 20% of this
+                            userSimilar = ((location * 0.6) + (device * 0.4) * 0.2);
+                        }
+                    }
+                }
+            }
+
+            dynamic ourInvoices = getAllCustomerInvoices(userID);
+            foreach (Invoice i in ourInvoices)
+            {
+                dynamic ourLines = getAllInvoiceLines(i.ID);
+                foreach (InvoiceLine il in ourLines)
+                {
+                    if (p.ID.Equals(il.ProductID))
+                    {
+                        //YES 
+                        productSimilar = (1 * 0.5);
+                    }
+                    
+                    //have I bought from this category before?
+                    dynamic ourCat = getCategorybyProductID(il.ProductID);
+                    dynamic cat = getCategorybyProductID(p.ID);
+                    if (ourCat.ID.Equals(cat.ID))
+                    {
+                        categorySimilar = (1 * 0.1);
+                    }
+
+                    //have I bought from this subcategory before?
+                    dynamic ourProduct = getProduct(il.ProductID);
+                    dynamic ourSub = getSubCat(ourProduct.SubCategoryID);
+                    dynamic sub = getSubCat(p.SubCategoryID);
+                    if(ourSub.SubID.Equals(sub.SubID))
+                    {
+                        subSimilar = (1 * 0.2);
+                    }
+                }
+            }
+            //(productsimilarity * 0.5) + (category * 0.2) + (sub * 0.1) + (usersimilarity * 0.2)
+            double totalSimilar = productSimilar + categorySimilar + subSimilar + userSimilar;
+
+            //dynamic sortedList = sortList(p, totalSimilar);
+            
+            list.Add(p);
+        }
+        return list;
+    }
+
+    public List<recommended> recommendTest(int userID)
+    {
+        List<recommended> list = new List<recommended>();
+
+        //user similarity-----------------
+        //our location
+        dynamic ourAddress = getAddress(userID);
+        //device used
+        dynamic ourDevice = getDevice(userID);
+
+        //get all products
+        dynamic allProducts = getAllProducts();
+
+        List<Product> ourProductList = new List<Product>();
+        foreach (Product p in allProducts)
+        {
+            double userSimilar = 0;
+            double productSimilar = 0;
+            double categorySimilar = 0;
+            double subSimilar = 0;
+
+            //get all users
+            dynamic allUsers = getAllUsers();
+            foreach (User u in allUsers)
+            {
+                //invoice per user
+                dynamic invoices = getAllCustomerInvoices(u.ID);
+                foreach (Invoice i in invoices)
+                {
+                    //invoice line per invoice
+                    dynamic allLines = getAllInvoiceLines(i.ID);
+                    foreach (InvoiceLine il in allLines)
+                    {
+                        //has this user bought product p before?
+                        if (p.ID.Equals(il.ProductID))
+                        {
+                            double location = 0;
+                            //YES so is this user similar to us?
+                            dynamic userAddress = getAddress(u.ID);
+                            if (userAddress != null)
+                            {
+                                int province = 0;
+                                int city = 0;
+                                int suburb = 0;
+                                if (userAddress.Province.Equals(ourAddress.Province))
+                                {
+                                    province = 1;
+                                }
+                                if (userAddress.City.Equals(ourAddress.City))
+                                {
+                                    city = 1;
+                                }
+                                if (userAddress.Suburb.Equals(ourAddress.Suburb))
+                                {
+                                    suburb = 1;
+                                }
+                                location = ((province + city + suburb) * 100) / 3;
+                            }
+
+                            //does user use same device?
+                            int device = 0;
+                            dynamic userDevice = getDevice(u.ID);
+                            if (userDevice.OS.Equals(ourDevice.OS))
+                            {
+                                device = 100;
+                            }
+                            else if (userDevice.OS.Contains(ourDevice.OS))
+                            {
+                                device = 50;
+                            }
+                            //location is worth 60%, device worth 40% ---- 20% of this
+                            userSimilar = ((location * 0.6) + (device * 0.4) * 0.2);
+                        }
+                    }
+                }
+            }
+
+            dynamic ourInvoices = getAllCustomerInvoices(userID);
+            foreach (Invoice i in ourInvoices)
+            {
+                dynamic ourLines = getAllInvoiceLines(i.ID);
+                foreach (InvoiceLine il in ourLines)
+                {
+                    if (p.ID.Equals(il.ProductID))
+                    {
+                        //YES 
+                        productSimilar = (1 * 0.5);
+                    }
+
+                    //have I bought from this category before?
+                    dynamic ourCat = getCategorybyProductID(il.ProductID);
+                    dynamic cat = getCategorybyProductID(p.ID);
+                    if (ourCat.ID.Equals(cat.ID))
+                    {
+                        categorySimilar = (1 * 0.1);
+                    }
+
+                    //have I bought from this subcategory before?
+                    dynamic ourProduct = getProduct(il.ProductID);
+                    dynamic ourSub = getSubCat(ourProduct.SubCategoryID);
+                    dynamic sub = getSubCat(p.SubCategoryID);
+                    if (ourSub.SubID.Equals(sub.SubID))
+                    {
+                        subSimilar = (1 * 0.2);
+                    }
+                }
+            }
+            //(productsimilarity * 0.5) + (category * 0.2) + (sub * 0.1) + (usersimilarity * 0.2)
+            double totalSimilar = productSimilar + categorySimilar + subSimilar + userSimilar;
+
+            list = sortList(list, p, totalSimilar);
+
+            //list.Add(p);
+        }
+        return list;
+    }
+
+
+    private List<recommended> sortList(List<recommended> listRec, Product p, double total)
+    {
+        listRec.Add(new recommended() { rating = total, product = p });
+
+        List<recommended> SortedList = listRec.OrderByDescending(o => o.rating).ToList();
+        return SortedList;
     }
 }

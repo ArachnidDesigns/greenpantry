@@ -246,6 +246,37 @@ public class GP_Service : IGP_Service
         }
     }
 
+    public int updateUserAdmin(int userID, int points, string usertype, string status)
+    {
+        //check if user exists
+        var user = (from u in db.Users
+                        where u.ID.Equals(userID)
+                        select u).FirstOrDefault();
+
+        if (user == null)
+        {
+            //the user does not exist
+            return -1;
+        }
+        else
+        {
+            user.Points = points;
+            user.UserType = usertype;
+            user.Status = status;
+
+            try
+            {
+                db.SubmitChanges();
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                ex.GetBaseException();
+                return 0;
+            }
+        }
+    }
+
     //Function used to get a particular user based on its ID
     public User getUser(int User_ID)
     {
@@ -273,6 +304,31 @@ public class GP_Service : IGP_Service
             };
             return newuser;
         }
+    }
+
+    public List<User> getAllUsers()
+    {
+        dynamic users = (from u in db.Users
+                         select u);
+        List<User> userList = new List<User>();
+
+        foreach(User u in users)
+        {
+            var newuser = new User
+            {
+                ID = u.ID,
+                Name = u.Name,
+                Surname = u.Surname,
+                Email = u.Email,
+                Password = u.Password,
+                PhoneNumber = u.PhoneNumber,
+                Status = u.Status,
+                DateRegistered = u.DateRegistered,
+                UserType = u.UserType
+            };
+            userList.Add(newuser);
+        }
+        return userList;
     }
 
     //Function used to find the total number of users for the website
@@ -1101,8 +1157,9 @@ public class GP_Service : IGP_Service
                 Status = order.Status,
                 Date = order.Date,
                 DeliveryDatetime = order.DeliveryDatetime,
-                Notes = order.Notes
-
+                Notes = order.Notes,
+                Total = order.Total,
+                Points = order.Points
             };
             return temp;
         }
@@ -1313,7 +1370,7 @@ public class GP_Service : IGP_Service
                     InvoiceID = line.InvoiceID,
                     ProductID = line.ProductID,
                     Qty = line.Qty,
-                    Price = line.Price
+                    Price = line.Price,
                 };
 
                 rList.Add(temp);

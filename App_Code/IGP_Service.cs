@@ -43,10 +43,16 @@ public interface IGP_Service
     int updateUserDetails(int id, string name, string surname, string email, string number);
 
     [OperationContract]
+    int updateUserAdmin(int userID, int points, string usertype, string status);
+
+    [OperationContract]
     int updatePassword(int id, string oldPassword, string newPassword);
 
     [OperationContract]
     User getUser(int User_ID);
+
+    [OperationContract]
+    List<User> getAllUsers();
 
     [OperationContract]
     int getNumUsers();
@@ -142,6 +148,9 @@ public interface IGP_Service
     [OperationContract]
     List<InvoiceLine> getAllInvoiceLines(int InvoiceID);
 
+    [OperationContract]
+    int addInvoiceLine(int product_ID, int invoice_ID, int quantity, decimal price);
+
     //SHOPPING LIST MANAGEMENT ---------------------------------------------------------
 
     [OperationContract]
@@ -211,9 +220,6 @@ public interface IGP_Service
 
     [OperationContract]
     int getNumProductsInSub(int subID);
-
-    [OperationContract]
-    int addInvoiceLine(int product_ID, int invoice_ID, int quantity, decimal price);
 
     [OperationContract]
     int usersperWeek(DateTime currentDate);

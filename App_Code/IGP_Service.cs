@@ -290,4 +290,18 @@ public interface IGP_Service
     [OperationContract]
     int getProQtySold(int P_ID);
 
+    [OperationContract]
+    List<string> getAllDevices();
+
+    [OperationContract]
+    int getTotOSUsers(string os);
+
+    [OperationContract]
+    List<int> WorstProducts();
+
+    
+
+
+
+
 }

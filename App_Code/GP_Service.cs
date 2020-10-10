@@ -110,34 +110,6 @@ public class GP_Service : IGP_Service
         }
     }
 
-    //Add phone number 
-    public int addUserNumber(int id, string number)
-    {
-        var user = (from u in db.Users
-                    where u.ID.Equals(id)
-                    select u).FirstOrDefault();
-       
-        if(user != null)
-        {
-            user.PhoneNumber = number;
-
-            try
-            {
-                db.SubmitChanges();
-                return 1;
-            }
-            catch (Exception ex)
-            {
-                ex.GetBaseException();
-                return -1;
-            }
-        }
-        else
-        {
-            return 0;
-        }
-    }
-
     //Make user profile inactive 
     public int removeUser(int id)
     {
@@ -209,7 +181,7 @@ public class GP_Service : IGP_Service
     }
 
     //Update user's details 
-    public int updateUserDetails(int id, string name, string surname, string email, string number)
+    public int updateUserDetails(int id, string name, string surname, string email)
     {
         //check if the given email is already in use
         var tempUser = (from u in db.Users
@@ -232,7 +204,6 @@ public class GP_Service : IGP_Service
                 user.Name = name;
                 user.Surname = surname;
                 user.Email = email;
-                user.PhoneNumber = number;
 
                 try
                 {
@@ -304,7 +275,6 @@ public class GP_Service : IGP_Service
                 Surname = UserInfo.Surname,
                 Email = UserInfo.Email,
                 Password = UserInfo.Password,
-                PhoneNumber = UserInfo.PhoneNumber,
                 Status = UserInfo.Status,
                 DateRegistered = UserInfo.DateRegistered,
                 UserType = UserInfo.UserType
@@ -328,7 +298,6 @@ public class GP_Service : IGP_Service
                 Surname = u.Surname,
                 Email = u.Email,
                 Password = u.Password,
-                PhoneNumber = u.PhoneNumber,
                 Status = u.Status,
                 DateRegistered = u.DateRegistered,
                 UserType = u.UserType
@@ -355,10 +324,10 @@ public class GP_Service : IGP_Service
     //ADDRESS MANAGEMENT -------------------------------------
 
     //Function used to return the Address
-    public Address getAddress(int userID)
+    public Address getAddress(int addID)
     {
         var Addressinfo = (from a in db.Addresses
-                           where a.CustomerID.Equals(userID)
+                           where a.ID.Equals(addID)
                            select a).FirstOrDefault();
 
         if (Addressinfo == null)
@@ -377,13 +346,80 @@ public class GP_Service : IGP_Service
                 Line2 = Addressinfo.Line2,
                 Suburb = Addressinfo.Suburb,
                 City = Addressinfo.City,
-                Province = Addressinfo.Province
+                Province = Addressinfo.Province,
+                Primary = Addressinfo.Primary,
+                Number = Addressinfo.Number
             };
             return tempAddress;
         }
     }
+
+    public List<Address> getUserAddresses(int userID)
+    {
+        dynamic address = (from a in db.Addresses
+                           where a.CustomerID.Equals(userID)
+                           select a);
+        List<Address> addressList = new List<Address>();
+
+        if(address == null)
+        {
+            return null;
+        }
+        else
+        {
+            foreach(Address a in address)
+            {
+                var tempAddress = new Address
+                {
+                    ID = a.ID,
+                    Line1 = a.Line1,
+                    Line2 = a.Line2,
+                    Suburb = a.Suburb,
+                    City = a.City,
+                    Province = a.Province,
+                    Zip = a.Zip,
+                    Type = a.Type,
+                    CustomerID = a.CustomerID,
+                    Primary = a.Primary,
+                    Number = a.Number
+                };
+                addressList.Add(tempAddress);
+            }
+            return addressList;
+        }
+    }
+
+    public Address getPrimaryAddress(int userID)
+    {
+        dynamic address = (from a in db.Addresses
+                           where a.Primary.Equals(1) && a.CustomerID.Equals(userID)
+                           select a).FirstOrDefault();
+        if (address == null)
+        {
+            return null;
+        }
+        else
+        {
+            var tempAddress = new Address
+            {
+                ID = address.ID,
+                Line1 = address.Line1,
+                Line2 = address.Line2,
+                Suburb = address.Suburb,
+                City = address.City,
+                Province = address.Province,
+                Zip = address.Zip,
+                Type = address.Type,
+                CustomerID = address.CustomerID,
+                Primary = address.Primary,
+                Number = address.Number
+            };
+            return tempAddress;
+        }
+    }
+
     //method used to add a new address into the database
-    public int addAddress(string line1, string line2, string suburb, string city, int zip, string type, int C_ID, string Province)
+    public int addAddress(string line1, string line2, string suburb, string city, int zip, string type, int C_ID, string Province, int primary, string number)
     {
         var newAddress = new Address
         {
@@ -394,7 +430,9 @@ public class GP_Service : IGP_Service
             Zip = zip,
             Type = type,
             CustomerID = C_ID,
-            Province = Province
+            Province = Province,
+            Primary = primary,
+            Number = number
         };
 
         db.Addresses.InsertOnSubmit(newAddress);
@@ -411,10 +449,10 @@ public class GP_Service : IGP_Service
     }
 
     //method used to update the address
-    public int updateAddress(string line1, string line2, string suburb, string city, string province, int zip, string type, int Cus_ID)
+    public int updateAddress(string line1, string line2, string suburb, string city, string province, int zip, string type, int addID, int primary, string number)
     {
         var address = (from ad in db.Addresses
-                           where ad.CustomerID.Equals(Cus_ID)
+                           where ad.ID.Equals(addID)
                            select ad).FirstOrDefault();
         
         if (address == null)
@@ -430,6 +468,8 @@ public class GP_Service : IGP_Service
             address.Province = province;
             address.Zip = zip;
             address.Type = type;
+            address.Primary = primary;
+            address.Number = number;
 
             try
             {
@@ -443,6 +483,46 @@ public class GP_Service : IGP_Service
             }
         }
     }
+
+    public int deleteAddress(int addressID)
+    {
+        dynamic address = (from a in db.Addresses
+                           where a.ID.Equals(addressID)
+                           select a).FirstOrDefault();
+        if(address != null)
+        {
+            db.Addresses.DeleteOnSubmit(address);
+
+            try
+            {
+                //all is well
+                db.SubmitChanges();
+
+                int userID = address.CustomerID;
+                dynamic otherAdd = (from a in db.Addresses
+                                    where a.CustomerID.Equals(userID)
+                                    select a).FirstOrDefault();
+                if(otherAdd != null)
+                { 
+                    int update = updateAddress(otherAdd.Line1, otherAdd.Line2, otherAdd.Suburb, otherAdd.City, otherAdd.Province, otherAdd.Zip, otherAdd.Type, otherAdd.ID, 1, otherAdd.Number);
+                }
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                //something else went wrong
+                ex.GetBaseException();
+                return -1;
+            }
+        }
+        else
+        {
+            //doesn't exist
+            return 0;
+        }
+    }
+
+    //POINTS MANAGEMENT --------------------------------------------------------------
 
     public int updatePoints(int Cust_ID, int points)
     {
@@ -2395,122 +2475,122 @@ public class GP_Service : IGP_Service
 
     }
 
-    public List<Product> recommendedProducts(int userID)
-    {
-        List<Product> list = new List<Product>();
+    //public List<Product> recommendedProducts(int userID)
+    //{
+    //    List<Product> list = new List<Product>();
 
-        //user similarity-----------------
-        //our location
-        dynamic ourAddress = getAddress(userID);
-        //device used
-        dynamic ourDevice = getDevice(userID);
+    //    //user similarity-----------------
+    //    //our location
+    //    dynamic ourAddress = getAddress(userID);
+    //    //device used
+    //    dynamic ourDevice = getDevice(userID);
         
-        //get all products
-        dynamic allProducts = getAllProducts();
+    //    //get all products
+    //    dynamic allProducts = getAllProducts();
 
-        List<Product> ourProductList = new List<Product>();
-        foreach (Product p in allProducts)
-        {
-            double userSimilar = 0;
-            double productSimilar = 0;
-            double categorySimilar = 0;
-            double subSimilar = 0;
+    //    List<Product> ourProductList = new List<Product>();
+    //    foreach (Product p in allProducts)
+    //    {
+    //        double userSimilar = 0;
+    //        double productSimilar = 0;
+    //        double categorySimilar = 0;
+    //        double subSimilar = 0;
 
-            //get all users
-            dynamic allUsers = getAllUsers();
-            foreach(User u in allUsers)
-            {
-                //invoice per user
-                dynamic invoices = getAllCustomerInvoices(u.ID);
-                foreach(Invoice i in invoices)
-                {
-                    //invoice line per invoice
-                    dynamic allLines = getAllInvoiceLines(i.ID);
-                    foreach(InvoiceLine il in allLines)
-                    {
-                        //has this user bought product p before?
-                        if(p.ID.Equals(il.ProductID))
-                        {
-                            double location = 0;
-                            //YES so is this user similar to us?
-                            dynamic userAddress = getAddress(u.ID);
-                            if(userAddress != null)
-                            {
-                                int province = 0;
-                                int city = 0;
-                                int suburb = 0;
-                                if (userAddress.Province.Equals(ourAddress.Province))
-                                {
-                                    province = 1;
-                                }
-                                if (userAddress.City.Equals(ourAddress.City))
-                                {
-                                    city = 1;
-                                }
-                                if (userAddress.Suburb.Equals(ourAddress.Suburb))
-                                {
-                                    suburb = 1;
-                                }
-                                location = ((province + city + suburb) * 100) / 3;
-                            }
+    //        //get all users
+    //        dynamic allUsers = getAllUsers();
+    //        foreach(User u in allUsers)
+    //        {
+    //            //invoice per user
+    //            dynamic invoices = getAllCustomerInvoices(u.ID);
+    //            foreach(Invoice i in invoices)
+    //            {
+    //                //invoice line per invoice
+    //                dynamic allLines = getAllInvoiceLines(i.ID);
+    //                foreach(InvoiceLine il in allLines)
+    //                {
+    //                    //has this user bought product p before?
+    //                    if(p.ID.Equals(il.ProductID))
+    //                    {
+    //                        double location = 0;
+    //                        //YES so is this user similar to us?
+    //                        dynamic userAddress = getAddress(u.ID);
+    //                        if(userAddress != null)
+    //                        {
+    //                            int province = 0;
+    //                            int city = 0;
+    //                            int suburb = 0;
+    //                            if (userAddress.Province.Equals(ourAddress.Province))
+    //                            {
+    //                                province = 1;
+    //                            }
+    //                            if (userAddress.City.Equals(ourAddress.City))
+    //                            {
+    //                                city = 1;
+    //                            }
+    //                            if (userAddress.Suburb.Equals(ourAddress.Suburb))
+    //                            {
+    //                                suburb = 1;
+    //                            }
+    //                            location = ((province + city + suburb) * 100) / 3;
+    //                        }
 
-                            //does user use same device?
-                            int device = 0;
-                            dynamic userDevice = getDevice(u.ID);
-                            if (userDevice.OS.Equals(ourDevice.OS))
-                            {
-                                device = 100;
-                            }
-                            else if (userDevice.OS.Contains(ourDevice.OS))
-                            {
-                                device = 50;
-                            }
-                            //location is worth 60%, device worth 40% ---- 20% of this
-                            userSimilar = ((location * 0.6) + (device * 0.4) * 0.2);
-                        }
-                    }
-                }
-            }
+    //                        //does user use same device?
+    //                        int device = 0;
+    //                        dynamic userDevice = getDevice(u.ID);
+    //                        if (userDevice.OS.Equals(ourDevice.OS))
+    //                        {
+    //                            device = 100;
+    //                        }
+    //                        else if (userDevice.OS.Contains(ourDevice.OS))
+    //                        {
+    //                            device = 50;
+    //                        }
+    //                        //location is worth 60%, device worth 40% ---- 20% of this
+    //                        userSimilar = ((location * 0.6) + (device * 0.4) * 0.2);
+    //                    }
+    //                }
+    //            }
+    //        }
 
-            dynamic ourInvoices = getAllCustomerInvoices(userID);
-            foreach (Invoice i in ourInvoices)
-            {
-                dynamic ourLines = getAllInvoiceLines(i.ID);
-                foreach (InvoiceLine il in ourLines)
-                {
-                    if (p.ID.Equals(il.ProductID))
-                    {
-                        //YES 
-                        productSimilar = (1 * 0.5);
-                    }
+    //        dynamic ourInvoices = getAllCustomerInvoices(userID);
+    //        foreach (Invoice i in ourInvoices)
+    //        {
+    //            dynamic ourLines = getAllInvoiceLines(i.ID);
+    //            foreach (InvoiceLine il in ourLines)
+    //            {
+    //                if (p.ID.Equals(il.ProductID))
+    //                {
+    //                    //YES 
+    //                    productSimilar = (1 * 0.5);
+    //                }
                     
-                    //have I bought from this category before?
-                    dynamic ourCat = getCategorybyProductID(il.ProductID);
-                    dynamic cat = getCategorybyProductID(p.ID);
-                    if (ourCat.ID.Equals(cat.ID))
-                    {
-                        categorySimilar = (1 * 0.1);
-                    }
+    //                //have I bought from this category before?
+    //                dynamic ourCat = getCategorybyProductID(il.ProductID);
+    //                dynamic cat = getCategorybyProductID(p.ID);
+    //                if (ourCat.ID.Equals(cat.ID))
+    //                {
+    //                    categorySimilar = (1 * 0.1);
+    //                }
 
-                    //have I bought from this subcategory before?
-                    dynamic ourProduct = getProduct(il.ProductID);
-                    dynamic ourSub = getSubCat(ourProduct.SubCategoryID);
-                    dynamic sub = getSubCat(p.SubCategoryID);
-                    if(ourSub.SubID.Equals(sub.SubID))
-                    {
-                        subSimilar = (1 * 0.2);
-                    }
-                }
-            }
-            //(productsimilarity * 0.5) + (category * 0.2) + (sub * 0.1) + (usersimilarity * 0.2)
-            double totalSimilar = productSimilar + categorySimilar + subSimilar + userSimilar;
+    //                //have I bought from this subcategory before?
+    //                dynamic ourProduct = getProduct(il.ProductID);
+    //                dynamic ourSub = getSubCat(ourProduct.SubCategoryID);
+    //                dynamic sub = getSubCat(p.SubCategoryID);
+    //                if(ourSub.SubID.Equals(sub.SubID))
+    //                {
+    //                    subSimilar = (1 * 0.2);
+    //                }
+    //            }
+    //        }
+    //        //(productsimilarity * 0.5) + (category * 0.2) + (sub * 0.1) + (usersimilarity * 0.2)
+    //        double totalSimilar = productSimilar + categorySimilar + subSimilar + userSimilar;
 
-            //dynamic sortedList = sortList(p, totalSimilar);
+    //        //dynamic sortedList = sortList(p, totalSimilar);
             
-            list.Add(p);
-        }
-        return list;
-    }
+    //        list.Add(p);
+    //    }
+    //    return list;
+    //}
 
     public List<recommended> recommendTest(int userID)
     {
@@ -2518,7 +2598,7 @@ public class GP_Service : IGP_Service
 
         //user similarity-----------------
         //our location
-        dynamic ourAddress = getAddress(userID);
+        dynamic ourAddress = getPrimaryAddress(userID);
         //device used
         dynamic ourDevice = getDevice(userID);
 
@@ -2550,9 +2630,10 @@ public class GP_Service : IGP_Service
                         {
                             double location = 0;
                             //YES so is this user similar to us?
-                            dynamic userAddress = getAddress(u.ID);
+                            dynamic userAddress = getPrimaryAddress(u.ID);
                             if (userAddress != null)
                             {
+                                 
                                 int province = 0;
                                 int city = 0;
                                 int suburb = 0;
@@ -2626,9 +2707,14 @@ public class GP_Service : IGP_Service
 
             //list.Add(p);
         }
-        return list;
-    }
+        List<recommended> topTen = new List<recommended>();
+        for(int i = 0; i < 10; i++)
+        {
+            topTen.Add(list[i]);    
+        }
 
+        return topTen;
+    }
 
     private List<recommended> sortList(List<recommended> listRec, Product p, double total)
     {
@@ -2697,37 +2783,30 @@ public class GP_Service : IGP_Service
 
     }
 
-    public Device getDevice(int device_ID)
-    {
-        var product = (from p in db.Devices
-                       where p.DeviceID.Equals(device_ID)
-                       select p).FirstOrDefault();
+    //public Device getDevice(int device_ID)
+    //{
+    //    var product = (from p in db.Devices
+    //                   where p.DeviceID.Equals(device_ID)
+    //                   select p).FirstOrDefault();
 
-        if (product == null)
-        {
-            return null;
-        }
-        else
-        {
-            var rProduct = new Device
-            {
-                DeviceID = product.DeviceID,
-                OS = product.OS,
-                CustomerID = product.CustomerID
-            };
-            return rProduct;
-        }
-    }
+    //    if (product == null)
+    //    {
+    //        return null;
+    //    }
+    //    else
+    //    {
+    //        var rProduct = new Device
+    //        {
+    //            DeviceID = product.DeviceID,
+    //            OS = product.OS,
+    //            CustomerID = product.CustomerID
+    //        };
+    //        return rProduct;
+    //    }
+    //}
 
-    public double percProfitPerWeek(DateTime currenDate)
-    {
-        throw new NotImplementedException();
-    }
+  
 
-    public double totalProfitPerWeek(DateTime currentDate)
-    {
-        throw new NotImplementedException();
-    }
 
     //PROFIT MANAGEMENT-----------------------------------------------------------------
     public double totalProfitPerWeek(DateTime currenDate)

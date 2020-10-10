@@ -34,13 +34,10 @@ public interface IGP_Service
     int register(string name, string surname, string email, string password, string status, DateTime date, string userType);
 
     [OperationContract]
-    int addUserNumber(int id, string number);
-
-    [OperationContract]
     int removeUser(int id);
 
     [OperationContract]
-    int updateUserDetails(int id, string name, string surname, string email, string number);
+    int updateUserDetails(int id, string name, string surname, string email);
 
     [OperationContract]
     int updateUserAdmin(int userID, int points, string usertype, string status);
@@ -168,13 +165,22 @@ public interface IGP_Service
     //ADDRESS MANAGEMENT -------------------------------------------------------------
 
     [OperationContract]
-    Address getAddress(int Address_ID);
+    Address getAddress(int addID);
 
     [OperationContract]
-    int addAddress(string line1, string line2, string suburb, string city, int zip, string type, int C_ID, string Province);
+    List<Address> getUserAddresses(int userID);
 
     [OperationContract]
-    int updateAddress(string line1, string line2, string suburb, string city, string province, int zip, string type, int Cus_ID);
+    Address getPrimaryAddress(int userID);
+
+    [OperationContract]
+    int addAddress(string line1, string line2, string suburb, string city, int zip, string type, int C_ID, string Province, int primary, string number);
+
+    [OperationContract]
+    int updateAddress(string line1, string line2, string suburb, string city, string province, int zip, string type, int addID, int primary, string number);
+
+    [OperationContract]
+    int deleteAddress(int addressID);
 
     //CARD MANAGEMENT -------------------------------------------------------------
 
@@ -300,8 +306,8 @@ public interface IGP_Service
     int getProQtySold(int P_ID);
 
     //THE ALGORITHM -------------------------------------------------------------------------
-    [OperationContract]
-    List<Product> recommendedProducts(int userID);
+    //[OperationContract]
+    //List<Product> recommendedProducts(int userID);
 
     [OperationContract]
     List<recommended> recommendTest(int userID);

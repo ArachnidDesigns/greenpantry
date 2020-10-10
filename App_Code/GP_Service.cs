@@ -2783,30 +2783,30 @@ public class GP_Service : IGP_Service
 
     }
 
-    public Device getDevice(int device_ID)
-    {
-        var product = (from p in db.Devices
-                       where p.DeviceID.Equals(device_ID)
-                       select p).FirstOrDefault();
+    //public Device getDevice(int device_ID)
+    //{
+    //    var product = (from p in db.Devices
+    //                   where p.DeviceID.Equals(device_ID)
+    //                   select p).FirstOrDefault();
 
-        if (product == null)
-        {
-            return null;
-        }
-        else
-        {
-            var rProduct = new Device
-            {
-                DeviceID = product.DeviceID,
-                OS = product.OS,
-                CustomerID = product.CustomerID
-            };
-            return rProduct;
-        }
-    }
+    //    if (product == null)
+    //    {
+    //        return null;
+    //    }
+    //    else
+    //    {
+    //        var rProduct = new Device
+    //        {
+    //            DeviceID = product.DeviceID,
+    //            OS = product.OS,
+    //            CustomerID = product.CustomerID
+    //        };
+    //        return rProduct;
+    //    }
+    //}
 
   
-}
+
 
     //PROFIT MANAGEMENT-----------------------------------------------------------------
     public double totalProfitPerWeek(DateTime currenDate)

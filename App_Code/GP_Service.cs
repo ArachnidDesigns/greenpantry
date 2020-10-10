@@ -2138,6 +2138,10 @@ public class GP_Service : IGP_Service
         //int newTotal = newproductSales + TotalBefore;
         int StartingValue = TotalNow - newproductSales; //6-3 = 3
         int Difference = (TotalNow-StartingValue) * 100; //6-3 * 100 = 300
+        if(StartingValue ==0)
+        {
+            return Difference;
+        }
         double percentageChange = (Difference /StartingValue);//300/3 = 100
         return percentageChange;
     }
@@ -2430,25 +2434,34 @@ public class GP_Service : IGP_Service
 
     }
 
+    //public List<int> getbestperformingproducts()
+    //{
+    //    dynamic invoice = (from d in db.InvoiceLines
+    //                        orderby d.Qty
+    //                       select Count); 
+    //}
+
     public List<int> TopProducts()
     {
         dynamic product = (from t in db.InvoiceLines
                         where t != null
-                        group t by t.ProductID into grp
+                        group t by t.ProductID  into grp
                         orderby grp.Count() descending
                         select grp.Key);
 
         dynamic productList = new List<int>();
 
+        
         foreach (int inv in product)
         {
             productList.Add(inv);
+      
         }
-        dynamic topproducts = productList.GetRange(0, 5);
+        dynamic topproducts = productList.GetRange(0,5);
 
         return topproducts;
     }
-    public int getProQtySold (int P_ID)
+    public int getProQtySold(int P_ID)
     {
         dynamic product = (from p in db.InvoiceLines
                            where p.ProductID.Equals(P_ID)
@@ -2710,4 +2723,146 @@ public class GP_Service : IGP_Service
         List<recommended> SortedList = listRec.OrderByDescending(o => o.rating).ToList();
         return SortedList;
     }
+
+    
+
+    public List<int> WorstProducts()
+    {
+        dynamic product = (from t in db.InvoiceLines
+                           where t != null
+                           group t by t.ProductID into grp
+                           orderby grp.Count() ascending
+                           select grp.Key);
+
+        dynamic productList = new List<int>();
+
+        foreach (int inv in product)
+        {
+            productList.Add(inv);
+        }
+        dynamic topproducts = productList.GetRange(0, 5);
+
+        return topproducts;
+    }
+
+    public List<string> getAllDevices()
+    {               
+        dynamic devicelist = new List<string>();
+
+        dynamic device = (from d in db.Devices
+                          where d != null
+                          group d by d.OS into grp
+                          select grp.Key);
+       
+
+        if (device == null)
+        {
+            return null;
+        }
+        else
+        {
+            foreach (string pr in device)
+            {
+               devicelist.Add(pr);
+            }
+        }
+        return devicelist;
+    }
+
+    public int getTotOSUsers(string os)
+    {
+        dynamic device = (from d in db.Devices
+                           where d.OS.Equals(os)
+                           select d);
+        int Count = 0;
+        foreach (Device dev in device)
+        {    
+                Count += 1;   
+        }
+        return Count;
+
+    }
+
+    public Device getDevice(int device_ID)
+    {
+        var product = (from p in db.Devices
+                       where p.DeviceID.Equals(device_ID)
+                       select p).FirstOrDefault();
+
+        if (product == null)
+        {
+            return null;
+        }
+        else
+        {
+            var rProduct = new Device
+            {
+                DeviceID = product.DeviceID,
+                OS = product.OS,
+                CustomerID = product.CustomerID
+            };
+            return rProduct;
+        }
+    }
+
+  
+}
+
+    //PROFIT MANAGEMENT-----------------------------------------------------------------
+    public double totalProfitPerWeek(DateTime currenDate)
+    {
+        dynamic weekDates = getWeekDates(currenDate.Date);
+        dynamic sale = (from s in db.Invoices
+                        select s);
+        double totalProfitPerWeek = 0;
+        foreach(Invoice i in sale)
+        {
+            if(weekDates.Contains(i.Date))
+            {
+                dynamic invLines = getAllInvoiceLines(i.ID);
+                foreach(InvoiceLine inv in invLines)
+                {
+                    dynamic product = getProduct(inv.ProductID);
+                    totalProfitPerWeek += (inv.Price - product.Cost);
+                }
+               
+            }
+
+        }
+        return totalProfitPerWeek;
+    }
+
+    private double getAllProfit()
+    {
+        dynamic invoice = (from i in db.Invoices
+                           select i);
+        double totalProfit = 0;
+        foreach (Invoice i in invoice)
+        {
+                dynamic invLines = getAllInvoiceLines(i.ID);
+                foreach (InvoiceLine inv in invLines)
+                {
+                    dynamic product = getProduct(inv.ProductID);
+                    totalProfit += Convert.ToDouble(inv.Price - product.Cost);
+                }  
+        }
+        return totalProfit;
+
+    }
+
+    public double percProfitPerWeek(DateTime currenDate)
+    {
+        double NewProfit = getAllProfit();
+        double weeklyProfit = totalProfitPerWeek(currenDate);
+
+        double StartingValue = NewProfit - weeklyProfit;
+        double difference = (NewProfit - StartingValue) * 100;
+        if(StartingValue ==0)
+        {
+            return difference;
+        }
+        double percentageChange = (difference / StartingValue);//300/3 = 100
+        return percentageChange;
+    }
+
 }

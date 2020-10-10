@@ -311,4 +311,25 @@ public interface IGP_Service
 
     [OperationContract]
     List<recommended> recommendTest(int userID);
+
+    [OperationContract]
+    double percProfitPerWeek(DateTime currenDate);
+
+    [OperationContract]
+    double totalProfitPerWeek(DateTime currentDate);
+
+    [OperationContract]
+    List<string> getAllDevices();
+
+    [OperationContract]
+    int getTotOSUsers(string os);
+
+    [OperationContract]
+    List<int> WorstProducts();
+
+    
+
+
+
+
 }

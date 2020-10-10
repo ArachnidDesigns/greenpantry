@@ -171,10 +171,10 @@ public interface IGP_Service
     Address getAddress(int Address_ID);
 
     [OperationContract]
-    int addAddress(string line1, string line2, string suburb, string city, char billing, string type, int C_ID, string Province);
+    int addAddress(string line1, string line2, string suburb, string city, int zip, string type, int C_ID, string Province);
 
     [OperationContract]
-    int updateAddress(string line1, string line2, string suburb, string city, string province, char billing, string type, int Cus_ID);
+    int updateAddress(string line1, string line2, string suburb, string city, string province, int zip, string type, int Cus_ID);
 
     //CARD MANAGEMENT -------------------------------------------------------------
 

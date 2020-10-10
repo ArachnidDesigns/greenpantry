@@ -32,9 +32,6 @@ public partial class DataClassesDataContext : System.Data.Linq.DataContext
   partial void InsertCard(Card instance);
   partial void UpdateCard(Card instance);
   partial void DeleteCard(Card instance);
-  partial void InsertAddress(Address instance);
-  partial void UpdateAddress(Address instance);
-  partial void DeleteAddress(Address instance);
   partial void InsertInvoiceLine(InvoiceLine instance);
   partial void UpdateInvoiceLine(InvoiceLine instance);
   partial void DeleteInvoiceLine(InvoiceLine instance);
@@ -62,6 +59,9 @@ public partial class DataClassesDataContext : System.Data.Linq.DataContext
   partial void InsertUser(User instance);
   partial void UpdateUser(User instance);
   partial void DeleteUser(User instance);
+  partial void InsertAddress(Address instance);
+  partial void UpdateAddress(Address instance);
+  partial void DeleteAddress(Address instance);
   #endregion
 	
 	public DataClassesDataContext() : 
@@ -99,14 +99,6 @@ public partial class DataClassesDataContext : System.Data.Linq.DataContext
 		get
 		{
 			return this.GetTable<Card>();
-		}
-	}
-	
-	public System.Data.Linq.Table<Address> Addresses
-	{
-		get
-		{
-			return this.GetTable<Address>();
 		}
 	}
 	
@@ -179,6 +171,14 @@ public partial class DataClassesDataContext : System.Data.Linq.DataContext
 		get
 		{
 			return this.GetTable<User>();
+		}
+	}
+	
+	public System.Data.Linq.Table<Address> Addresses
+	{
+		get
+		{
+			return this.GetTable<Address>();
 		}
 	}
 }
@@ -374,301 +374,6 @@ public partial class Card : INotifyPropertyChanging, INotifyPropertyChanged
 				if ((value != null))
 				{
 					value.Cards.Add(this);
-					this._CustomerID = value.ID;
-				}
-				else
-				{
-					this._CustomerID = default(int);
-				}
-				this.SendPropertyChanged("User");
-			}
-		}
-	}
-	
-	public event PropertyChangingEventHandler PropertyChanging;
-	
-	public event PropertyChangedEventHandler PropertyChanged;
-	
-	protected virtual void SendPropertyChanging()
-	{
-		if ((this.PropertyChanging != null))
-		{
-			this.PropertyChanging(this, emptyChangingEventArgs);
-		}
-	}
-	
-	protected virtual void SendPropertyChanged(String propertyName)
-	{
-		if ((this.PropertyChanged != null))
-		{
-			this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
-	}
-}
-
-[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Address")]
-public partial class Address : INotifyPropertyChanging, INotifyPropertyChanged
-{
-	
-	private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-	
-	private int _ID;
-	
-	private string _Line1;
-	
-	private string _Line2;
-	
-	private string _Suburb;
-	
-	private string _City;
-	
-	private char _Billing;
-	
-	private string _Type;
-	
-	private int _CustomerID;
-	
-	private string _Province;
-	
-	private EntityRef<User> _User;
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnIDChanging(int value);
-    partial void OnIDChanged();
-    partial void OnLine1Changing(string value);
-    partial void OnLine1Changed();
-    partial void OnLine2Changing(string value);
-    partial void OnLine2Changed();
-    partial void OnSuburbChanging(string value);
-    partial void OnSuburbChanged();
-    partial void OnCityChanging(string value);
-    partial void OnCityChanged();
-    partial void OnBillingChanging(char value);
-    partial void OnBillingChanged();
-    partial void OnTypeChanging(string value);
-    partial void OnTypeChanged();
-    partial void OnCustomerIDChanging(int value);
-    partial void OnCustomerIDChanged();
-    partial void OnProvinceChanging(string value);
-    partial void OnProvinceChanged();
-    #endregion
-	
-	public Address()
-	{
-		this._User = default(EntityRef<User>);
-		OnCreated();
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-	public int ID
-	{
-		get
-		{
-			return this._ID;
-		}
-		set
-		{
-			if ((this._ID != value))
-			{
-				this.OnIDChanging(value);
-				this.SendPropertyChanging();
-				this._ID = value;
-				this.SendPropertyChanged("ID");
-				this.OnIDChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Line1", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-	public string Line1
-	{
-		get
-		{
-			return this._Line1;
-		}
-		set
-		{
-			if ((this._Line1 != value))
-			{
-				this.OnLine1Changing(value);
-				this.SendPropertyChanging();
-				this._Line1 = value;
-				this.SendPropertyChanged("Line1");
-				this.OnLine1Changed();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Line2", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-	public string Line2
-	{
-		get
-		{
-			return this._Line2;
-		}
-		set
-		{
-			if ((this._Line2 != value))
-			{
-				this.OnLine2Changing(value);
-				this.SendPropertyChanging();
-				this._Line2 = value;
-				this.SendPropertyChanged("Line2");
-				this.OnLine2Changed();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Suburb", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-	public string Suburb
-	{
-		get
-		{
-			return this._Suburb;
-		}
-		set
-		{
-			if ((this._Suburb != value))
-			{
-				this.OnSuburbChanging(value);
-				this.SendPropertyChanging();
-				this._Suburb = value;
-				this.SendPropertyChanged("Suburb");
-				this.OnSuburbChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_City", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-	public string City
-	{
-		get
-		{
-			return this._City;
-		}
-		set
-		{
-			if ((this._City != value))
-			{
-				this.OnCityChanging(value);
-				this.SendPropertyChanging();
-				this._City = value;
-				this.SendPropertyChanged("City");
-				this.OnCityChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Billing", DbType="Char(1) NOT NULL")]
-	public char Billing
-	{
-		get
-		{
-			return this._Billing;
-		}
-		set
-		{
-			if ((this._Billing != value))
-			{
-				this.OnBillingChanging(value);
-				this.SendPropertyChanging();
-				this._Billing = value;
-				this.SendPropertyChanged("Billing");
-				this.OnBillingChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Type", DbType="VarChar(25) NOT NULL", CanBeNull=false)]
-	public string Type
-	{
-		get
-		{
-			return this._Type;
-		}
-		set
-		{
-			if ((this._Type != value))
-			{
-				this.OnTypeChanging(value);
-				this.SendPropertyChanging();
-				this._Type = value;
-				this.SendPropertyChanged("Type");
-				this.OnTypeChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CustomerID", DbType="Int NOT NULL")]
-	public int CustomerID
-	{
-		get
-		{
-			return this._CustomerID;
-		}
-		set
-		{
-			if ((this._CustomerID != value))
-			{
-				if (this._User.HasLoadedOrAssignedValue)
-				{
-					throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				}
-				this.OnCustomerIDChanging(value);
-				this.SendPropertyChanging();
-				this._CustomerID = value;
-				this.SendPropertyChanged("CustomerID");
-				this.OnCustomerIDChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Province", DbType="VarChar(MAX) NOT NULL", CanBeNull=false)]
-	public string Province
-	{
-		get
-		{
-			return this._Province;
-		}
-		set
-		{
-			if ((this._Province != value))
-			{
-				this.OnProvinceChanging(value);
-				this.SendPropertyChanging();
-				this._Province = value;
-				this.SendPropertyChanged("Province");
-				this.OnProvinceChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_Address", Storage="_User", ThisKey="CustomerID", OtherKey="ID", IsForeignKey=true)]
-	public User User
-	{
-		get
-		{
-			return this._User.Entity;
-		}
-		set
-		{
-			User previousValue = this._User.Entity;
-			if (((previousValue != value) 
-						|| (this._User.HasLoadedOrAssignedValue == false)))
-			{
-				this.SendPropertyChanging();
-				if ((previousValue != null))
-				{
-					this._User.Entity = null;
-					previousValue.Addresses.Remove(this);
-				}
-				this._User.Entity = value;
-				if ((value != null))
-				{
-					value.Addresses.Add(this);
 					this._CustomerID = value.ID;
 				}
 				else
@@ -2461,13 +2166,13 @@ public partial class User : INotifyPropertyChanging, INotifyPropertyChanged
 	
 	private EntitySet<Card> _Cards;
 	
-	private EntitySet<Address> _Addresses;
-	
 	private EntitySet<Invoice> _Invoices;
 	
 	private EntitySet<ShoppingList> _ShoppingLists;
 	
 	private EntitySet<Device> _Devices;
+	
+	private EntitySet<Address> _Addresses;
 	
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -2498,10 +2203,10 @@ public partial class User : INotifyPropertyChanging, INotifyPropertyChanged
 	public User()
 	{
 		this._Cards = new EntitySet<Card>(new Action<Card>(this.attach_Cards), new Action<Card>(this.detach_Cards));
-		this._Addresses = new EntitySet<Address>(new Action<Address>(this.attach_Addresses), new Action<Address>(this.detach_Addresses));
 		this._Invoices = new EntitySet<Invoice>(new Action<Invoice>(this.attach_Invoices), new Action<Invoice>(this.detach_Invoices));
 		this._ShoppingLists = new EntitySet<ShoppingList>(new Action<ShoppingList>(this.attach_ShoppingLists), new Action<ShoppingList>(this.detach_ShoppingLists));
 		this._Devices = new EntitySet<Device>(new Action<Device>(this.attach_Devices), new Action<Device>(this.detach_Devices));
+		this._Addresses = new EntitySet<Address>(new Action<Address>(this.attach_Addresses), new Action<Address>(this.detach_Addresses));
 		OnCreated();
 	}
 	
@@ -2718,19 +2423,6 @@ public partial class User : INotifyPropertyChanging, INotifyPropertyChanged
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_Address", Storage="_Addresses", ThisKey="ID", OtherKey="CustomerID")]
-	public EntitySet<Address> Addresses
-	{
-		get
-		{
-			return this._Addresses;
-		}
-		set
-		{
-			this._Addresses.Assign(value);
-		}
-	}
-	
 	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_Invoice", Storage="_Invoices", ThisKey="ID", OtherKey="CustomerID")]
 	public EntitySet<Invoice> Invoices
 	{
@@ -2770,6 +2462,19 @@ public partial class User : INotifyPropertyChanging, INotifyPropertyChanged
 		}
 	}
 	
+	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_Address", Storage="_Addresses", ThisKey="ID", OtherKey="CustomerID")]
+	public EntitySet<Address> Addresses
+	{
+		get
+		{
+			return this._Addresses;
+		}
+		set
+		{
+			this._Addresses.Assign(value);
+		}
+	}
+	
 	public event PropertyChangingEventHandler PropertyChanging;
 	
 	public event PropertyChangedEventHandler PropertyChanged;
@@ -2797,18 +2502,6 @@ public partial class User : INotifyPropertyChanging, INotifyPropertyChanged
 	}
 	
 	private void detach_Cards(Card entity)
-	{
-		this.SendPropertyChanging();
-		entity.User = null;
-	}
-	
-	private void attach_Addresses(Address entity)
-	{
-		this.SendPropertyChanging();
-		entity.User = this;
-	}
-	
-	private void detach_Addresses(Address entity)
 	{
 		this.SendPropertyChanging();
 		entity.User = null;
@@ -2848,6 +2541,313 @@ public partial class User : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		this.SendPropertyChanging();
 		entity.User = null;
+	}
+	
+	private void attach_Addresses(Address entity)
+	{
+		this.SendPropertyChanging();
+		entity.User = this;
+	}
+	
+	private void detach_Addresses(Address entity)
+	{
+		this.SendPropertyChanging();
+		entity.User = null;
+	}
+}
+
+[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Address")]
+public partial class Address : INotifyPropertyChanging, INotifyPropertyChanged
+{
+	
+	private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+	
+	private int _ID;
+	
+	private string _Line1;
+	
+	private string _Line2;
+	
+	private string _Suburb;
+	
+	private string _City;
+	
+	private System.Nullable<int> _Zip;
+	
+	private string _Type;
+	
+	private int _CustomerID;
+	
+	private string _Province;
+	
+	private EntityRef<User> _User;
+	
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIDChanging(int value);
+    partial void OnIDChanged();
+    partial void OnLine1Changing(string value);
+    partial void OnLine1Changed();
+    partial void OnLine2Changing(string value);
+    partial void OnLine2Changed();
+    partial void OnSuburbChanging(string value);
+    partial void OnSuburbChanged();
+    partial void OnCityChanging(string value);
+    partial void OnCityChanged();
+    partial void OnZipChanging(System.Nullable<int> value);
+    partial void OnZipChanged();
+    partial void OnTypeChanging(string value);
+    partial void OnTypeChanged();
+    partial void OnCustomerIDChanging(int value);
+    partial void OnCustomerIDChanged();
+    partial void OnProvinceChanging(string value);
+    partial void OnProvinceChanged();
+    #endregion
+	
+	public Address()
+	{
+		this._User = default(EntityRef<User>);
+		OnCreated();
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+	public int ID
+	{
+		get
+		{
+			return this._ID;
+		}
+		set
+		{
+			if ((this._ID != value))
+			{
+				this.OnIDChanging(value);
+				this.SendPropertyChanging();
+				this._ID = value;
+				this.SendPropertyChanged("ID");
+				this.OnIDChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Line1", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+	public string Line1
+	{
+		get
+		{
+			return this._Line1;
+		}
+		set
+		{
+			if ((this._Line1 != value))
+			{
+				this.OnLine1Changing(value);
+				this.SendPropertyChanging();
+				this._Line1 = value;
+				this.SendPropertyChanged("Line1");
+				this.OnLine1Changed();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Line2", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+	public string Line2
+	{
+		get
+		{
+			return this._Line2;
+		}
+		set
+		{
+			if ((this._Line2 != value))
+			{
+				this.OnLine2Changing(value);
+				this.SendPropertyChanging();
+				this._Line2 = value;
+				this.SendPropertyChanged("Line2");
+				this.OnLine2Changed();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Suburb", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+	public string Suburb
+	{
+		get
+		{
+			return this._Suburb;
+		}
+		set
+		{
+			if ((this._Suburb != value))
+			{
+				this.OnSuburbChanging(value);
+				this.SendPropertyChanging();
+				this._Suburb = value;
+				this.SendPropertyChanged("Suburb");
+				this.OnSuburbChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_City", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+	public string City
+	{
+		get
+		{
+			return this._City;
+		}
+		set
+		{
+			if ((this._City != value))
+			{
+				this.OnCityChanging(value);
+				this.SendPropertyChanging();
+				this._City = value;
+				this.SendPropertyChanged("City");
+				this.OnCityChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Zip", DbType="Int")]
+	public System.Nullable<int> Zip
+	{
+		get
+		{
+			return this._Zip;
+		}
+		set
+		{
+			if ((this._Zip != value))
+			{
+				this.OnZipChanging(value);
+				this.SendPropertyChanging();
+				this._Zip = value;
+				this.SendPropertyChanged("Zip");
+				this.OnZipChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Type", DbType="VarChar(25) NOT NULL", CanBeNull=false)]
+	public string Type
+	{
+		get
+		{
+			return this._Type;
+		}
+		set
+		{
+			if ((this._Type != value))
+			{
+				this.OnTypeChanging(value);
+				this.SendPropertyChanging();
+				this._Type = value;
+				this.SendPropertyChanged("Type");
+				this.OnTypeChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CustomerID", DbType="Int NOT NULL")]
+	public int CustomerID
+	{
+		get
+		{
+			return this._CustomerID;
+		}
+		set
+		{
+			if ((this._CustomerID != value))
+			{
+				if (this._User.HasLoadedOrAssignedValue)
+				{
+					throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+				}
+				this.OnCustomerIDChanging(value);
+				this.SendPropertyChanging();
+				this._CustomerID = value;
+				this.SendPropertyChanged("CustomerID");
+				this.OnCustomerIDChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Province", DbType="VarChar(MAX) NOT NULL", CanBeNull=false)]
+	public string Province
+	{
+		get
+		{
+			return this._Province;
+		}
+		set
+		{
+			if ((this._Province != value))
+			{
+				this.OnProvinceChanging(value);
+				this.SendPropertyChanging();
+				this._Province = value;
+				this.SendPropertyChanged("Province");
+				this.OnProvinceChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_Address", Storage="_User", ThisKey="CustomerID", OtherKey="ID", IsForeignKey=true)]
+	public User User
+	{
+		get
+		{
+			return this._User.Entity;
+		}
+		set
+		{
+			User previousValue = this._User.Entity;
+			if (((previousValue != value) 
+						|| (this._User.HasLoadedOrAssignedValue == false)))
+			{
+				this.SendPropertyChanging();
+				if ((previousValue != null))
+				{
+					this._User.Entity = null;
+					previousValue.Addresses.Remove(this);
+				}
+				this._User.Entity = value;
+				if ((value != null))
+				{
+					value.Addresses.Add(this);
+					this._CustomerID = value.ID;
+				}
+				else
+				{
+					this._CustomerID = default(int);
+				}
+				this.SendPropertyChanged("User");
+			}
+		}
+	}
+	
+	public event PropertyChangingEventHandler PropertyChanging;
+	
+	public event PropertyChangedEventHandler PropertyChanged;
+	
+	protected virtual void SendPropertyChanging()
+	{
+		if ((this.PropertyChanging != null))
+		{
+			this.PropertyChanging(this, emptyChangingEventArgs);
+		}
+	}
+	
+	protected virtual void SendPropertyChanged(String propertyName)
+	{
+		if ((this.PropertyChanged != null))
+		{
+			this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+		}
 	}
 }
 #pragma warning restore 1591

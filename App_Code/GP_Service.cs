@@ -2219,15 +2219,15 @@ public class GP_Service : IGP_Service
     {
         dynamic page = (from t in db.Traffics
                         where t!=null
-                        group t by t into grp
+                        group t by t.PageName into grp
                         orderby grp.Count() descending
                         select grp.Key);
 
         dynamic pageList = new List<String>();
         
-        foreach(Traffic p in page)
+        foreach(String p in page)
         {
-            pageList.Add(p.PageName);
+            pageList.Add(p);
         }
         dynamic topPages = pageList.GetRange(0,5);
 

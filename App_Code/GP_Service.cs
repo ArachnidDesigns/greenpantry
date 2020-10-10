@@ -2719,8 +2719,15 @@ public class GP_Service : IGP_Service
         }
     }
 
-  
-}
+    public double percProfitPerWeek(DateTime currenDate)
+    {
+        throw new NotImplementedException();
+    }
+
+    public double totalProfitPerWeek(DateTime currentDate)
+    {
+        throw new NotImplementedException();
+    }
 
     //PROFIT MANAGEMENT-----------------------------------------------------------------
     public double totalProfitPerWeek(DateTime currenDate)

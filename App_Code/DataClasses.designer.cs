@@ -2154,8 +2154,6 @@ public partial class User : INotifyPropertyChanging, INotifyPropertyChanged
 	
 	private string _Password;
 	
-	private string _PhoneNumber;
-	
 	private string _Status;
 	
 	private System.DateTime _DateRegistered;
@@ -2188,8 +2186,6 @@ public partial class User : INotifyPropertyChanging, INotifyPropertyChanged
     partial void OnEmailChanged();
     partial void OnPasswordChanging(string value);
     partial void OnPasswordChanged();
-    partial void OnPhoneNumberChanging(string value);
-    partial void OnPhoneNumberChanged();
     partial void OnStatusChanging(string value);
     partial void OnStatusChanged();
     partial void OnDateRegisteredChanging(System.DateTime value);
@@ -2306,26 +2302,6 @@ public partial class User : INotifyPropertyChanging, INotifyPropertyChanged
 				this._Password = value;
 				this.SendPropertyChanged("Password");
 				this.OnPasswordChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PhoneNumber", DbType="Char(10)")]
-	public string PhoneNumber
-	{
-		get
-		{
-			return this._PhoneNumber;
-		}
-		set
-		{
-			if ((this._PhoneNumber != value))
-			{
-				this.OnPhoneNumberChanging(value);
-				this.SendPropertyChanging();
-				this._PhoneNumber = value;
-				this.SendPropertyChanged("PhoneNumber");
-				this.OnPhoneNumberChanged();
 			}
 		}
 	}
@@ -2572,13 +2548,17 @@ public partial class Address : INotifyPropertyChanging, INotifyPropertyChanged
 	
 	private string _City;
 	
-	private System.Nullable<int> _Zip;
+	private int _Zip;
 	
 	private string _Type;
 	
 	private int _CustomerID;
 	
 	private string _Province;
+	
+	private string _Number;
+	
+	private int _Primary;
 	
 	private EntityRef<User> _User;
 	
@@ -2596,7 +2576,7 @@ public partial class Address : INotifyPropertyChanging, INotifyPropertyChanged
     partial void OnSuburbChanged();
     partial void OnCityChanging(string value);
     partial void OnCityChanged();
-    partial void OnZipChanging(System.Nullable<int> value);
+    partial void OnZipChanging(int value);
     partial void OnZipChanged();
     partial void OnTypeChanging(string value);
     partial void OnTypeChanged();
@@ -2604,6 +2584,10 @@ public partial class Address : INotifyPropertyChanging, INotifyPropertyChanged
     partial void OnCustomerIDChanged();
     partial void OnProvinceChanging(string value);
     partial void OnProvinceChanged();
+    partial void OnNumberChanging(string value);
+    partial void OnNumberChanged();
+    partial void OnPrimaryChanging(int value);
+    partial void OnPrimaryChanged();
     #endregion
 	
 	public Address()
@@ -2652,7 +2636,7 @@ public partial class Address : INotifyPropertyChanging, INotifyPropertyChanged
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Line2", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Line2", DbType="VarChar(50)")]
 	public string Line2
 	{
 		get
@@ -2712,8 +2696,8 @@ public partial class Address : INotifyPropertyChanging, INotifyPropertyChanged
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Zip", DbType="Int")]
-	public System.Nullable<int> Zip
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Zip", DbType="Int NOT NULL")]
+	public int Zip
 	{
 		get
 		{
@@ -2792,6 +2776,46 @@ public partial class Address : INotifyPropertyChanging, INotifyPropertyChanged
 				this._Province = value;
 				this.SendPropertyChanged("Province");
 				this.OnProvinceChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Number", DbType="Char(10) NOT NULL", CanBeNull=false)]
+	public string Number
+	{
+		get
+		{
+			return this._Number;
+		}
+		set
+		{
+			if ((this._Number != value))
+			{
+				this.OnNumberChanging(value);
+				this.SendPropertyChanging();
+				this._Number = value;
+				this.SendPropertyChanged("Number");
+				this.OnNumberChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Name="[Primary]", Storage="_Primary", DbType="Int NOT NULL")]
+	public int Primary
+	{
+		get
+		{
+			return this._Primary;
+		}
+		set
+		{
+			if ((this._Primary != value))
+			{
+				this.OnPrimaryChanging(value);
+				this.SendPropertyChanging();
+				this._Primary = value;
+				this.SendPropertyChanged("Primary");
+				this.OnPrimaryChanged();
 			}
 		}
 	}

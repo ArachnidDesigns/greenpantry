@@ -11,20 +11,6 @@
       <Association Name="User_Card" Member="User" ThisKey="CustomerID" OtherKey="ID" Type="User" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.Address" Member="Addresses">
-    <Type Name="Address">
-      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Line1" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="Line2" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="Suburb" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="City" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="Billing" Type="System.Char" DbType="Char(1) NOT NULL" CanBeNull="false" />
-      <Column Name="Type" Type="System.String" DbType="VarChar(25) NOT NULL" CanBeNull="false" />
-      <Column Name="CustomerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Province" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
-      <Association Name="User_Address" Member="User" ThisKey="CustomerID" OtherKey="ID" Type="User" IsForeignKey="true" />
-    </Type>
-  </Table>
   <Table Name="dbo.InvoiceLine" Member="InvoiceLines">
     <Type Name="InvoiceLine">
       <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -34,25 +20,6 @@
       <Column Name="Price" Type="System.Decimal" DbType="Money" CanBeNull="true" />
       <Association Name="Invoice_InvoiceLine" Member="Invoice" ThisKey="InvoiceID" OtherKey="ID" Type="Invoice" IsForeignKey="true" />
       <Association Name="Product_InvoiceLine" Member="Product" ThisKey="ProductID" OtherKey="ID" Type="Product" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.[User]" Member="Users">
-    <Type Name="User">
-      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="Surname" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="Email" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="Password" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
-      <Column Name="PhoneNumber" Type="System.String" DbType="Char(10)" CanBeNull="true" />
-      <Column Name="Status" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
-      <Column Name="DateRegistered" Type="System.DateTime" DbType="Date" CanBeNull="true" />
-      <Column Name="UserType" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="Points" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="User_Card" Member="Cards" ThisKey="ID" OtherKey="CustomerID" Type="Card" />
-      <Association Name="User_Address" Member="Addresses" ThisKey="ID" OtherKey="CustomerID" Type="Address" />
-      <Association Name="User_Invoice" Member="Invoices" ThisKey="ID" OtherKey="CustomerID" Type="Invoice" />
-      <Association Name="User_ShoppingList" Member="ShoppingLists" ThisKey="ID" OtherKey="UserID" Type="ShoppingList" />
-      <Association Name="User_Device" Member="Devices" ThisKey="ID" OtherKey="CustomerID" Type="Device" />
     </Type>
   </Table>
   <Table Name="dbo.Invoice" Member="Invoices">
@@ -93,8 +60,8 @@
       <Column Name="UserID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="ProductID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Quantity" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="User_ShoppingList" Member="User" ThisKey="UserID" OtherKey="ID" Type="User" IsForeignKey="true" />
       <Association Name="Product_ShoppingList" Member="Product" ThisKey="ProductID" OtherKey="ID" Type="Product" IsForeignKey="true" />
+      <Association Name="User_ShoppingList" Member="User" ThisKey="UserID" OtherKey="ID" Type="User" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.Traffic" Member="Traffics">
@@ -127,6 +94,39 @@
       <Column Name="OS" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
       <Column Name="CustomerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Association Name="User_Device" Member="User" ThisKey="CustomerID" OtherKey="ID" Type="User" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.[User]" Member="Users">
+    <Type Name="User">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Surname" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Email" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Password" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="PhoneNumber" Type="System.String" DbType="Char(10)" CanBeNull="true" />
+      <Column Name="Status" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="DateRegistered" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="UserType" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Points" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="User_Card" Member="Cards" ThisKey="ID" OtherKey="CustomerID" Type="Card" />
+      <Association Name="User_Invoice" Member="Invoices" ThisKey="ID" OtherKey="CustomerID" Type="Invoice" />
+      <Association Name="User_ShoppingList" Member="ShoppingLists" ThisKey="ID" OtherKey="UserID" Type="ShoppingList" />
+      <Association Name="User_Device" Member="Devices" ThisKey="ID" OtherKey="CustomerID" Type="Device" />
+      <Association Name="User_Address" Member="Addresses" ThisKey="ID" OtherKey="CustomerID" Type="Address" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Address" Member="Addresses">
+    <Type Name="Address">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Line1" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Line2" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Suburb" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="City" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Zip" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Type" Type="System.String" DbType="VarChar(25) NOT NULL" CanBeNull="false" />
+      <Column Name="CustomerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Province" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Association Name="User_Address" Member="User" ThisKey="CustomerID" OtherKey="ID" Type="User" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

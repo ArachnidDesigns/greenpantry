@@ -305,4 +305,11 @@ public interface IGP_Service
 
     [OperationContract]
     List<recommended> recommendTest(int userID);
+
+    [OperationContract]
+    double percProfitPerWeek(DateTime currenDate);
+
+    [OperationContract]
+    double totalProfitPerWeek(DateTime currentDate);
+
 }

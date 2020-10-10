@@ -43,10 +43,16 @@ public interface IGP_Service
     int updateUserDetails(int id, string name, string surname, string email, string number);
 
     [OperationContract]
+    int updateUserAdmin(int userID, int points, string usertype, string status);
+
+    [OperationContract]
     int updatePassword(int id, string oldPassword, string newPassword);
 
     [OperationContract]
     User getUser(int User_ID);
+
+    [OperationContract]
+    List<User> getAllUsers();
 
     [OperationContract]
     int getNumUsers();
@@ -142,6 +148,9 @@ public interface IGP_Service
     [OperationContract]
     List<InvoiceLine> getAllInvoiceLines(int InvoiceID);
 
+    [OperationContract]
+    int addInvoiceLine(int product_ID, int invoice_ID, int quantity, decimal price);
+
     //SHOPPING LIST MANAGEMENT ---------------------------------------------------------
 
     [OperationContract]
@@ -165,7 +174,7 @@ public interface IGP_Service
     int addAddress(string line1, string line2, string suburb, string city, char billing, string type, int C_ID, string Province);
 
     [OperationContract]
-    int updateAddress(int A_ID, string line1, string line2, string suburb, string city, char billing, string type, int Cus_ID);
+    int updateAddress(string line1, string line2, string suburb, string city, string province, char billing, string type, int Cus_ID);
 
     //CARD MANAGEMENT -------------------------------------------------------------
 
@@ -181,7 +190,7 @@ public interface IGP_Service
     //DEVICE MANAGEMENT -------------------------------------------------------------
 
     [OperationContract]
-    Device getDevice(int D_ID);
+    Device getDevice(int userID);
 
     [OperationContract]
     int addDevices(int cust_ID, string useragent);
@@ -204,13 +213,13 @@ public interface IGP_Service
     double profitPerCat(int C_ID);
 
     [OperationContract]
+    decimal calcProfitPerday(DateTime date);
+
+    [OperationContract]
     decimal calcProductVAT(int P_ID);
 
     [OperationContract]
     int getNumProductsInSub(int subID);
-
-    [OperationContract]
-    int addInvoiceLine(int product_ID, int invoice_ID, int quantity, decimal price);
 
     [OperationContract]
     int usersperWeek(DateTime currentDate);
@@ -290,4 +299,10 @@ public interface IGP_Service
     [OperationContract]
     int getProQtySold(int P_ID);
 
+    //THE ALGORITHM -------------------------------------------------------------------------
+    [OperationContract]
+    List<Product> recommendedProducts(int userID);
+
+    [OperationContract]
+    List<recommended> recommendTest(int userID);
 }

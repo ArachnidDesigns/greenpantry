@@ -372,7 +372,7 @@ public class GP_Service : IGP_Service
                 ID = Addressinfo.ID,
                 CustomerID = Addressinfo.CustomerID,
                 Type = Addressinfo.Type,
-                Billing = Addressinfo.Billing,
+                Zip = Addressinfo.Zip,
                 Line1 = Addressinfo.Line1,
                 Line2 = Addressinfo.Line2,
                 Suburb = Addressinfo.Suburb,
@@ -383,7 +383,7 @@ public class GP_Service : IGP_Service
         }
     }
     //method used to add a new address into the database
-    public int addAddress(string line1, string line2, string suburb, string city, char billing, string type, int C_ID, string Province)
+    public int addAddress(string line1, string line2, string suburb, string city, int zip, string type, int C_ID, string Province)
     {
         var newAddress = new Address
         {
@@ -391,7 +391,7 @@ public class GP_Service : IGP_Service
             Line2 = line2,
             Suburb = suburb,
             City = city,
-            Billing = billing,
+            Zip = zip,
             Type = type,
             CustomerID = C_ID,
             Province = Province
@@ -411,7 +411,7 @@ public class GP_Service : IGP_Service
     }
 
     //method used to update the address
-    public int updateAddress(string line1, string line2, string suburb, string city, string province, char billing, string type, int Cus_ID)
+    public int updateAddress(string line1, string line2, string suburb, string city, string province, int zip, string type, int Cus_ID)
     {
         var address = (from ad in db.Addresses
                            where ad.CustomerID.Equals(Cus_ID)
@@ -428,7 +428,7 @@ public class GP_Service : IGP_Service
             address.Suburb = suburb;
             address.City = city;
             address.Province = province;
-            address.Billing = billing;
+            address.Zip = zip;
             address.Type = type;
 
             try
@@ -2354,25 +2354,34 @@ public class GP_Service : IGP_Service
 
     }
 
+    //public List<int> getbestperformingproducts()
+    //{
+    //    dynamic invoice = (from d in db.InvoiceLines
+    //                        orderby d.Qty
+    //                       select Count); 
+    //}
+
     public List<int> TopProducts()
     {
         dynamic product = (from t in db.InvoiceLines
                         where t != null
-                        group t by t.ProductID into grp
+                        group t by t.ProductID  into grp
                         orderby grp.Count() descending
                         select grp.Key);
 
         dynamic productList = new List<int>();
 
+        
         foreach (int inv in product)
         {
             productList.Add(inv);
+      
         }
-        dynamic topproducts = productList.GetRange(0, 5);
+        dynamic topproducts = productList.GetRange(0,5);
 
         return topproducts;
     }
-    public int getProQtySold (int P_ID)
+    public int getProQtySold(int P_ID)
     {
         dynamic product = (from p in db.InvoiceLines
                            where p.ProductID.Equals(P_ID)
@@ -2628,6 +2637,90 @@ public class GP_Service : IGP_Service
         List<recommended> SortedList = listRec.OrderByDescending(o => o.rating).ToList();
         return SortedList;
     }
+
+    
+
+    public List<int> WorstProducts()
+    {
+        dynamic product = (from t in db.InvoiceLines
+                           where t != null
+                           group t by t.ProductID into grp
+                           orderby grp.Count() ascending
+                           select grp.Key);
+
+        dynamic productList = new List<int>();
+
+        foreach (int inv in product)
+        {
+            productList.Add(inv);
+        }
+        dynamic topproducts = productList.GetRange(0, 5);
+
+        return topproducts;
+    }
+
+    public List<string> getAllDevices()
+    {               
+        dynamic devicelist = new List<string>();
+
+        dynamic device = (from d in db.Devices
+                          where d != null
+                          group d by d.OS into grp
+                          select grp.Key);
+       
+
+        if (device == null)
+        {
+            return null;
+        }
+        else
+        {
+            foreach (string pr in device)
+            {
+               devicelist.Add(pr);
+            }
+        }
+        return devicelist;
+    }
+
+    public int getTotOSUsers(string os)
+    {
+        dynamic device = (from d in db.Devices
+                           where d.OS.Equals(os)
+                           select d);
+        int Count = 0;
+        foreach (Device dev in device)
+        {    
+                Count += 1;   
+        }
+        return Count;
+
+    }
+
+    public Device getDevice(int device_ID)
+    {
+        var product = (from p in db.Devices
+                       where p.DeviceID.Equals(device_ID)
+                       select p).FirstOrDefault();
+
+        if (product == null)
+        {
+            return null;
+        }
+        else
+        {
+            var rProduct = new Device
+            {
+                DeviceID = product.DeviceID,
+                OS = product.OS,
+                CustomerID = product.CustomerID
+            };
+            return rProduct;
+        }
+    }
+
+  
+}
 
     //PROFIT MANAGEMENT-----------------------------------------------------------------
     public double totalProfitPerWeek(DateTime currenDate)

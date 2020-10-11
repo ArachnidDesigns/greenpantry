@@ -2772,41 +2772,16 @@ public class GP_Service : IGP_Service
     public int getTotOSUsers(string os)
     {
         dynamic device = (from d in db.Devices
-                           where d.OS.Equals(os)
-                           select d);
+                          where d.OS.Equals(os)
+                          select d);
         int Count = 0;
         foreach (Device dev in device)
-        {    
-                Count += 1;   
+        {
+            Count += 1;
         }
         return Count;
 
     }
-
-    public Device getDevice(int device_ID)
-    {
-        var product = (from p in db.Devices
-                       where p.DeviceID.Equals(device_ID)
-                       select p).FirstOrDefault();
-
-        if (product == null)
-        {
-            return null;
-        }
-        else
-        {
-            var rProduct = new Device
-            {
-                DeviceID = product.DeviceID,
-                OS = product.OS,
-                CustomerID = product.CustomerID
-            };
-            return rProduct;
-        }
-    }
-
-  
-}
 
     //PROFIT MANAGEMENT-----------------------------------------------------------------
     public double totalProfitPerWeek(DateTime currenDate)
@@ -2825,9 +2800,7 @@ public class GP_Service : IGP_Service
                     dynamic product = getProduct(inv.ProductID);
                     totalProfitPerWeek += (inv.Price - product.Cost);
                 }
-               
             }
-
         }
         return totalProfitPerWeek;
     }

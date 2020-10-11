@@ -2798,7 +2798,7 @@ public class GP_Service : IGP_Service
                 foreach(InvoiceLine inv in invLines)
                 {
                     dynamic product = getProduct(inv.ProductID);
-                    totalProfitPerWeek += (inv.Price - product.Cost);
+                    totalProfitPerWeek += Convert.ToDouble(inv.Price - product.Cost);
                 }
             }
         }

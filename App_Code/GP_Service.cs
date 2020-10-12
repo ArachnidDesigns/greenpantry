@@ -737,7 +737,10 @@ public class GP_Service : IGP_Service
     //Update stock per product
     public int updateStock(int P_ID, int ItemsPurchased)
     {
-        var product = getProduct(P_ID);
+        var product = (from p in db.Products
+                       where p.ID.Equals(P_ID)
+                       select p).FirstOrDefault();
+
         if (product == null)
         {
             return 0;
@@ -745,7 +748,7 @@ public class GP_Service : IGP_Service
         else
         {
             //Subtract the items purchased from the stock of the particular product
-            product.StockOnHand -= ItemsPurchased;
+            product.StockOnHand = product.StockOnHand - ItemsPurchased;
             try
             {
                 db.SubmitChanges();
@@ -1282,7 +1285,7 @@ public class GP_Service : IGP_Service
             {
                 //successfully submitted
                 db.SubmitChanges();
-                return 1;
+                return newInvoice.ID;
             }
             catch (Exception ex)
             {
@@ -1359,11 +1362,10 @@ public class GP_Service : IGP_Service
                     Points = ord.Points,
                     Total = ord.Total
                 };
-            ordersList.Add(newOrder);
+                ordersList.Add(newOrder);
             }
-            return ordersList;
         }
-       
+        return ordersList;
     }
 
     //Get invoice by UserID
@@ -2631,7 +2633,7 @@ public class GP_Service : IGP_Service
                             double location = 0;
                             //YES so is this user similar to us?
                             dynamic userAddress = getPrimaryAddress(u.ID);
-                            if (userAddress != null)
+                            if (userAddress != null && ourAddress != null)
                             {
                                  
                                 int province = 0;
@@ -2671,32 +2673,35 @@ public class GP_Service : IGP_Service
             }
 
             dynamic ourInvoices = getAllCustomerInvoices(userID);
-            foreach (Invoice i in ourInvoices)
+            if (ourInvoices != null)
             {
-                dynamic ourLines = getAllInvoiceLines(i.ID);
-                foreach (InvoiceLine il in ourLines)
+                foreach (Invoice i in ourInvoices)
                 {
-                    if (p.ID.Equals(il.ProductID))
+                    dynamic ourLines = getAllInvoiceLines(i.ID);
+                    foreach (InvoiceLine il in ourLines)
                     {
-                        //YES 
-                        productSimilar = (1 * 0.5);
-                    }
+                        if (p.ID.Equals(il.ProductID))
+                        {
+                            //YES 
+                            productSimilar = (1 * 0.5);
+                        }
 
-                    //have I bought from this category before?
-                    dynamic ourCat = getCategorybyProductID(il.ProductID);
-                    dynamic cat = getCategorybyProductID(p.ID);
-                    if (ourCat.ID.Equals(cat.ID))
-                    {
-                        categorySimilar = (1 * 0.1);
-                    }
+                        //have I bought from this category before?
+                        dynamic ourCat = getCategorybyProductID(il.ProductID);
+                        dynamic cat = getCategorybyProductID(p.ID);
+                        if (ourCat.ID.Equals(cat.ID))
+                        {
+                            categorySimilar = (1 * 0.1);
+                        }
 
-                    //have I bought from this subcategory before?
-                    dynamic ourProduct = getProduct(il.ProductID);
-                    dynamic ourSub = getSubCat(ourProduct.SubCategoryID);
-                    dynamic sub = getSubCat(p.SubCategoryID);
-                    if (ourSub.SubID.Equals(sub.SubID))
-                    {
-                        subSimilar = (1 * 0.2);
+                        //have I bought from this subcategory before?
+                        dynamic ourProduct = getProduct(il.ProductID);
+                        dynamic ourSub = getSubCat(ourProduct.SubCategoryID);
+                        dynamic sub = getSubCat(p.SubCategoryID);
+                        if (ourSub.SubID.Equals(sub.SubID))
+                        {
+                            subSimilar = (1 * 0.2);
+                        }
                     }
                 }
             }

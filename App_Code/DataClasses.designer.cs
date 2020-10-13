@@ -62,6 +62,9 @@ public partial class DataClassesDataContext : System.Data.Linq.DataContext
   partial void InsertAddress(Address instance);
   partial void UpdateAddress(Address instance);
   partial void DeleteAddress(Address instance);
+  partial void InsertSiteSetting(SiteSetting instance);
+  partial void UpdateSiteSetting(SiteSetting instance);
+  partial void DeleteSiteSetting(SiteSetting instance);
   #endregion
 	
 	public DataClassesDataContext() : 
@@ -179,6 +182,14 @@ public partial class DataClassesDataContext : System.Data.Linq.DataContext
 		get
 		{
 			return this.GetTable<Address>();
+		}
+	}
+	
+	public System.Data.Linq.Table<SiteSetting> SiteSettings
+	{
+		get
+		{
+			return this.GetTable<SiteSetting>();
 		}
 	}
 }
@@ -2850,6 +2861,164 @@ public partial class Address : INotifyPropertyChanging, INotifyPropertyChanged
 					this._CustomerID = default(int);
 				}
 				this.SendPropertyChanged("User");
+			}
+		}
+	}
+	
+	public event PropertyChangingEventHandler PropertyChanging;
+	
+	public event PropertyChangedEventHandler PropertyChanged;
+	
+	protected virtual void SendPropertyChanging()
+	{
+		if ((this.PropertyChanging != null))
+		{
+			this.PropertyChanging(this, emptyChangingEventArgs);
+		}
+	}
+	
+	protected virtual void SendPropertyChanged(String propertyName)
+	{
+		if ((this.PropertyChanged != null))
+		{
+			this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+		}
+	}
+}
+
+[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.SiteSettings")]
+public partial class SiteSetting : INotifyPropertyChanging, INotifyPropertyChanged
+{
+	
+	private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+	
+	private int _ID;
+	
+	private string _Field1;
+	
+	private string _Field2;
+	
+	private string _Field3;
+	
+	private string _Field4;
+	
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIDChanging(int value);
+    partial void OnIDChanged();
+    partial void OnField1Changing(string value);
+    partial void OnField1Changed();
+    partial void OnField2Changing(string value);
+    partial void OnField2Changed();
+    partial void OnField3Changing(string value);
+    partial void OnField3Changed();
+    partial void OnField4Changing(string value);
+    partial void OnField4Changed();
+    #endregion
+	
+	public SiteSetting()
+	{
+		OnCreated();
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ID", DbType="Int NOT NULL", IsPrimaryKey=true)]
+	public int ID
+	{
+		get
+		{
+			return this._ID;
+		}
+		set
+		{
+			if ((this._ID != value))
+			{
+				this.OnIDChanging(value);
+				this.SendPropertyChanging();
+				this._ID = value;
+				this.SendPropertyChanged("ID");
+				this.OnIDChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Field1", DbType="VarChar(MAX)")]
+	public string Field1
+	{
+		get
+		{
+			return this._Field1;
+		}
+		set
+		{
+			if ((this._Field1 != value))
+			{
+				this.OnField1Changing(value);
+				this.SendPropertyChanging();
+				this._Field1 = value;
+				this.SendPropertyChanged("Field1");
+				this.OnField1Changed();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Field2", DbType="VarChar(MAX)")]
+	public string Field2
+	{
+		get
+		{
+			return this._Field2;
+		}
+		set
+		{
+			if ((this._Field2 != value))
+			{
+				this.OnField2Changing(value);
+				this.SendPropertyChanging();
+				this._Field2 = value;
+				this.SendPropertyChanged("Field2");
+				this.OnField2Changed();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Field3", DbType="VarChar(MAX)")]
+	public string Field3
+	{
+		get
+		{
+			return this._Field3;
+		}
+		set
+		{
+			if ((this._Field3 != value))
+			{
+				this.OnField3Changing(value);
+				this.SendPropertyChanging();
+				this._Field3 = value;
+				this.SendPropertyChanged("Field3");
+				this.OnField3Changed();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Field4", DbType="VarChar(MAX)")]
+	public string Field4
+	{
+		get
+		{
+			return this._Field4;
+		}
+		set
+		{
+			if ((this._Field4 != value))
+			{
+				this.OnField4Changing(value);
+				this.SendPropertyChanging();
+				this._Field4 = value;
+				this.SendPropertyChanged("Field4");
+				this.OnField4Changed();
 			}
 		}
 	}

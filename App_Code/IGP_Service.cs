@@ -22,10 +22,18 @@ public interface IGP_Service
     //DEVICE MANAGEMENT
     //REPORT MANAGEMENT
 
-    //USER MANAGEMENT -------------------------------
     [OperationContract]
     //void newsletter(string subject, string body, string password);
     void newsletter(string senderemail, string subscriberemail, string subject, string body, string password, string smtp);
+
+    //SITE SETTINGS -----------------------------
+    [OperationContract]
+    SiteSetting getSetting(int id);
+
+    [OperationContract]
+    int updateSettings(int id, string field1, string field2, string field3, string field4);
+
+    //USER MANAGEMENT -------------------------------
 
     [OperationContract]
     int login(string email, string password);

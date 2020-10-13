@@ -130,4 +130,13 @@
       <Association Name="User_Address" Member="User" ThisKey="CustomerID" OtherKey="ID" Type="User" IsForeignKey="true" />
     </Type>
   </Table>
+  <Table Name="dbo.SiteSettings" Member="SiteSettings">
+    <Type Name="SiteSetting">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Field1" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="Field2" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="Field3" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="Field4" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+    </Type>
+  </Table>
 </Database>

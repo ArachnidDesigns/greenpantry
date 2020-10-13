@@ -32,6 +32,64 @@ public class GP_Service : IGP_Service
     //DEVICE MANAGEMENT
     //REPORT MANAGEMENT
 
+    //SITE SETTINGS ---------------------------------------------------
+    public SiteSetting getSetting(int id)
+    {
+        dynamic setting = (from s in db.SiteSettings
+                           where s.ID.Equals(id)
+                           select s).FirstOrDefault();
+
+        if(setting == null)
+        {
+            return null;
+        }
+        else
+        {
+            var tempSetting = new SiteSetting
+            {
+                ID = setting.ID,
+                Field1 = setting.Field1,
+                Field2 = setting.Field2,
+                Field3 = setting.Field3,
+                Field4 = setting.Field4
+            };
+            return tempSetting;
+        }
+    }
+
+    public int updateSettings(int id, string field1, string field2, string field3, string field4)
+    {
+        dynamic setting = (from s in db.SiteSettings
+                           where s.ID.Equals(id)
+                           select s).FirstOrDefault();
+
+        if (setting != null)
+        {
+            setting.Field1 = field1;
+            setting.Field2 = field2;
+            setting.Field3 = field3;
+            setting.Field4 = field4;
+
+            try
+            {
+                //all is well
+                db.SubmitChanges();
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                //something else went wrong
+                ex.GetBaseException();
+                return -1;
+            }
+        }
+        else
+        {
+            return -1;
+        }
+    }
+
+
     //USER MANAGEMENT -------------------------------------------------------------------------------------------------
 
     //Login 
